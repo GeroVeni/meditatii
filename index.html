@@ -1,48 +1,75 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Razvan site</title>
-  <!-- Line added for responsiveness -->
+  <title>W3.CSS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- W3 CSS Framework -->
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <!-- Google Material Design icons -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <!-- Custom stylesheet -->
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
+  <body>
 
-<body>
+    <header class="w3-container w3-teal">
+      <h1>Test login / register</h1>
+    </header>
 
-  <!-- Top bar -->
-  <div class="w3-bar w3-khaki">
-    <a href="#" class="w3-bar-item w3-button w3-mobile">Home</a>
-    <a href="#" class="w3-bar-item w3-button w3-mobile">How it works</a>
-    <a href="tutors.html" class="w3-bar-item w3-button w3-mobile">Tutors</a>
-    <a href="#" class="w3-bar-item w3-button w3-mobile">Pricing</a>
-    <a href="#" class="w3-bar-item w3-button w3-mobile">For Schools</a>
-    <a href="#" class="w3-bar-item w3-button w3-mobile">Become a Tutor</a>
-  </div>
+    <div class="w3-row">
+      <!-- Login form -->
+      <div class="w3-container w3-half w3-margin-top">
 
-  <!-- Page Content -->
-  <div class="w3-container">
-    <div id="main" class="w3-row" style="width: 100%">
-      <div id="main-text" class="w3-center w3-col" style="width: 60%">
-        <h1>Find a tutor that fits your schedule</h1>
-        <h2 style="margin-top: 50px">Choose one of our subjects</h2>
-        <div class="w3-bar" style="margin-top: 60px">
-          <a href="#" class="w3-bar-item w3-button w3-black w3-margin">Maths</a>
-          <a href="#" class="w3-bar-item w3-button w3-black w3-margin">Romanian</a>
-          <a href="#" class="w3-bar-item w3-button w3-black w3-margin">English</a>
-          <a href="#" class="w3-bar-item w3-button w3-black w3-margin">Physics</a>
-          <a href="#" class="w3-bar-item w3-button w3-black w3-margin">Chemistry</a>
-          <a href="#" class="w3-bar-item w3-button w3-black w3-margin">Geometry</a>
-          <a href="#" class="w3-bar-item w3-button w3-black w3-margin">History</a>
-        </div>
+        <h2>Login form</h2>
+        <form class="w3-container w3-card-4" action="api/login.php" method="post">
+
+          <p>
+          <input class="w3-input" type="email" name="email" style="width:90%" required>
+          <label>Email</label></p>
+
+          <p>
+          <input class="w3-input" type="password" name="password" style="width:90%" required>
+          <label>Password</label></p>
+
+          <p>
+          <button class="w3-button w3-section w3-teal w3-ripple"> Log in </button></p>
+
+        </form>
+
       </div>
-      <img src="res/school.jpg" class="w3-image w3-col" style="width: 40%">
-    </div>
-  </div><br>
 
-</body>
-</html>
+      <!-- Register form -->
+      <div class="w3-container w3-half w3-margin-top">
+
+        <h2>Register form</h2>
+        <form class="w3-container w3-card-4" action="api/register.php" method="post">
+
+          <p>
+          <input class="w3-input" type="text" name="name" style="width:90%" required>
+          <label>Name</label></p>
+          
+          <p>
+          <input class="w3-input" type="text" name="surname" style="width:90%" required>
+          <label>Surname</label></p>
+
+          <p>
+          <input class="w3-input" type="email" name="email" style="width:90%" required>
+          <label>Email</label></p>
+
+          <p>
+          <input class="w3-input" type="password" name="password" style="width:90%" required>
+          <label>Password</label></p>
+
+          <p>
+          <input class="w3-input" type="password" name="confirm_password" style="width:90%" required>
+          <label>Confirm password</label></p>
+
+          <p>
+          <input class="w3-input" type="date" name="date_of_birth" required>
+          <label>Date of Birth</label></p>
+
+          <p>
+          <button class="w3-button w3-section w3-teal w3-ripple"> Register </button></p>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </body>
+</html> 
+
