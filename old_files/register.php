@@ -48,6 +48,45 @@
         </form>
 
       </div>
-</div>
-</body>
+    </div>
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-app.js"></script>
+
+    <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-analytics.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-auth.js"></script>
+
+    <script src="firebase-init.js"></script>
+
+<script>
+firebase.auth().onAuthStateChanged(function(user) {
+  var loginForm = document.getElementById("login-form");
+  var logoutButton = document.getElementById("logout-button");
+
+  if (user) {
+    // User signed in
+    var displayName = user.displayName;
+    var email = user.email;
+    var photoURL = user.photoURL;
+    var uid =  user.uid;
+    console.log("User logged in: " +
+      displayName + " - " +
+      email + " - " +
+      uid);
+    //loginForm.style.display = "none";
+    //logoutButton.style.display = "";
+  } else {
+    // User signed out
+    console.log("User logged out");
+    //loginForm.style.display = "";
+    //logoutButton.style.display = "none";
+  }
+});
+
+</script>
+
+  </body>
 </html>
