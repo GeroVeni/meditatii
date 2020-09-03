@@ -382,6 +382,10 @@ h1 {
   color: #fff;
 }
 
+.button-5.x {
+  width: 200px;
+}
+
 .button-5.x:hover {
   background-color: #9e005d;
   color: #fff;
@@ -401,6 +405,10 @@ h1 {
   margin-left: auto;
   background-color: transparent;
   color: #9e005d;
+}
+
+.button-5._2 {
+  width: 200px;
 }
 
 .button-5.sign-up {
@@ -2321,6 +2329,7 @@ h1 {
 
 ._3-col._3-col-last {
   margin-right: 0px;
+  text-align: left;
 }
 
 .tagline {
@@ -2381,7 +2390,8 @@ h1 {
   border-width: 1px;
   border-color: rgba(17, 18, 18, 0.05);
   background-color: transparent;
-  color: #111212;
+  color: #9e005d;
+  font-weight: 700;
 }
 
 .btn.btn-outline-light:hover {
@@ -2403,6 +2413,7 @@ h1 {
 .wrap.w50 {
   padding-top: 50px;
   padding-bottom: 50px;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .text-14 {
@@ -2415,6 +2426,10 @@ h1 {
 
 .products2-description-wrap {
   padding-right: 40px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
 }
 
 .products2-items-wrap {
@@ -2436,26 +2451,26 @@ h1 {
 }
 
 .products2-image.products2-image1 {
-  background-image: url('../images/products1-image.jpg');
+  background-image: url('../images/glenn-carstens-peters-npxXWgQ33ZQ-unsplash.jpg');
   background-position: 50% 50%;
   background-size: cover;
 }
 
 .products2-image.products2-image2 {
-  background-image: url('../images/products2-image2.jpg');
-  background-position: 50% 50%;
+  background-image: url('../images/sergey-zolkin-_UeY8aTI6d0-unsplash.jpg');
+  background-position: 0% 50%;
   background-size: cover;
 }
 
 .products2-image.products2-image3 {
-  background-image: url('../images/products2-image3.jpg');
-  background-position: 50% 50%;
+  background-image: url('../images/j-kelly-brito-PeUJyoylfe4-unsplash.jpg');
+  background-position: 100% 50%;
   background-size: cover;
 }
 
 .products2-image.products2-image4 {
-  background-image: url('../images/products2-image4.jpg');
-  background-position: 50% 50%;
+  background-image: url('../images/andrew-neel-ute2XAFQU2I-unsplash.jpg');
+  background-position: 0px 0px;
   background-size: cover;
 }
 
@@ -2463,18 +2478,28 @@ h1 {
   padding-bottom: 10px;
 }
 
-.container-17 {
+.heading-34 {
+  font-size: 23px;
   text-align: center;
 }
 
-.image-16 {
-  padding-bottom: 20px;
+.heading-35 {
+  font-size: 23px;
+}
+
+.heading-36 {
+  font-size: 23px;
+}
+
+.heading-37 {
+  font-size: 23px;
+}
+
+.search-input-2 {
+  border-radius: 20px;
 }
 
 @media screen and (min-width: 1280px) {
-  .button-5._2 {
-    width: 200px;
-  }
   .button-5.sign-up.button-centered:hover {
     background-color: #323232;
     color: #fff;
@@ -2679,9 +2704,6 @@ h1 {
   }
   .textarea-2 {
     padding-bottom: 62px;
-  }
-  .video {
-    margin-bottom: 20px;
   }
 }
 

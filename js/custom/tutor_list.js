@@ -17,6 +17,10 @@ var tutorTemp =
   '</div>' +
 '</div>';
 
+// Search dropdowns
+var selectedSubjectText = document.getElementById("subject-selected-text");
+var subjectDropdownList = document.getElementById("subject-dropdown-list");
+
 function makeListItem(itemData) {
   var item = tutorTemp;
   item = item.replace("{full_name}", itemData.name + " " + itemData.surname);
@@ -53,9 +57,15 @@ function sendTutorListRequest() {
   req.send();
 }
 
+function select_subject(subject) {
+  // If subject is empty, show all subjects
+  if (subject === undefined) {
+}
+
 function refresh() {
   sendTutorListRequest();
 }
 
 // Main
+select_subject();
 refresh();
