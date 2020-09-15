@@ -17,6 +17,10 @@ var reviewTemp =
       '</div>' +
     '</div>';
 
+let messageForm = document.getElementById("message-form");
+let messageBox = messageForm["message"];
+let messageSubject = messageForm["Subject"];
+
 function fillTutorProfile(data) {
   // Get HTML fields
   var fullNameText = document.getElementById("tutor-full-name");
@@ -41,6 +45,25 @@ function fillTutorProfile(data) {
   aboutMeText.innerHTML = data.about_me;
   aboutSessionsText.innerHTML = data.about_sessions;
   priceText.innerHTML = data.price + " RON/ORĂ";
+
+  // Make a request for tutor subjects
+  let req = new XMLHttpRequest();
+  req.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      // Fill subject list
+      let res = JSON.parse(this.responseText);
+      let opt0 = '<option value="">Selectează materia și nivelul</option>';
+      messageSubject.innerHTML = opt0;
+      let opt = '<option value="{value}">{subject_name} - {level_name}</option>';
+      res.forEach(value => {
+        messageSubject.appendChild(makeItem(opt, {value: "" + value.subject_code + "," + value.level_code, subject_name: value.subject_name, level_name: value.level_name})); 
+      });
+    }
+  };
+  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/subjects?tutor=" + data.username;
+  console.log("ENDOINT: " + ENDPOINT);
+  req.open("GET", ENDPOINT, true);
+  req.send();
 }
 
 function sendTutorProfileRequest(username) {
@@ -55,11 +78,20 @@ function sendTutorProfileRequest(username) {
   req.send();
 }
 
-function refresh() {
+function sendMessage() {
+  // Message form submitted
+  let user = firebase.auth().currentUser
+  console.log("user" + user);
+  if (user) {
+    window.location.href = "/razvan";
+  }
+}
+
+function main() {
   let params = new URLSearchParams(location.search);
   let username = params.get('username');
   sendTutorProfileRequest(username);
 }
 
 // Main
-refresh();
+main();
