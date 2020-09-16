@@ -7,11 +7,11 @@ let tutorTemp =
   '<h1 class="heading-4 list">{full_name}<br></h1>' +
   '<div class="text-block-12 list">{education}</div>' +
   '<div class="text-block-3 list">{description}</div>' +
-  '<h5 class="heading-28">{subjects}</h5>' +
+  '<h5 id={subjects_id} class="heading-28">{subjects}</h5>' +
   '</div>' +
   '<div class="column-3 w-col w-col-3">' +
   '<div class="text-block-7 list">{price}/ORĂ<br>‍</div>' +
-  '<div class="text-block-8 list"><br><span class="text-span-7">{hours_taught}</span> <span class="text-span-8">de ore predate</span><br></div><img src="images/4stars.png" width="114" srcset="images/4stars-p-500.png 500w, images/4stars-p-800.png 800w, images/4stars.png 900w" sizes="114px" alt="" class="image-13 list">' +
+  '<div class="text-block-8 list"><br><span class="text-span-7">{hours_taught}</span> <span class="text-span-8">de ore predate</span><br></div><img src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
   '<div class="text-block-18 list">{reviews} review-uri</div><a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
   '</div>' +
   '</div>' +
@@ -43,11 +43,34 @@ function makeListItem(itemData) {
   map.description = itemData.description;
   map.photo_link = itemData.photo_link;
   map.hours_taught = "0";
-  map.reviews = "0";
+  map.reviews = "1";
   map.price = itemData.price;
   let education = JSON.parse(itemData.education);
   map.education = education.place;
-  map.subjects = "Matematică / Fizică / Chimie";
+  map.subjects_id = "subjects-" + itemData.username;
+  map.subjects = "";
+  let req = new XMLHttpRequest();
+  req.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      let res = JSON.parse(this.responseText);
+      let slice = false;
+      let txt = '';
+      let username = '';
+      res.forEach(value => {
+        if (slice) { txt += ' / '; }
+        else { slice = true; }
+        txt += value.subject_name;
+        username = value.tutor_username;
+      });
+      let subjectField = document.getElementById("subjects-" + username);
+      subjectField.innerHTML = txt;
+    }
+  };
+  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/subjects";
+  let query = "?tutor={username}";
+  query = query.replace("{username}", itemData.username);
+  req.open("GET", ENDPOINT + query, true);
+  req.send();
   map.username = itemData.username;
 
   return makeItem(tutorTemp, map);
@@ -140,7 +163,6 @@ function fillSubjectFilter(data) {
   subjectDropdownList.appendChild(makeItem(filterItemTemp, {subject_code: -1, subject_name: "Toate materiile"}));
   data.forEach(function (itemData) {
     subjectDropdownList.appendChild(makeItem(filterItemTemp, itemData));
-    console.log(subjectDropdownList);
   });
 }
 

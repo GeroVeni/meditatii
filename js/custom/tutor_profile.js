@@ -60,7 +60,7 @@ function fillTutorProfile(data) {
       });
     }
   };
-  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/subjects?tutor=" + data.username;
+  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/subjects?tutor=" + data.username + "&showLevel=1";
   console.log("ENDOINT: " + ENDPOINT);
   req.open("GET", ENDPOINT, true);
   req.send();
