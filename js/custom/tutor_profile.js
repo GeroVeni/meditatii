@@ -56,11 +56,12 @@ function fillTutorProfile(data) {
       messageSubject.innerHTML = opt0;
       let opt = '<option value="{value}">{subject_name} - {level_name}</option>';
       res.forEach(value => {
+        console.log("v: " + value.subject_name);
         messageSubject.appendChild(makeItem(opt, {value: "" + value.subject_code + "," + value.level_code, subject_name: value.subject_name, level_name: value.level_name})); 
       });
     }
   };
-  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/subjects?tutor=" + data.username + "&showLevel=1";
+  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/subjects?tutor=" + data.username + "&showLevels=1";
   console.log("ENDOINT: " + ENDPOINT);
   req.open("GET", ENDPOINT, true);
   req.send();
@@ -73,7 +74,7 @@ function sendTutorProfileRequest(username) {
       fillTutorProfile(JSON.parse(this.responseText));
     }
   };
-  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/tutors/" + username;
+  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + username;
   req.open("GET", ENDPOINT, true);
   req.send();
 }

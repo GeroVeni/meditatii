@@ -66,7 +66,7 @@ function makeListItem(itemData) {
       subjectField.innerHTML = txt;
     }
   };
-  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/subjects";
+  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/subjects";
   let query = "?tutor={username}";
   query = query.replace("{username}", itemData.username);
   req.open("GET", ENDPOINT + query, true);
@@ -97,7 +97,7 @@ function sendTutorListRequest() {
       fillTutorList(JSON.parse(this.responseText));
     }
   };
-  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/tutors";
+  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors";
   let query = "?subject={subject}&level={level}&price={price}";
   query = query.replace("{subject}", filter_subject);
   query = query.replace("{level}", filter_level);
@@ -185,7 +185,7 @@ function sendSubjectsRequest() {
       sendLevelsRequest();
     }
   };
-  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/subjects";
+  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/subjects";
   req.open("GET", ENDPOINT, true);
   req.send();
 }
@@ -206,7 +206,7 @@ function sendLevelsRequest() {
       sendTutorListRequest();
     }
   };
-  const ENDPOINT = "http://gv281.user.srcf.net:8080/api/levels";
+  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/levels";
   req.open("GET", ENDPOINT, true);
   req.send();
 }

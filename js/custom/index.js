@@ -9,7 +9,7 @@ req.onreadystatechange = function () {
     subjectList = JSON.parse(this.responseText);
   }
 };
-const ENDPOINT = "http://gv281.user.srcf.net:8080/api/subjects";
+const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/subjects";
 req.open("GET", ENDPOINT, true);
 req.send();
 
