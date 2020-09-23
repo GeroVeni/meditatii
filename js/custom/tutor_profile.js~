@@ -84,7 +84,7 @@ function sendMessage() {
   let user = firebase.auth().currentUser
   console.log("user" + user);
   if (user) {
-    window.location.href = "/";
+    window.location.href = "/razvan";
   }
 }
 

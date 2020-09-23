@@ -32,5 +32,5 @@ searchBar.oninput = function () {
 }
 
 function searchSubject(code) {
-  window.location.href = "/mentori.html?materie=" + code;
+  window.location.href = "/razvan/mentori.html?materie=" + code;
 }

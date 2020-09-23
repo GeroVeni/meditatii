@@ -9,7 +9,7 @@ firebase.auth().onAuthStateChanged(function(user) {
       displayName + " - " +
       email + " - " +
       uid);
-    var HOME_PAGE = "/";
+    var HOME_PAGE = "/razvan";
     window.location.href = HOME_PAGE;
   } else {
     // User signed out

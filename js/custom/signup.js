@@ -1,7 +1,7 @@
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User signed in
-    var HOME_PAGE = "/razvan";
+    var HOME_PAGE = "/";
     window.location.href = HOME_PAGE;
   } else {
     // User signed out
