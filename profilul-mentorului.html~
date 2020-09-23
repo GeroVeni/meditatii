@@ -38,7 +38,7 @@
   </div>
   <div class="container-8 w-container">
     <div class="w-row">
-      <div class="w-col w-col-3 w-col-medium-4 w-col-small-4"><img src="images/poya-tutor-.png" width="205" id="tutor-photo" sizes="(max-width: 479px) 83vw, (max-width: 767px) 28vw, 205px" alt="" class="image-8"></div>
+      <div class="w-col w-col-3 w-col-medium-4 w-col-small-4"><img src="images/poya-tutor-.png" width="205" id="tutor-photo" srcset="images/poya-tutor--p-500.png 500w, images/poya-tutor--p-800.png 800w, images/poya-tutor-.png 1000w" sizes="(max-width: 479px) 83vw, (max-width: 767px) 28vw, 205px" alt="" class="image-8"></div>
       <div class="w-col w-col-6 w-col-medium-4 w-col-small-4">
         <h1 id="tutor-full-name" class="heading-23">Todoran Bogdan</h1>
         <div id="tutor-education" class="text-block-12">Facultatea de Inginerie și Automatică, Transilvania, Brașov, România</div>
