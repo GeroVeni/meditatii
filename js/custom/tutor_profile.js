@@ -61,7 +61,7 @@ function fillTutorProfile(data) {
       });
     }
   };
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/subjects?tutor=" + data.username + "&showLevels=1";
+  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + data.username + "/subjects?showLevels=1";
   console.log("ENDOINT: " + ENDPOINT);
   req.open("GET", ENDPOINT, true);
   req.send();

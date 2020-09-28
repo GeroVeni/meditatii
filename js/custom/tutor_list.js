@@ -66,10 +66,8 @@ function makeListItem(itemData) {
       subjectField.innerHTML = txt;
     }
   };
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/subjects";
-  let query = "?tutor={username}";
-  query = query.replace("{username}", itemData.username);
-  req.open("GET", ENDPOINT + query, true);
+  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + itemData.username + "/subjects";
+  req.open("GET", ENDPOINT, true);
   req.send();
   map.username = itemData.username;
 
