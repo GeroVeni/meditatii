@@ -113,10 +113,51 @@ let bookingTemp_acceptRefuse =
   '<div class="w-col w-col-3">' +
   '<div class="text-block-25">{session_subject} - {session_level}</div>' +
   '</div>' +
-  '<div class="w-col w-col-1"><a href="#" class="button-10 _2 w-button">Refuză</a></div>' +
-  '<div class="column-8 w-col w-col-2"><a href="#" class="button-10 w-button">Acceptă</a></div>' +
+  '<div class="w-col w-col-1"><a name="{booking_id}" href="#" class="refuse button-10 _2 w-button">Refuză</a></div>' +
+  '<div class="column-8 w-col w-col-2"><a name="{booking_id}" href="#" class="accept button-10 w-button">Acceptă</a></div>' +
   '</div>' +
 '</div>';
+
+function updateBooking(booking_id, requested_status){
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      user.getIdToken(true).then(function (idToken) {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+          if(this.readyState == 4 && this.status == 200) {
+            console.log("Update Successfull");
+          }
+        };
+        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/update";
+        req.open("POST",ENDPOINT,true);
+        req.setRequestHeader("Content-type", "application/json");
+        req.send(JSON.stringify({"token": idToken, "requested_status": requested_status, "booking_id": booking_id}));
+      }).catch(function (error){
+        console.log("Error in retrieving user token: " + error.message);
+      });
+    } else {
+      console.log("No user Signed In")
+    }
+  });
+}
+
+
+
+function buttonsInit(){
+  var acceptButtons = document.getElementsByClassName("accept");
+  var refuseButtons = document.getElementsByClassName("refuse");
+  for (var i=0; i < acceptButtons.length; i++) {
+    acceptButtons.item(i).onclick = function(){
+      updateBooking(this.name, 2);
+    }
+  };
+  for (var i=0; i < refuseButtons.length; i++) {
+    refuseButtons.item(i).onclick = function(){
+      updateBooking(this.name, 6);
+    }
+  };
+}
+
 
 
 
@@ -131,6 +172,7 @@ function makeListItem(itemData) {
   weekday[5] = "Vineri";
   weekday[6] = "Sâmbătă";
   let start_date = new Date(itemData.start_timestamp);
+  map.booking_id = itemData.booking_id;
   map.session_dayOfWeek = weekday[start_date.getDay()];
   map.session_day = start_date.getDate();
   let months = new Array(12);
@@ -189,10 +231,9 @@ function sendBookingsRequest() {
         var req = new XMLHttpRequest();
         req.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            fillBookingList(this.responseText);
+            fillBookingList(this.responseText, buttonsInit);
           }
         };
-        console.log(idToken);
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read/?token=" + idToken;
         req.open("GET", ENDPOINT, true);
         req.send();
@@ -207,12 +248,14 @@ function sendBookingsRequest() {
   var user = firebase.auth().currentUser;
 }
 
-function fillBookingList(data) {
+function fillBookingList(data, callback) {
   bookingList.innerHTML = "";
   JSON.parse(data).forEach(function (itemData) {
     let item = makeListItem(itemData);
     bookingList.appendChild(item);
   });
+  callback();
 }
 
 sendBookingsRequest();
+
