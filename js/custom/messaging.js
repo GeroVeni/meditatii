@@ -1,5 +1,6 @@
 let send_message_button = document.getElementById('send-message-button');
 let send_message_field = document.getElementById('send-message-field');
+let send_message_form = document.getElementById('send-message-form');
 let new_session_button = document.getElementById('new-session-button');
 let messages_container = document.getElementById('messages-container');
 
@@ -68,15 +69,20 @@ new_session_button.onclick = function () {
 }
 
 // Send message
-send_message_button.onclick = function () {
+send_message_button.onclick = sendMessage;
+send_message_form.onsubmit = sendMessage;
+  
+function sendMessage() {
   // Retrieve message content
   let content = send_message_field.value;
+  if (content == '') return;
 
   // Make XMLHttpRequest to post new message
   let req = new XMLHttpRequest();
   req.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       console.log(this.responseText);
+      send_message_field.value = '';
       refreshMessageList();
     }
   };
@@ -107,5 +113,5 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 let params = new URLSearchParams(location.search);
 other_username = params.get('u');
-if (other_username === undefined) location.href = messages_list_page;
+if (other_username === null) location.href = messages_list_page;
 searchUser(other_username);
