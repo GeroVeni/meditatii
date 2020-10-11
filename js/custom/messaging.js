@@ -28,12 +28,32 @@ function searchUser(username) {
       else {
         other_user_full_name.innerHTML =
           users[0].name + " " + users[0].surname;
+        sendTutorSubjectsRequest();
       }
       // TODO: Refactor the flow of this page
     }
   };
   // TODO: Escape strings
   const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/users/" + username;
+  req.open("GET", ENDPOINT, true);
+  req.send();
+}
+
+let tutor_subjects_levels = [];
+
+function getTutorSubjects() {
+}
+
+function sendTutorSubjectsRequest(username) {
+  let req = new XMLHttpRequest();
+  req.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      tutor_subjects_levels = JSON.parse(this.responseText);
+      fillSubjectsList();
+      fillLevelsList();
+    }
+  };
+  const ENDPOINT = API_ENDPOINT + "/tutors/" + username + "/subjects?showLevels=1";
   req.open("GET", ENDPOINT, true);
   req.send();
 }
