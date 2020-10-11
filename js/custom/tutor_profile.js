@@ -1,25 +1,27 @@
-//var tutorList = document.getElementById("tutor-list-container");
-var reviewTemp = 
-'<div id="tutor-list-container" class="container-6 _2 w-container">' +
-      '<div class="w-row">' +
-        '<div class="w-col w-col-3"><img src="{photo_link}" height="303" sizes="(max-width: 767px) 96vw, (max-width: 991px) 167px, 220px" alt="" class="image-5"></div>' +
-        '<div class="w-col w-col-6">' +
-          '<h1 class="heading-4 list">{full_name}<br></h1>' +
-          '<div class="text-block-12 list">{education}</div>' +
-          '<div class="text-block-3 list">{description}</div>' +
-          '<h5 class="heading-28">{subjects}</h5>' +
-        '</div>' +
-        '<div class="column-3 w-col w-col-3">' +
-          '<div class="text-block-7 list">{price}/ORĂ<br>‍</div>' +
-          '<div class="text-block-8 list"><br><span class="text-span-7">{hours_taught}</span> <span class="text-span-8">de ore predate</span><br></div><img src="images/4stars.png" width="114" srcset="images/4stars-p-500.png 500w, images/4stars-p-800.png 800w, images/4stars.png 900w" sizes="114px" alt="" class="image-13 list">' +
-          '<div class="text-block-18 list">{reviews} review-uri</div><a href="tutor-profile.html" class="button-6 w-button">Vezi profilul! </a>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
+let reviewList = document.getElementById("tutor-reviews-list");
+
+let reviewTemp =
+'<div>' +
+  '<div class="text-block-15">{reviewer}</div><img src="{rating_image}" width="68" sizes="68px" alt="" class="image-11">' +
+  '<div class="text-block-17">{comment}</div>' +
+  '<div class="text-block-16">{date}</div>' +
+'</div>';
+
+let username = null;
 
 let messageForm = document.getElementById("message-form");
 let messageBox = messageForm["message"];
 let messageSubject = messageForm["Subject"];
+
+function splitParagraphs(text) {
+  let pars = text.split('\n');
+  let ans = '';
+  pars.forEach(p => {
+    if (p == '') return;
+    ans += '<p>' + p + '</p>';
+  });
+  return ans;
+}
 
 function fillTutorProfile(data) {
   // Get HTML fields
@@ -36,14 +38,13 @@ function fillTutorProfile(data) {
   var reviewsList = document.getElementById("tutor-reviews-list");
 
   // Fill the fields
-  console.log(data);
   fullNameText.innerHTML = data.name + " " + data.surname;
   var education = JSON.parse(data.education);
   educationText.innerHTML = education.place;
   descriptionText.innerHTML = data.description;
   profileImg.src = data.photo_link;
-  aboutMeText.innerHTML = data.about_me;
-  aboutSessionsText.innerHTML = data.about_sessions;
+  aboutMeText.innerHTML = splitParagraphs(data.about_me);
+  aboutSessionsText.innerHTML = splitParagraphs(data.about_sessions);
   priceText.innerHTML = data.price + " RON/ORĂ";
 
   // Make a request for tutor subjects
@@ -56,13 +57,16 @@ function fillTutorProfile(data) {
       messageSubject.innerHTML = opt0;
       let opt = '<option value="{value}">{subject_name} - {level_name}</option>';
       res.forEach(value => {
-        console.log("v: " + value.subject_name);
-        messageSubject.appendChild(makeItem(opt, {value: "" + value.subject_code + "," + value.level_code, subject_name: value.subject_name, level_name: value.level_name})); 
+        let tempData = {
+          value: "" + value.subject_code + "," + value.level_code, 
+          subject_name: value.subject_name, 
+          level_name: value.level_name
+        };
+        messageSubject.appendChild(makeItem(opt, tempData)); 
       });
     }
   };
   const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + data.username + "/subjects?showLevels=1";
-  console.log("ENDOINT: " + ENDPOINT);
   req.open("GET", ENDPOINT, true);
   req.send();
 }
@@ -81,17 +85,43 @@ function sendTutorProfileRequest(username) {
 
 function sendMessage() {
   // Message form submitted
-  let user = firebase.auth().currentUser
-  console.log("user" + user);
+  let user = firebase.auth().currentUser;
   if (user) {
-    window.location.href = "/";
+    // User already logged in; send request
+    window.location.href = "/mesagerie.html?u="+username;
+  } else {
+    // Add cookie and redirect to login page
+    setCookie("tutor-message", JSON.stringify({'tutor': username, 'content': messageBox.value, 'subject': messageSubject.value}));
   }
+}
+
+function sendTutorReviewsRequest(username) {
+  var req = new XMLHttpRequest();
+  reviewList.innerHTML = "";
+  req.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      let reviews = JSON.parse(this.responseText);
+      reviews.forEach(review => {
+        let tempData = {
+          reviewer: review.name + " " + review.surname,
+          comment: review.comment,
+          rating_image: getRatingImagePath(9),
+          date: review.date.substr(0, 10)
+        };
+        reviewList.appendChild(makeItem(reviewTemp, tempData));
+      });
+    }
+  };
+  const ENDPOINT = API_ENDPOINT + "/reviews?tutor_username=" + username;
+  req.open("GET", ENDPOINT, true);
+  req.send();
 }
 
 function main() {
   let params = new URLSearchParams(location.search);
-  let username = params.get('username');
+  username = params.get('username');
   sendTutorProfileRequest(username);
+  sendTutorReviewsRequest(username);
 }
 
 // Main

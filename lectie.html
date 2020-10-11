@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta id="vp" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Groupworld HTML5 Conference Room</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" crossorigin="anonymous"><link rel="stylesheet" href="//www.groupworld.net/js/bootstrap.min.css"><script src="//www.groupworld.net/js/jquery.min.js"></script><script src="//www.groupworld.net/js/bootstrap.min.js"></script><link rel="stylesheet" type="text/css" href="//www.groupboard.com/newui.css">
+    <link rel="stylesheet" href="//www.groupworld.net/style.css" type="text/css">
+    <script type="text/javascript" src="//www.groupworld.net/codecogs_editor3.js"></script><script type="text/javascript"> function setupequation() { if (null != editorwindow && null != editorwindow.document) { if (null != editorwindow.document.getElementById('format')) { editorwindow.document.getElementById('format').selectedIndex = 1; editorwindow.document.getElementById('bg').selectedIndex = 1; } } } function checktestbox() { var t = document.getElementById('testbox'); if (null != t && t.value != "") { alert("To copy the equation into Groupworld, simply drag the equation image onto the whiteboard"); t.value = ""; } } </script>
+    <link rel="stylesheet" type="text/css" href="//www.groupworld.net/js/dialog.css">
+    <script src="//www.groupworld.net/js/txted.min.js"></script>
+    <script src="//www.groupworld.net/js/aes-enc.min.js"></script>
+    <script src="//www.groupworld.net/js/aes-dec.min.js"></script>
+    <script src="//www.groupworld.net/js/aes-test.min.js"></script>
+    <script src="//www.groupworld.net/js/sha1.min.js"></script>
+    <script src="//www.groupworld.net/js/newbase64.min.js"></script>
+    <script src="//www.groupworld.net/js/dialog.min.js"></script>
+    <script src="//www.groupworld.net/js/tunnel.min.js"></script>
+    <script src="//www.groupworld.net/js/gsm610.min.js"></script>
+    <script src="//www.groupworld.net/js/groupworld.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-app.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-auth.js"></script>
+
+    <!-- Custom initialisation script for firebase -->
+    <script src="js/custom/firebase-init.js"></script>
+
+    <script src="//www.groupworld.net/js/desmos.min.js"></script>
+    <script src="//www.groupworld.net/js/deskshare.min.js"></script>
+    <script src="//www.groupworld.net/js/polls.min.js"></script>
+    <script src="//www.groupworld.net/js/jscolor/jscolor.min.js"></script>
+    <script src="//www.groupworld.net/js/new_conference.min.js"></script>
+    <script src="//www.groupworld.net/js/new_whiteboard.min.js"></script>
+    <script src="//www.groupworld.net/js/new_videostrip.min.js"></script>
+    <script src="//www.groupworld.net/js/chat.min.js"></script>
+    <script src="//www.groupworld.net/js/jspdf.min.js"></script>
+    <script src="//www.groupworld.net/js/jspdf.plugin.addimage.min.js"></script>
+    <script src="//www.groupworld.net/js/FileSaver.min.js"></script>
+
+    <!-- Janus Gateway, for multi-party WebRTC -->
+
+    <!-- Emojis -->
+    <script type="text/javascript" src="//www.groupworld.net/js/jquery-emoji-picker-master/js/jquery.emojipicker.min.js"></script> <script async type="text/javascript" src="//www.groupworld.net/js/jquery-emoji-picker-master/js/jquery.emojis.min.js"></script>
+    <script type="text/javascript">
+      function preload_emoji_css()
+{
+  var css = document.createElement("link");
+  css.rel = "stylesheet";
+  css.href = "//www.groupworld.net/js/jquery-emoji-picker-master/css/jquery.emojipicker.css";
+  document.body.appendChild(css);
+
+  css = document.createElement("link");
+  css.rel = "stylesheet";
+  css.href = "//www.groupworld.net/js/jquery-emoji-picker-master/css/jquery.emojipicker.tw.css";
+  document.body.appendChild(css);
+}
+function getCookie(c_name)
+{
+  var i,x,y,ARRcookies=document.cookie.split(';');
+  for (i=0;i<ARRcookies.length;i++)
+  {
+    x=ARRcookies[i].substr(0,ARRcookies[i].indexOf('='));
+    y=ARRcookies[i].substr(ARRcookies[i].indexOf('=')+1);
+    x=x.replace(/^\s+|\\s+$/g,'');
+    if (x==c_name)
+    {
+      return unescape(y);
+    }
+  }
+}
+function setCookie(c_name,value,exdays)
+{
+  var exdate=new Date();
+  exdate.setDate(exdate.getDate() + exdays);
+  var c_value=escape(value) + ((exdays==null) ? '' : '; expires='+exdate.toUTCString());
+  document.cookie=c_name + '=' + c_value + ';path=/';
+}
+
+var agt=navigator.userAgent.toLowerCase();
+var is_ipad = (agt.indexOf('ipad') != -1);
+var is_iphone = (agt.indexOf('iphone') != -1);
+var is_mobile = (agt.indexOf('mobile') != -1);
+var is_android = ((agt.indexOf('ventana') != -1) || (agt.indexOf('android') != -1));
+
+if ('3714' == '')
+{
+  alert("inst_id parameter missing. Please check the url.");
+}
+if ('conf1' == '')
+{
+  alert("instance parameter missing. Please check the url.");
+}
+
+function start()
+{
+  if (screen.width < 800 && screen.height < 800)
+  {
+    var mvp = document.getElementById('vp');
+    mvp.setAttribute('content','user-scalable=no,width=800');
+  }
+
+  // Optional username and password. If not specified here, a popup dialog
+  // box will appear.
+  var username = "";
+  var password = "";
+
+  if (window.location.protocol == 'https:')
+  {
+    groupworld.tunnel_port = 443;
+  }
+  else
+  {
+    groupworld.tunnel_port = 80;
+  }
+
+  // The GroupWorld server to connect to. You can optionally specify the
+  // port number and installation id (using the format "server:port:install_id").
+  var base = 'www.groupworld.net:'+groupworld.tunnel_port+':3714';
+
+  // The object to load and instance name. To create a different "session",
+  // just copy the html page and change the instance name (the part after
+  // the ":").
+  var object = 'new_conference:conf1';
+
+  // Flags: not currently used.
+  var flags = 0;
+  groupworld.startup(username, password, base, object, flags);
+  preload_emoji_css()
+}
+
+    </script>
+  <style>
+/* Bug in Chrome: if you draw on the whiteboard and move off the top,
+   Chrome will select a bunch of stuff which will then be dragged the next
+   time you click on the whiteboard. To fix, we just turn off selection for
+   all elements. */
+  * { 
+    -moz-user-select: none; 
+    -khtml-user-select: none; 
+    -webkit-user-select: none; 
+    -o-user-select: none; 
+  } 
+
+  /* Allow inputs and chat text area to be selectable
+   */
+  input, textarea, #chat_area, #text_editor, .remote_text, .our_text, .ql-clipboard, .ql-editor * { 
+    -webkit-user-select: text; 
+    -moz-user-select: text; 
+  }
+
+  /* Disable touch behaviours (pan/zoom) on the canvas elements,
+     so that the events are sent to the application instead. */
+  canvas {
+    touch-action: none;
+  }
+
+  /* Prevent double-tapping from zooming on iOS */
+  .fa, .topbuts, #prev_page_icon, #next_page_icon, #eraser, #chat_but {
+    touch-action: manipulation;
+  }
+
+  body { padding: 0; margin: 0; }
+  p { padding-left: 8px; }
+  </style>
+  </head>
+  <body> 
+    <script src="//www.groupworld.net/js/strings.js"></script>
+  <script type="text/javascript">
+
+    document.addEventListener("DOMContentLoaded",function()
+      {
+        //REDIPS.dialog.init();
+
+        //start();
+      });
+
+function show_selftest()
+{
+  REDIPS.dialog.showhtml(0,0,'<iframe allow="microphone; camera" width=640 height=500 src="https://www.groupboard.com/mp/parse.cgi?filename=selftest.html" style="border: 0"></iframe><p><button onclick="REDIPS.dialog.hide(); start()">Quit Self-test</button>');
+}
+
+window.addEventListener("message", receiveMessage, false);
+function receiveMessage(event)
+{
+  if (event.data === "finished")
+  {
+    finished_selftest();
+  }
+}
+
+function finished_selftest()
+{
+  REDIPS.dialog.hide();
+  start();
+}
+
+var start_time;
+
+function timer()
+{
+  if (null == start_time)
+  {
+    return;
+  }
+
+  var cur_time = new Date();
+  var time_diff = (cur_time.getTime() - start_time.getTime())/1000;
+  var hours = parseInt(time_diff/3600);
+  var mins = parseInt((time_diff-hours*3600)/60);
+  var secs = parseInt(time_diff - hours*3600 - mins*60);
+  var t = document.getElementById("t");
+  t.innerHTML = hours+":"+mins+":"+secs;
+}
+
+  </script>
+  <style>
+
+h1 { margin-top:10px; margin-left: 10px; margin-right: 10px; display:inline-block }
+.fr { float: right }
+  </style>
+
+  <script type="text/javascript">
+    let params = new URLSearchParams(location.search);
+let booking_id = params.get('sesiune');
+console.log(booking_id);
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    user.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+      // send token to backend
+      var req = new XMLHttpRequest();
+      req.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          var show_room_name = '';
+          var show_timer = '';
+          if (show_timer == 'true' && show_room_name !== 'true')
+          {
+            var tm = document.getElementById('timer');
+            var n = document.createElement('h1');
+            n.innerHTML = '&nbsp;';
+            tm.parentNode.insertBefore(n, tm);
+          }
+          new_videostrip.pc_config =  {'iceServers': [ {urls: ['stun:stun.stunprotocol.org', 'stun:stun.l.google.com:19302']},
+            {urls: 'turn:www.groupworld.net:13135', credential: 'test', username: 'groupworld'}]};
+          new_whiteboard.newui = true;
+          data = JSON.parse(this.responseText);
+          //new_conference.options["authorized_users"]=data[0].student_name+","+data[0].tutor_name;
+          //new_conference.options["start_time"]=data[0].start_timestamp;
+          //new_conference.options["end_time"]=data[0].end_timestamp;
+          new_videostrip.options['use_webrtc'] = 'true';
+          new_whiteboard.options['default_size'] = 3;
+          new_whiteboard.options['eraser_size'] = 15;
+          new_whiteboard.options['show_share_video'] = 'true';
+          new_videostrip.options['show_auto_record'] = 'false';
+          new_whiteboard.options['multi_user_pan'] = 'false';
+          new_conference.options['use_instance_recording_dir'] = 'true';
+          new_whiteboard.options['use_scrollbars'] = 'false';
+          new_whiteboard.using_desmos = true;
+          desmos.api_key = 'ee194c75a25a4870b06e64691293f0aa';
+          console.log("But here")
+          console.log(new_whiteboard.options);
+          // Generate the actual Groupworld object. Parameters: width and height of
+          // object
+          if(data[0].status_id == 3){
+            console.log("Here");
+            groupworld.htmlgen('100%','100%');
+            REDIPS.dialog.init();
+
+          console.log("DOM Content loaded");
+          start();
+          }
+        }
+      };
+      const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read/?token=" + idToken + "&booking_id=" + booking_id;
+      console.log(ENDPOINT);
+      req.open("GET", ENDPOINT, true);
+      req.send();
+    }).catch(function (error) {
+      // Handle error
+      console.log("Error in retrieving user token: " + error.message);
+    });
+  } else {
+    // No user is signed in.
+  }
+});
+
+// Hide playback link if there are no recordings
+
+  </script>
+
+  </body>
+</html>
