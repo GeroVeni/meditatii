@@ -9,6 +9,7 @@ let ownMessageTemp = '<div class="div-block-9"><div class="text-block-33">{messa
 
 let messages_list_page = '/';
 let other_username = '';
+let other_user_full_name = document.getElementById('other-user-name');
 
 function scrollToBottom() {
   messages_container.scrollTop = messages_container.scrollHeight;
@@ -23,7 +24,11 @@ function searchUser(username) {
       let users = JSON.parse(this.responseText);
       // If no tutor is found, redirect to main page
       if (users.length == 0) { location.href = messages_list_page; }
-      // Else do nothing and stay on the page
+      // Else fill in the user's name
+      else {
+        other_user_full_name.innerHTML =
+          users[0].name + " " + users[0].surname;
+      }
       // TODO: Refactor the flow of this page
     }
   };
@@ -71,7 +76,7 @@ new_session_button.onclick = function () {
 // Send message
 send_message_button.onclick = sendMessage;
 send_message_form.onsubmit = sendMessage;
-  
+
 function sendMessage() {
   // Retrieve message content
   let content = send_message_field.value;
@@ -93,7 +98,8 @@ function sendMessage() {
         token: token,
         recipient: other_username,
         message_type: "text",
-        message: content
+        message: content,
+        email: 1
       };
       const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
       req.open("POST", ENDPOINT, true);
@@ -110,6 +116,18 @@ firebase.auth().onAuthStateChanged(function(user) {
     // No user is signed in.
   }
 });
+
+function sendTutorProfileRequest(username) {
+  var req = new XMLHttpRequest();
+  req.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      fillTutorProfile(JSON.parse(this.responseText));
+    }
+  };
+  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + username;
+  req.open("GET", ENDPOINT, true);
+  req.send();
+}
 
 let params = new URLSearchParams(location.search);
 other_username = params.get('u');
