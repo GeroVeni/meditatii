@@ -1,3 +1,4 @@
+
 let bookingList = document.getElementById("booking-container");
 
 let bookingTemp_enterLesson =
@@ -14,7 +15,7 @@ let bookingTemp_enterLesson =
   '<div class="text-block-25">{session_subject} - {session_level}</div>' +
   '</div>' +
   '<div class="w-col w-col-1 w-col-tiny-tiny-stack"></div>' +
-  '<div class="w-col w-col-2 w-col-tiny-tiny-stack"><a href="{session_link}" class="button-5 w-button">Începe lecția</a></div>' +
+  '<div class="w-col w-col-2 w-col-tiny-tiny-stack"><a href="#" name="{booking_id}" class="enter_lesson button-5 w-button">Începe lecția</a></div>' +
   '</div>' +
 '</div>';
 
@@ -74,7 +75,7 @@ let bookingTemp_awaitingConfirmation=
   '</div>' +
   '<div class="w-col w-col-1"></div>' +
   '<div class="w-col w-col-2">' +
-  '<div class="text-block-26 _3">Așteptare confirmare</div>' +
+  '<div class="text-block-26 _2">În așteptarea plății</div>' +
   '</div>' +
   '</div>' +
 '</div>';
@@ -146,6 +147,7 @@ function updateBooking(booking_id, requested_status){
 function buttonsInit(){
   var acceptButtons = document.getElementsByClassName("accept");
   var refuseButtons = document.getElementsByClassName("refuse");
+  var enterLesson = document.getElementsByClassName("enter_lesson");
   for (var i=0; i < acceptButtons.length; i++) {
     acceptButtons.item(i).onclick = function(){
       updateBooking(this.name, 2);
@@ -156,6 +158,36 @@ function buttonsInit(){
       updateBooking(this.name, 6);
     }
   };
+  for (var i=0; i < enterLesson.length; i++){
+    enterLesson.item(i).onclick = function(){
+      let booking_id = this.name;
+      sessionStorage.setItem("booking_id",booking_id);
+      firebase.auth().onAuthStateChanged(function(user){
+        if(user){
+          user.getIdToken(true).then(function(idToken){
+            var req = new XMLHttpRequest();
+            req.onreadystatechange = function(){
+              if(this.readyState == 4 && this.status == 200){
+                var data = JSON.parse(this.responseText);
+                sessionStorage.setItem('end_timestamp', data[0].end_timestamp);
+                sessionStorage.setItem("start_timestamp", data[0].start_timestamp);
+                sessionStorage.setItem("authorised_users", data[0].student_name+","+data[0].tutor_name);
+                sessionStorage.setItem("username",data[0].student_name);
+                window.location.replace("https://meditatiipenet.ro/lectie.html");
+              }
+            };
+            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read/?token=" + idToken + "&booking_id=" + booking_id;
+            req.open("GET", ENDPOINT, true);
+            req.send();
+          }).catch(function(error){
+            console.log("Error in retrieving user token: " + error.message);
+          });
+        } else {
+          //No user signed in
+        }
+      });
+    }
+  }
 }
 
 
