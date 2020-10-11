@@ -1,8 +1,8 @@
 let send_message_button = document.getElementById('send-message-button');
-let send_message_field = document.getElementById('send-message-field');
-let send_message_form = document.getElementById('send-message-form');
-let new_session_button = document.getElementById('new-session-button');
-let messages_container = document.getElementById('messages-container');
+let send_message_field  = document.getElementById('send-message-field');
+let send_message_form   = document.getElementById('send-message-form');
+let new_session_button  = document.getElementById('new-session-button');
+let messages_container  = document.getElementById('messages-container');
 
 let otherMessageTemp = '<div><div class="text-block-31 _2">{message}</div></div>';
 let ownMessageTemp = '<div class="div-block-9"><div class="text-block-33">{message}</div></div>';

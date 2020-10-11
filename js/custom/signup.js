@@ -20,7 +20,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         let req = new XMLHttpRequest();
         req.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            //window.location.href = HOME_PAGE;
+            window.location.href = HOME_PAGE;
           }
         };
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/register";
