@@ -75,7 +75,7 @@ let bookingTemp_awaitingConfirmation=
   '</div>' +
   '<div class="w-col w-col-1"></div>' +
   '<div class="w-col w-col-2">' +
-  '<div class="text-block-26 _2">În așteptarea plății</div>' +
+  '<div class="text-block-26 _3">Așteptare confirmare</div>' +
   '</div>' +
   '</div>' +
 '</div>';
@@ -96,7 +96,7 @@ let bookingTemp_awaitingPayment =
   '</div>' +
   '<div class="w-col w-col-1"></div>' +
   '<div class="w-col w-col-2">' +
-  '<div class="text-block-26 _3">Așteptare confirmare</div>' +
+  '<div class="text-block-26 _2">În așteptarea plății</div>' +
   '</div>' +
   '</div>' +
 '</div>';
