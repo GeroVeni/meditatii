@@ -45,12 +45,15 @@ firebase.auth().onAuthStateChanged(user => {
       // Get user token
       user.getIdToken(true).then(idToken => {
         // Send message
+        let sublev = msg.subject.split(',');
         let postData = {
           token: idToken,
           recipient: msg.tutor,
           message_type: "text",
-          message: "Asking for " + msg.subject + "\n" + msg.content,
-          email: 1
+          message: msg.content,
+          email: 1,
+          subject_code: sublev[0],
+          level_code: sublev[1]
         };
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
         req.open("POST", ENDPOINT, true);

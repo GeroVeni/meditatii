@@ -100,12 +100,15 @@ function sendMessage() {
     };
     user.getIdToken(true)
       .then(token => {
+        let sublev = messageSubject.value.split(',');
         let postData = {
           token: token,
           recipient: username,
           message_type: "text",
-          message: "Asking for " + messageSubject.value + "\n" + messageBox.value,
-          email: 1
+          message: messageBox.value,
+          email: 1,
+          subject_code: sublev[0],
+          level_code: sublev[1]
         };
         const ENDPOINT = API_ENDPOINT + "/messages";
         req.open("POST", ENDPOINT, true);
