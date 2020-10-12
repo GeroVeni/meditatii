@@ -127,6 +127,7 @@ function updateBooking(booking_id, requested_status){
         req.onreadystatechange = function() {
           if(this.readyState == 4 && this.status == 200) {
             console.log("Update Successfull");
+            location.reload();
           }
         };
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/update";
@@ -263,7 +264,7 @@ function sendBookingsRequest() {
         var req = new XMLHttpRequest();
         req.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            fillBookingList(this.responseText, buttonsInit);
+            fillBookingList(bookingList, this.responseText, buttonsInit);
           }
         };
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read/?token=" + idToken;
@@ -280,11 +281,13 @@ function sendBookingsRequest() {
   var user = firebase.auth().currentUser;
 }
 
-function fillBookingList(data, callback) {
-  bookingList.innerHTML = "";
+function fillBookingList(HTMLelem, data, callback) {
+  HTMLelem.innerHTML = "";
   JSON.parse(data).forEach(function (itemData) {
     let item = makeListItem(itemData);
-    bookingList.appendChild(item);
+    if(item){
+    HTMLelem.appendChild(item);
+    }
   });
   callback();
 }
