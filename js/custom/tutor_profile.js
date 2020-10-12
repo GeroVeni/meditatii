@@ -1,4 +1,5 @@
-let reviewList = document.getElementById("tutor-reviews-list");
+let reviewList    = document.getElementById("tutor-reviews-list");
+let signup_dialog = document.getElementById("signup-dialog");
 
 let reviewTemp =
 '<div>' +
@@ -9,9 +10,11 @@ let reviewTemp =
 
 let username = null;
 
-let messageForm = document.getElementById("message-form");
-let messageBox = messageForm["message"];
-let messageSubject = messageForm["Subject"];
+let messageForm     = document.getElementById("message-form");
+let messageBox      = messageForm["message"];
+let messageSubject  = messageForm["Subject"];
+
+const defaultMessage = "Salut! Vreau să fac meditații online și sunt în căutarea unui mentor. Aș dori o sesiune gratuită pentru a afla mai multe despre tine. Aștept un răspuns cât mai curând!";
 
 function splitParagraphs(text) {
   let pars = text.split('\n');
@@ -88,10 +91,31 @@ function sendMessage() {
   let user = firebase.auth().currentUser;
   if (user) {
     // User already logged in; send request
-    window.location.href = "/mesagerie.html?u="+username;
+
+    let req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        window.location.href = "/mesagerie.html?u="+username;
+      }
+    };
+    user.getIdToken(true)
+      .then(token => {
+        let postData = {
+          token: token,
+          recipient: username,
+          message_type: "text",
+          message: "Asking for " + messageSubject.value + "\n" + messageBox.value,
+          email: 1
+        };
+        const ENDPOINT = API_ENDPOINT + "/messages";
+        req.open("POST", ENDPOINT, true);
+        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        req.send(JSON.stringify(postData));
+      });
   } else {
     // Add cookie and redirect to login page
     setCookie("tutor-message", JSON.stringify({'tutor': username, 'content': messageBox.value, 'subject': messageSubject.value}));
+    signup_dialog.style.display = "block";
   }
 }
 
@@ -118,6 +142,9 @@ function sendTutorReviewsRequest(username) {
 }
 
 function main() {
+  signup_dialog.onclick = () => {
+    signup_dialog.style.display = "none";
+  };
   let params = new URLSearchParams(location.search);
   username = params.get('username');
   sendTutorProfileRequest(username);

@@ -32,7 +32,7 @@ searchBar.oninput = function () {
 }
 
 function searchSubject(code) {
-  window.location.href = "/mentori.html?materie=" + code;
+  window.location.href = "/tutori.html?materie=" + code;
 }
 
 firebase.auth().onAuthStateChanged(user => {
@@ -45,17 +45,17 @@ firebase.auth().onAuthStateChanged(user => {
       // Get user token
       user.getIdToken(true).then(idToken => {
         // Send message
-        let json = {
+        let postData = {
           token: idToken,
           recipient: msg.tutor,
           message_type: "text",
-          message: "Asking for " + msg.subject + " \n" + msg.content,
+          message: "Asking for " + msg.subject + "\n" + msg.content,
           email: 1
         };
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
         req.open("POST", ENDPOINT, true);
         req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        req.send(JSON.stringify(json));
+        req.send(JSON.stringify(postData));
       });
       setCookie('tutor-message', '');
     }

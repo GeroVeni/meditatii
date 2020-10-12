@@ -1,8 +1,8 @@
 let send_message_button = document.getElementById('send-message-button');
-let send_message_field = document.getElementById('send-message-field');
-let send_message_form = document.getElementById('send-message-form');
-let new_session_button = document.getElementById('new-session-button');
-let messages_container = document.getElementById('messages-container');
+let send_message_field  = document.getElementById('send-message-field');
+let send_message_form   = document.getElementById('send-message-form');
+let new_session_button  = document.getElementById('new-session-button');
+let messages_container  = document.getElementById('messages-container');
 
 let otherMessageTemp = '<div><div class="text-block-31 _2">{message}</div></div>';
 let ownMessageTemp = '<div class="div-block-9"><div class="text-block-33">{message}</div></div>';
@@ -28,12 +28,73 @@ function searchUser(username) {
       else {
         other_user_full_name.innerHTML =
           users[0].name + " " + users[0].surname;
+        sendTutorSubjectsRequest(username);
       }
       // TODO: Refactor the flow of this page
     }
   };
   // TODO: Escape strings
   const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/users/" + username;
+  req.open("GET", ENDPOINT, true);
+  req.send();
+}
+
+let tutor_subjects_levels = [];
+
+function arrayUnique(arr) {
+  return arr.filter((v, i, a) => (i == 0 || a[i-1].subject_code != a[i].subject_code));
+}
+
+function getTutorSubjects() {
+  return arrayUnique(tutor_subjects_levels.map(sl => {
+    return {subject_code: sl.subject_code, subject_name: sl.subject_name}
+  }));
+}
+
+function getTutorLevels(sub_code) {
+  return tutor_subjects_levels.filter(v => v.subject_code == sub_code);
+}
+
+function fillSubjectsList() {
+  let subjectsList = document.getElementById('subject-2');
+  let opt0 = '<option value="">Selectează materia</option>';
+  let opt = '<option value="{subject_code}">{subject_name}</option>';
+  subjectsList.innerHTML = opt0;
+  getTutorSubjects().forEach(s => {
+    subjectsList.appendChild(makeItem(opt, s));
+  });
+
+  // Add on change listener
+  subjectsList.onchange = (evt) => {
+    console.log("Subject changed: " + evt.target.value);
+    fillLevelsList(evt.target.value);
+  };
+}
+
+function fillLevelsList(sub_code) {
+  let levelsList = document.getElementById('level');
+  let opt0 = '<option value="">Selectează nivelul</option>';
+  let opt = '<option value="{level_code}">{level_name}</option>';
+  levelsList.innerHTML = opt0;
+  
+  // If no subject selected, show no levels
+  if (!sub_code) return;
+
+  getTutorLevels(sub_code).forEach(l => {
+    levelsList.appendChild(makeItem(opt, l));
+  });
+}
+
+function sendTutorSubjectsRequest(username) {
+  let req = new XMLHttpRequest();
+  req.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      tutor_subjects_levels = JSON.parse(this.responseText);
+      fillSubjectsList();
+      fillLevelsList();
+    }
+  };
+  const ENDPOINT = API_ENDPOINT + "/tutors/" + username + "/subjects?showLevels=1";
   req.open("GET", ENDPOINT, true);
   req.send();
 }
@@ -60,7 +121,7 @@ function refreshMessageList() {
   firebase.auth().currentUser?.getIdToken(true)
     .then(token => {
       const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
-      let query = "/?token=" + token + "&other_username=" + other_username;
+      let query = "?token=" + token + "&other_username=" + other_username;
       req.open("GET", ENDPOINT + query, true);
       req.send();
     }).catch(function(error) {
