@@ -32,7 +32,7 @@ searchBar.oninput = function () {
 }
 
 function searchSubject(code) {
-  window.location.href = "/mentori.html?materie=" + code;
+  window.location.href = "/tutori.html?materie=" + code;
 }
 
 firebase.auth().onAuthStateChanged(user => {
