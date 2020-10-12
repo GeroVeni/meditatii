@@ -48,14 +48,54 @@
           <div class="lf-checkbox-flex"><label class="lf-checkbox-radio-wrapper w-radio"><input type="radio" data-name="session-type" id="1hmeditation-2" name="session-type" value="1hmeditation" class="w-form-formradioinput lf-radio-real w-radio-input"><div data-w-id="abb71ba9-db6a-506e-5778-6bc5026b56be" data-animation-type="lottie" data-src="https://uploads-ssl.webflow.com/5f3a3df1ecda61bd724a3372/5f3a3df20fd9df1d97f6cdbf_Radio-Pack1-smooth-v1.json" data-loop="0" data-direction="1" data-autoplay="0" data-is-ix2-target="1" data-renderer="svg" data-default-duration="1.92" data-duration="0" class="lf-radio-icon"></div><span for="1hmeditation-2" class="lf-radio-label w-form-label">Meditație 1h</span></label><label class="lf-checkbox-radio-wrapper w-radio"><input type="radio" data-name="session-type" id="freesession-2" name="session-type" value="freesession" class="w-form-formradioinput lf-radio-real w-radio-input"><div data-w-id="abb71ba9-db6a-506e-5778-6bc5026b56c3" data-animation-type="lottie" data-src="https://uploads-ssl.webflow.com/5f3a3df1ecda61bd724a3372/5f3a3df20fd9df1d97f6cdbf_Radio-Pack1-smooth-v1.json" data-loop="0" data-direction="1" data-autoplay="0" data-is-ix2-target="1" data-renderer="svg" data-default-duration="1.92" data-duration="0" class="lf-radio-icon"></div><span for="freesession-2" class="lf-radio-label w-form-label">Sesiune Gratuită</span></label></div>
           <select id="subject-2" name="subject" data-name="subject" required="" class="select-field w-select"></select>
           <select required="" name="level" data-name="level" id="level" class="select-field-2 w-select"></select>
-          <a id="date" href="#" class="button-9 w-button">Data</a><a id="time" href="#" class="button-9 ora w-button">Ora </a><label for="Other-optional-text" class="field-label-4">Mențiuni</label><textarea name="Other-optional-text" maxlength="5000" id="Other-optional-text" data-name="Other optional text" class="textarea w-input"></textarea><input type="submit" value="Programează sesiunea" data-wait="" class="button-5 sign-up button-centered programeaza w-button"></form>
-        <div class="success-message w-form-done">
-          <div class="text-block-20">Sesiunea ta a fost programată! Mulțumim! <br><br>Vei găsi toate informațiile despre programare și plată în dashboard.</div>
-          <div data-w-id="9905768d-690c-42bc-2164-39271bc2a5e8" data-animation-type="lottie" data-src="https://uploads-ssl.webflow.com/5f3a3df1ecda61bd724a3372/5f3a3df20fd9df1162f6cdc1_Success-Pack1-smooth.json" data-loop="0" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="2.24" data-duration="0" class="lf-form-success-icon"></div>
+          
+      <div class="container1">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="form-group">
+                    <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                        <input type="text" id = "start_date" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                        <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(function () {
+                    $('#datetimepicker2').datetimepicker({
+                        locale: 'ro',
+                        format:"YYYY-MM-DD"
+                    });
+                });
+            </script>
         </div>
-        <div class="error-message w-form-fail">
-          <div class="text-block-21">Oops! Există o eroare în programarea sesiunii.</div>
-        </div>
+    </div>
+    <div class="container1">
+      <div class="row">
+          <div class="col-sm-12">
+              <div class="form-group">
+                  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                      <input type="text" id="start_time" class="form-control datetimepicker-input" data-target="#datetimepicker3"/>
+                      <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                          <div class="input-group-text"> <i class="fa fa-clock-o" ></i>></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <script type="text/javascript">
+              $(function () {
+                  $('#datetimepicker3').datetimepicker({
+                      format: 'HH:mm'
+                  });
+              });
+          </script>
+      </div>
+  </div>
+          <label for="Other-optional-text" class="field-label-4">Mențiuni</label><textarea name="Other-optional-text" maxlength="5000" id="Other-optional-text" data-name="Other optional text" class="textarea w-input"></textarea>
+        </form>
+        <div class="column-12 w-col w-col-12"><a id="send-booking-button" href="#" class="button-14 w-button">Programează Sesiunea</a></div>
+        <div id="response_div"></div>
       </div>
     </div>
   </div>

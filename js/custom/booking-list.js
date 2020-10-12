@@ -138,7 +138,7 @@ function updateBooking(booking_id, requested_status){
         console.log("Error in retrieving user token: " + error.message);
       });
     } else {
-      console.log("No user Signed In")
+      console.log("No user Signed In");
     }
   });
 }
