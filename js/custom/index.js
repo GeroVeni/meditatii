@@ -13,6 +13,12 @@ const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/subjects";
 req.open("GET", ENDPOINT, true);
 req.send();
 
+function filterSubjects(filter) {
+  return subjectList.filter(subject => 
+    subject.subject_name.toUpperCase().indexOf(filter.toUpperCase()) > -1
+    );
+}
+
 searchBar.oninput = function () {
   let filter = this.value;
   if (filter == "" || subjectList == null) {
@@ -22,13 +28,21 @@ searchBar.oninput = function () {
     // Display matching subjects
     searchList.style.display = "";
     searchList.innerHTML = "";
-    subjectList.forEach(function (subject) {
-      let name = subject.subject_name;
-      if (name.toUpperCase().indexOf(filter.toUpperCase()) > -1) {
-        searchList.appendChild(makeItem(searchItemTemp, subject));
-      }
+    filterSubjects(filter).forEach(subject => {
+      searchList.appendChild(makeItem(searchItemTemp, subject));
     });
   }
+}
+
+function submit() {
+  let filtered = filterSubjects(searchBar.value);
+  let arg = '';
+  if (searchBar.value == '' || filtered.length == 0) {
+    arg = '';
+  } else {
+    arg = '?materie=' + filtered[0].subject_code;
+  }
+  window.location.href = "/tutori.html" + arg;
 }
 
 function searchSubject(code) {

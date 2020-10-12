@@ -18,7 +18,6 @@ function initialiseRatingStars(el) {
         let w = evt.target.offsetWidth;
         let rat = Math.round(10 * x / w);
         el.src = getRatingImagePath(rat);
-        console.log(rat);
     };
     el.onmouseleave = (evt) => {
         el.src = getRatingImagePath(el['data-rating']);
