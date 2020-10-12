@@ -28,7 +28,7 @@ function searchUser(username) {
       else {
         other_user_full_name.innerHTML =
           users[0].name + " " + users[0].surname;
-        sendTutorSubjectsRequest();
+        sendTutorSubjectsRequest(username);
       }
       // TODO: Refactor the flow of this page
     }
@@ -41,7 +41,48 @@ function searchUser(username) {
 
 let tutor_subjects_levels = [];
 
+function arrayUnique(arr) {
+  return arr.filter((v, i, a) => (i == 0 || a[i-1].subject_code != a[i].subject_code));
+}
+
 function getTutorSubjects() {
+  return arrayUnique(tutor_subjects_levels.map(sl => {
+    return {subject_code: sl.subject_code, subject_name: sl.subject_name}
+  }));
+}
+
+function getTutorLevels(sub_code) {
+  return tutor_subjects_levels.filter(v => v.subject_code == sub_code);
+}
+
+function fillSubjectsList() {
+  let subjectsList = document.getElementById('subject-2');
+  let opt0 = '<option value="">Selectează materia</option>';
+  let opt = '<option value="{subject_code}">{subject_name}</option>';
+  subjectsList.innerHTML = opt0;
+  getTutorSubjects().forEach(s => {
+    subjectsList.appendChild(makeItem(opt, s));
+  });
+
+  // Add on change listener
+  subjectsList.onchange = (evt) => {
+    console.log("Subject changed: " + evt.target.value);
+    fillLevelsList(evt.target.value);
+  };
+}
+
+function fillLevelsList(sub_code) {
+  let levelsList = document.getElementById('level');
+  let opt0 = '<option value="">Selectează nivelul</option>';
+  let opt = '<option value="{level_code}">{level_name}</option>';
+  levelsList.innerHTML = opt0;
+  
+  // If no subject selected, show no levels
+  if (!sub_code) return;
+
+  getTutorLevels(sub_code).forEach(l => {
+    levelsList.appendChild(makeItem(opt, l));
+  });
 }
 
 function sendTutorSubjectsRequest(username) {
@@ -80,7 +121,7 @@ function refreshMessageList() {
   firebase.auth().currentUser?.getIdToken(true)
     .then(token => {
       const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
-      let query = "/?token=" + token + "&other_username=" + other_username;
+      let query = "?token=" + token + "&other_username=" + other_username;
       req.open("GET", ENDPOINT + query, true);
       req.send();
     }).catch(function(error) {
