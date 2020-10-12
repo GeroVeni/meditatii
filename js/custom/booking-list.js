@@ -292,5 +292,31 @@ function fillBookingList(HTMLelem, data, callback) {
   callback();
 }
 
-sendBookingsRequest();
+
+function updateAllBookings() {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      user.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+        // send token to backend
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            sendBookingsRequest();
+          }
+        };
+        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/general_update";
+        req.open("POST", ENDPOINT, true);
+        req.setRequestHeader("Content-type", "application/json");
+        req.send(JSON.stringify({"token": idToken}));
+      }).catch(function (error) {
+        // Handle error
+        console.log("Error in retrieving user token: " + error.message);
+      });
+    } else {
+      // No user is signed in.
+    }
+  });
+}
+
+updateAllBookings();
 
