@@ -23,7 +23,7 @@
   <div data-collapse="medium" data-animation="over-right" data-duration="400" data-easing="ease-in" data-easing2="ease-out" role="banner" class="navbar-2 w-nav">
     <div class="container-13 w-container"></div>
     <div class="container-18 w-container"><a href="index.html"><img src="images/siteeeeeee.png" width="100" height="57" sizes="100px" srcset="images/siteeeeeee-p-500.png 500w, images/siteeeeeee-p-800.png 800w, images/siteeeeeee-p-1080.png 1080w, images/siteeeeeee-p-1600.png 1600w, images/siteeeeeee.png 1920w" alt="" class="image-2"></a>
-      <nav role="navigation" class="nav-menu w-nav-menu"><a href="despre-noi.html" class="nav-link-6 w-nav-link">Despre noi</a><a href="tutori.html" class="nav-link-6 w-nav-link">Gasește-ți tutorele</a><a href="devino-mentor.html" class="nav-link-6 w-nav-link">Devino tutore</a><a href="contact.html" class="nav-link-6 w-nav-link">Contact</a><div id="login-bar" style="display:inline"><a href="autentificare.html" class="nav-link-6 in-button w-nav-link">Autentificare</a><a href="inregistrare.html" class="nav-link-6 in-button w-nav-link">Înregistrare</a></div><div id="logout-bar" style="display:none"><a href="lista-mesaje.html" class="nav-link-6 in-button w-nav-link">Dashboard</a><a href="#" onclick="logout()" class="nav-link-6 in-button w-nav-link">Log out</a></div></nav>
+      <nav role="navigation" class="nav-menu w-nav-menu"><a href="despre-noi.html" class="nav-link-6 w-nav-link">Despre noi</a><a href="tutori.html" class="nav-link-6 w-nav-link">Gasește-ți tutorele</a><a href="devino-mentor.html" class="nav-link-6 w-nav-link">Devino tutore</a><a href="contact.html" class="nav-link-6 w-nav-link">Contact</a><div id="login-bar" style="display:inline"><a href="autentificare.html" class="nav-link-6 in-button w-nav-link">Autentificare</a><a href="inregistrare.html" class="nav-link-6 in-button w-nav-link">Înregistrare</a></div><div id="logout-bar" style="display:none"><a href="lista-mesaje.html" class="nav-link-6 in-button w-nav-link">Messages</a><a href="programari.html" class="nav-link-6 in-button w-nav-link">Bookings</a><a href="#" onclick="logout()" class="nav-link-6 in-button w-nav-link">Log out</a></div></nav>
       <div class="w-nav-button">
         <div class="icon-2 w-icon-nav-menu"></div>
       </div>
@@ -36,9 +36,9 @@
   <div class="section-24"></div>
   <div>
     <div class="form-block-5 w-form">
-      <form id="wf-form-feedback-form" name="wf-form-feedback-form" data-name="feedback form">
+      <form onsubmit="submit()" id="wf-form-feedback-form" name="wf-form-feedback-form" data-name="feedback form">
         <div class="text-block-38">Dă un rating tutorelui tău</div>
-        <div class="text-block-39">--------Stars rating---------</div><label class="field-label-7">Spune-ne cum a fost sesiunea ta?  Ai alte menţiuni de adăugat?</label><textarea data-name="feedback" maxlength="5000" name="feedback" id="feedback" class="w-input"></textarea><input type="submit" value="Trimite" data-wait="În curs de trimitere" class="submit-button-3 w-button"></form>
+        <div class="text-block-39"><img src="images/5stars.png" id="tutor-rating-stars" width="250" sizes="250px" alt="" class="rating-stars"></div><label class="field-label-7">Spune-ne cum a fost sesiunea ta?  Ai alte menţiuni de adăugat?</label><textarea data-name="feedback" maxlength="5000" name="feedback" id="feedback" class="w-input"></textarea><input type="submit" value="Trimite" data-wait="În curs de trimitere" class="submit-button-3 w-button"></form>
       <div class="success-message-3 w-form-done">
         <div class="text-block-40">Mulţumim pentru feedback-ul trimis! Te mai aşteptăm la viitoarele sesiuni! </div>
       </div>
@@ -73,5 +73,6 @@
   <!-- Custom initialisation script for firebase -->
   <script src="js/custom/firebase-init.js"></script>
   <script src="js/custom/topbar.js"></script>
+  <script src="js/custom/rating.js"></script>
 </body>
 </html>
