@@ -1,15 +1,13 @@
 function getRatingImagePath(rating) {
-  if (rating == 10) return 'images/5 star rating.png';
-  if (rating == 9)  return 'images/4stars-and-a-half.png';
-  // if (rating == 9)  return 'images/4stars-and-a-half.png';
-  // if (rating == 9)  return 'images/4stars-and-a-half.png';
-  // if (rating == 9)  return 'images/4stars-and-a-half.png';
-  // if (rating == 9)  return 'images/4stars-and-a-half.png';
-  // if (rating == 9)  return 'images/4stars-and-a-half.png';
-  // if (rating == 9)  return 'images/4stars-and-a-half.png';
-  // if (rating == 9)  return 'images/4stars-and-a-half.png';
-  // if (rating == 9)  return 'images/4stars-and-a-half.png';
-  return 'images/4stars.png';
+  if (rating == 10) return 'images/5stars.png';
+  if (rating == 9)  return 'images/4stars and a half.png';
+  if (rating == 8)  return 'images/4stars.png';
+  if (rating == 7)  return 'images/3stars and a half.png';
+  if (rating == 6)  return 'images/3stars.png';
+  if (rating == 5)  return 'images/2stars and a half.png';
+  if (rating == 4)  return 'images/2stars.png';
+  if (rating == 3)  return 'images/1star and a half.png';
+  return 'images/1star.png';
 }
 
 function initialiseRatingStars(el) {
@@ -20,7 +18,6 @@ function initialiseRatingStars(el) {
         let w = evt.target.offsetWidth;
         let rat = Math.round(10 * x / w);
         el.src = getRatingImagePath(rat);
-        console.log(rat);
     };
     el.onmouseleave = (evt) => {
         el.src = getRatingImagePath(el['data-rating']);
