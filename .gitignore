@@ -45,3 +45,8 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+# Webflow files
+401.html
+detail_date.html
+search.html
