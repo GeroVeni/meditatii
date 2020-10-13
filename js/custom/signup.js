@@ -28,8 +28,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         let data = {
           token: token,
           name: name_field.value,
-          surname: surname_field.value,
-          date_of_birth: date.slice(6, 10) + '-' + date.slice(3, 5) + '-' + date.slice(0, 2)
+          surname: surname_field.value
         };
         req.open("POST", ENDPOINT, true);
         req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -44,8 +43,18 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
+function checkForm() {
+  if (password_field.value != confirm_password_field.value) {
+    // Passwords no matching
+    return false;
+  }
+  return true;
+}
+
 function submit_form() {
   registered = true;
+  if (!checkForm()) return false;
+  
   firebase.auth().createUserWithEmailAndPassword(email_field.value, password_field.value).catch(function(error) {
     // Handle Errors here.
     var errorCode = error.code;
