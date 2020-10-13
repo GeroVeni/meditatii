@@ -35,7 +35,7 @@ let bookingTemp_lessonToPay =
   '<div class="w-col w-col-1">' +
   '<div class="text-block-26 _2">În așteptarea plății</div>' +
   '</div>' +
-  '<div class="column-8 w-col w-col-2"><a href="#" class="button-10 _2 _3 w-button">Plătește acum</a></div>' +
+  '<div class="column-8 w-col w-col-2"><a name="{booking_id}" href="#" class="pay button-10 _2 _3 w-button">Plătește acum</a></div>' +
   '</div>' +
   '</div>' +
 '</div>';
@@ -149,10 +149,16 @@ function buttonsInit(){
   var acceptButtons = document.getElementsByClassName("accept");
   var refuseButtons = document.getElementsByClassName("refuse");
   var enterLesson = document.getElementsByClassName("enter_lesson");
+  var payButtons = document.getElementsByClassName("pay");
   for (var i=0; i < acceptButtons.length; i++) {
     acceptButtons.item(i).onclick = function(){
       updateBooking(this.name, 2);
     }
+  };
+    for (var i=0; i < payButtons.length; i++) {
+      payButtons.item(i).onclick = function(){
+        window.location.replace("https://meditatiipenet.ro/informatiifacturare.html?b="+this.name);
+      }
   };
   for (var i=0; i < refuseButtons.length; i++) {
     refuseButtons.item(i).onclick = function(){
@@ -319,4 +325,3 @@ function updateAllBookings() {
 }
 
 updateAllBookings();
-

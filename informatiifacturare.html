@@ -4,7 +4,7 @@
 <html data-wf-page="5f50be1bda9adb0a405dbd65" data-wf-site="5f0873a2e3d9c9e5d8193363">
 <head>
   <meta charset="utf-8">
-  <title>Billing Information</title>
+  <title>Informații facturare</title>
   <meta content="Billing Information" property="og:title">
   <meta content="Billing Information" property="twitter:title">
   <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -23,7 +23,7 @@
   <div data-collapse="medium" data-animation="over-right" data-duration="400" data-easing="ease-in" data-easing2="ease-out" role="banner" class="navbar-2 w-nav">
     <div class="container-13 w-container"></div>
     <div class="container-18 w-container"><a href="index.html"><img src="images/siteeeeeee.png" width="100" height="57" sizes="100px" srcset="images/siteeeeeee-p-500.png 500w, images/siteeeeeee-p-800.png 800w, images/siteeeeeee-p-1080.png 1080w, images/siteeeeeee-p-1600.png 1600w, images/siteeeeeee.png 1920w" alt="" class="image-2"></a>
-      <nav role="navigation" class="nav-menu w-nav-menu"><a href="despre-noi.html" class="nav-link-6 w-nav-link">Despre noi</a><a href="tutori.html" class="nav-link-6 w-nav-link">Gasește-ți tutorele</a><a href="devino-mentor.html" class="nav-link-6 w-nav-link">Devino tutore</a><a href="contact.html" class="nav-link-6 w-nav-link">Contact</a><div id="login-bar" style="display:inline"><a href="autentificare.html" class="nav-link-6 in-button w-nav-link">Autentificare</a><a href="inregistrare.html" class="nav-link-6 in-button w-nav-link">Înregistrare</a></div><div id="logout-bar" style="display:none"><a href="lista-mesaje.html" class="nav-link-6 in-button w-nav-link">Messages</a><a href="programari.html" class="nav-link-6 in-button w-nav-link">Bookings</a><a href="#" onclick="logout()" class="nav-link-6 in-button w-nav-link">Log out</a></div></nav>
+      <nav role="navigation" class="nav-menu w-nav-menu"><a href="despre-noi.html" class="nav-link-6 w-nav-link">Despre noi</a><a href="tutori.html" class="nav-link-6 w-nav-link">Gasește-ți tutorele</a><a href="devino-mentor.html" class="nav-link-6 w-nav-link">Devino tutore</a><a href="contact.html" class="nav-link-6 w-nav-link">Contact</a><div id="login-bar" style="display:inline"><a href="autentificare.html" class="nav-link-6 in-button w-nav-link">Autentificare</a><a href="inregistrare.html" class="nav-link-6 in-button w-nav-link">Înregistrare</a></div><div id="logout-bar" style="display:none"><a href="lista-mesaje.html" class="nav-link-6 in-button w-nav-link">Mesaje</a><a href="programari.html" class="nav-link-6 in-button w-nav-link">Programări</a><a href="#" onclick="logout()" class="nav-link-6 in-button w-nav-link">Log out</a></div></nav>
       <div class="w-nav-button">
         <div class="icon-2 w-icon-nav-menu"></div>
       </div>
@@ -33,9 +33,18 @@
     <div class="container-17 w-container">
       <h1 class="heading-38">Completează datele de facturare pentru a putea finaliza plata</h1>
       <div class="form-block-4 w-form">
-        <form data-name="billing form" name="wf-form-billing-form" id="wf-form-billing-form" method="get" redirect="/pagina-bt" data-redirect="/pagina-bt" class="form-4"><label for="name">Nume și prenume</label><input type="text" class="text-field-5 w-input" maxlength="256" name="name" data-name="Name" placeholder=""><label for="email">Adresa de mail</label><input type="email" class="text-field-6 w-input" maxlength="256" name="email" data-name="Email" placeholder="" required=""><label for="street">Adresa (Strada, Număr)</label><input type="text" class="text-field-6 w-input" maxlength="256" name="street" data-name="street" placeholder="" required=""><label for="optional-adress">Adresa opțională</label><input type="text" maxlength="256" name="optional-adress" data-name="optional adress" placeholder="" class="text-field-6 w-input"><label for="city-2">Oraș</label><input type="text" class="text-field-6 w-input" maxlength="256" name="city" data-name="city" placeholder="" required=""><label for="county-2">Județ/Sector</label><input type="text" class="text-field-6 w-input" maxlength="256" name="county" data-name="county" placeholder="" id="county" required=""><label for="country">Țară</label><input type="text" class="text-field-6 w-input" maxlength="256" name="country" data-name="country" placeholder="" required=""><label for="postalcode">Cod poștal</label><input type="text" class="text-field-6 w-input" maxlength="256" name="postalcode" data-name="postalcode" placeholder="" id="postalcode" required=""><input type="submit" value="CUMPĂRĂ" data-wait="Se încarcă..." class="submit-button billing w-button"></form>
+        <form data-name="billing form" name="wf-form-billing-form" id="wf-form-billing-form" class="form-4">
+          <label for="name">Nume și prenume</label><input id="fullName"type="text" class="text-field-5 w-input" maxlength="256" name="name" data-name="Name" placeholder="">
+          <label for="email">Adresa de mail</label><input type="email" id="email" class="text-field-6 w-input" maxlength="256" name="email" data-name="Email" placeholder="" required="">
+          <label for="street">Adresa (Strada, Număr)</label><input type="text" id="adress1" class="text-field-6 w-input" maxlength="256" name="street" data-name="street" placeholder="" required="">
+          <label for="optional-adress">Adresa opțională</label><input type="text" id="adress2" maxlength="256" name="optional-adress" data-name="optional adress" placeholder="" class="text-field-6 w-input">
+          <label for="city-2">Oraș</label><input type="text" class="text-field-6 w-input" id="city" maxlength="256" name="city" data-name="city" placeholder="" required="">
+          <label for="county-2">Județ/Sector</label><input type="text" class="text-field-6 w-input" maxlength="256" name="county" data-name="county" placeholder="" id="county" required="">
+          <label for="country">Țară</label><input type="text" id="country" class="text-field-6 w-input" maxlength="256" name="country" data-name="country" placeholder="" required="">
+          <label for="postalcode">Cod poștal</label><input type="text" class="text-field-6 w-input" maxlength="256" name="postalcode" data-name="postalcode" placeholder="" id="postalcode" required="">
+          <input type="submit" value="CUMPĂRĂ" data-wait="Se încarcă..." class="submit-button billing w-button"></form>
         <div class="w-form-done">
-          <div>Thank you! Your submission has been received!</div>
+          <div>Mulțumim, am primit datele tale</div>
         </div>
         <div class="w-form-fail">
           <div>Oops! Există o problemă în completarea formularului.</div>
@@ -56,5 +65,6 @@
   <!-- Custom initialisation script for firebase -->
   <script src="js/custom/firebase-init.js"></script>
   <script src="js/custom/topbar.js"></script>
+  <script src="js/custom/billing.js"></script>
 </body>
 </html>
