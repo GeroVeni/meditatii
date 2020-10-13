@@ -1,3 +1,5 @@
+responseMessage = document.getElementById("response");
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User signed in
@@ -26,5 +28,6 @@ function submit_form() {
     var errorCode = error.code;
     var errorMessage = error.message;
     console.log(errorCode + " " + errorMessage);
+    responseMessage.innerHTML = "<p style='color:red'; text-allign:'center'><strong>Parola introdusă este incorectă sau contul nu există</strong></p>";  
   });
 }
