@@ -1,3 +1,4 @@
+
 let bookingList = document.getElementById("booking-container");
 
 let bookingTemp_enterLesson =
@@ -14,7 +15,7 @@ let bookingTemp_enterLesson =
   '<div class="text-block-25">{session_subject} - {session_level}</div>' +
   '</div>' +
   '<div class="w-col w-col-1 w-col-tiny-tiny-stack"></div>' +
-  '<div class="w-col w-col-2 w-col-tiny-tiny-stack"><a href="{session_link}" class="button-5 w-button">Începe lecția</a></div>' +
+  '<div class="w-col w-col-2 w-col-tiny-tiny-stack"><a href="#" name="{booking_id}" class="enter_lesson button-5 w-button">Începe lecția</a></div>' +
   '</div>' +
 '</div>';
 
@@ -95,7 +96,7 @@ let bookingTemp_awaitingPayment =
   '</div>' +
   '<div class="w-col w-col-1"></div>' +
   '<div class="w-col w-col-2">' +
-  '<div class="text-block-26 _3">Așteptare confirmare</div>' +
+  '<div class="text-block-26 _2">În așteptarea plății</div>' +
   '</div>' +
   '</div>' +
 '</div>';
@@ -126,6 +127,7 @@ function updateBooking(booking_id, requested_status){
         req.onreadystatechange = function() {
           if(this.readyState == 4 && this.status == 200) {
             console.log("Update Successfull");
+            location.reload();
           }
         };
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/update";
@@ -136,7 +138,7 @@ function updateBooking(booking_id, requested_status){
         console.log("Error in retrieving user token: " + error.message);
       });
     } else {
-      console.log("No user Signed In")
+      console.log("No user Signed In");
     }
   });
 }
@@ -146,6 +148,7 @@ function updateBooking(booking_id, requested_status){
 function buttonsInit(){
   var acceptButtons = document.getElementsByClassName("accept");
   var refuseButtons = document.getElementsByClassName("refuse");
+  var enterLesson = document.getElementsByClassName("enter_lesson");
   for (var i=0; i < acceptButtons.length; i++) {
     acceptButtons.item(i).onclick = function(){
       updateBooking(this.name, 2);
@@ -156,6 +159,36 @@ function buttonsInit(){
       updateBooking(this.name, 6);
     }
   };
+  for (var i=0; i < enterLesson.length; i++){
+    enterLesson.item(i).onclick = function(){
+      let booking_id = this.name;
+      sessionStorage.setItem("booking_id",booking_id);
+      firebase.auth().onAuthStateChanged(function(user){
+        if(user){
+          user.getIdToken(true).then(function(idToken){
+            var req = new XMLHttpRequest();
+            req.onreadystatechange = function(){
+              if(this.readyState == 4 && this.status == 200){
+                var data = JSON.parse(this.responseText);
+                sessionStorage.setItem('end_timestamp', data[0].end_timestamp);
+                sessionStorage.setItem("start_timestamp", data[0].start_timestamp);
+                sessionStorage.setItem("authorised_users", data[0].student_name+","+data[0].tutor_name);
+                sessionStorage.setItem("username",data[0].student_name);
+                window.location.replace("https://meditatiipenet.ro/lectie.html");
+              }
+            };
+            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read/?token=" + idToken + "&booking_id=" + booking_id;
+            req.open("GET", ENDPOINT, true);
+            req.send();
+          }).catch(function(error){
+            console.log("Error in retrieving user token: " + error.message);
+          });
+        } else {
+          //No user signed in
+        }
+      });
+    }
+  }
 }
 
 
@@ -231,7 +264,7 @@ function sendBookingsRequest() {
         var req = new XMLHttpRequest();
         req.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            fillBookingList(this.responseText, buttonsInit);
+            fillBookingList(bookingList, this.responseText, buttonsInit);
           }
         };
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read/?token=" + idToken;
@@ -248,14 +281,42 @@ function sendBookingsRequest() {
   var user = firebase.auth().currentUser;
 }
 
-function fillBookingList(data, callback) {
-  bookingList.innerHTML = "";
+function fillBookingList(HTMLelem, data, callback) {
+  HTMLelem.innerHTML = "";
   JSON.parse(data).forEach(function (itemData) {
     let item = makeListItem(itemData);
-    bookingList.appendChild(item);
+    if(item){
+    HTMLelem.appendChild(item);
+    }
   });
   callback();
 }
 
-sendBookingsRequest();
+
+function updateAllBookings() {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      user.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+        // send token to backend
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            sendBookingsRequest();
+          }
+        };
+        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/general_update";
+        req.open("POST", ENDPOINT, true);
+        req.setRequestHeader("Content-type", "application/json");
+        req.send(JSON.stringify({"token": idToken}));
+      }).catch(function (error) {
+        // Handle error
+        console.log("Error in retrieving user token: " + error.message);
+      });
+    } else {
+      // No user is signed in.
+    }
+  });
+}
+
+updateAllBookings();
 
