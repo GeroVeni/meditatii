@@ -4,7 +4,7 @@
 <html data-wf-page="5f50be1bda9adb0a405dbd65" data-wf-site="5f0873a2e3d9c9e5d8193363">
 <head>
   <meta charset="utf-8">
-  <title>Billing Information</title>
+  <title>Informații facturare</title>
   <meta content="Billing Information" property="og:title">
   <meta content="Billing Information" property="twitter:title">
   <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -33,9 +33,18 @@
     <div class="container-17 w-container">
       <h1 class="heading-38">Completează datele de facturare pentru a putea finaliza plata</h1>
       <div class="form-block-4 w-form">
-        <form data-name="billing form" name="wf-form-billing-form" id="wf-form-billing-form" method="get" redirect="/pagina-bt" data-redirect="/pagina-bt" class="form-4"><label for="name">Nume și prenume</label><input type="text" class="text-field-5 w-input" maxlength="256" name="name" data-name="Name" placeholder=""><label for="email">Adresa de mail</label><input type="email" class="text-field-6 w-input" maxlength="256" name="email" data-name="Email" placeholder="" required=""><label for="street">Adresa (Strada, Număr)</label><input type="text" class="text-field-6 w-input" maxlength="256" name="street" data-name="street" placeholder="" required=""><label for="optional-adress">Adresa opțională</label><input type="text" maxlength="256" name="optional-adress" data-name="optional adress" placeholder="" class="text-field-6 w-input"><label for="city-2">Oraș</label><input type="text" class="text-field-6 w-input" maxlength="256" name="city" data-name="city" placeholder="" required=""><label for="county-2">Județ/Sector</label><input type="text" class="text-field-6 w-input" maxlength="256" name="county" data-name="county" placeholder="" id="county" required=""><label for="country">Țară</label><input type="text" class="text-field-6 w-input" maxlength="256" name="country" data-name="country" placeholder="" required=""><label for="postalcode">Cod poștal</label><input type="text" class="text-field-6 w-input" maxlength="256" name="postalcode" data-name="postalcode" placeholder="" id="postalcode" required=""><input type="submit" value="CUMPĂRĂ" data-wait="Se încarcă..." class="submit-button billing w-button"></form>
+        <form data-name="billing form" name="wf-form-billing-form" id="wf-form-billing-form" class="form-4">
+          <label for="name">Nume și prenume</label><input id="fullName"type="text" class="text-field-5 w-input" maxlength="256" name="name" data-name="Name" placeholder="">
+          <label for="email">Adresa de mail</label><input type="email" id="email" class="text-field-6 w-input" maxlength="256" name="email" data-name="Email" placeholder="" required="">
+          <label for="street">Adresa (Strada, Număr)</label><input type="text" id="adress1" class="text-field-6 w-input" maxlength="256" name="street" data-name="street" placeholder="" required="">
+          <label for="optional-adress">Adresa opțională</label><input type="text" id="adress2" maxlength="256" name="optional-adress" data-name="optional adress" placeholder="" class="text-field-6 w-input">
+          <label for="city-2">Oraș</label><input type="text" class="text-field-6 w-input" id="city" maxlength="256" name="city" data-name="city" placeholder="" required="">
+          <label for="county-2">Județ/Sector</label><input type="text" class="text-field-6 w-input" maxlength="256" name="county" data-name="county" placeholder="" id="county" required="">
+          <label for="country">Țară</label><input type="text" id="country" class="text-field-6 w-input" maxlength="256" name="country" data-name="country" placeholder="" required="">
+          <label for="postalcode">Cod poștal</label><input type="text" class="text-field-6 w-input" maxlength="256" name="postalcode" data-name="postalcode" placeholder="" id="postalcode" required="">
+          <input type="submit" value="CUMPĂRĂ" data-wait="Se încarcă..." class="submit-button billing w-button"></form>
         <div class="w-form-done">
-          <div>Thank you! Your submission has been received!</div>
+          <div>Mulțumim, am primit datele tale</div>
         </div>
         <div class="w-form-fail">
           <div>Oops! Există o problemă în completarea formularului.</div>
@@ -56,5 +65,6 @@
   <!-- Custom initialisation script for firebase -->
   <script src="js/custom/firebase-init.js"></script>
   <script src="js/custom/topbar.js"></script>
+  <script src="js/custom/billing.js"></script>
 </body>
 </html>
