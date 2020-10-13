@@ -1,8 +1,16 @@
 let send_message_button = document.getElementById('send-message-button');
+let free_session = document.getElementById("freesession-2");
+let paid_session = document.getElementById("1hmeditation-2");
+let subject = document.getElementById("subject-2");
+let level = document.getElementById("level");
+let start_date = document.getElementById("start_date");
+let start_time = document.getElementById("start_time");
 let send_message_field  = document.getElementById('send-message-field');
 let send_message_form   = document.getElementById('send-message-form');
 let new_session_button  = document.getElementById('new-session-button');
 let messages_container  = document.getElementById('messages-container');
+let send_booking_button = document.getElementById("send-booking-button");
+let response_div = document.getElementById("response_div");
 
 let otherMessageTemp = '<div><div class="text-block-31 _2">{message}</div></div>';
 let ownMessageTemp = '<div class="div-block-9"><div class="text-block-33">{message}</div></div>';
@@ -194,3 +202,72 @@ let params = new URLSearchParams(location.search);
 other_username = params.get('u');
 if (other_username === null) location.href = messages_list_page;
 searchUser(other_username);
+
+//Send Booking
+send_booking_button.onclick = sendBooking;
+
+function sendBooking(){
+  console.log(subject.value);
+  console.log(level.value);
+  console.log(start_date.value);
+  console.log(start_time.value);
+  console.log(free_session.checked);
+  console.log(paid_session.checked);
+  var session_type = -1;
+  if (free_session.checked){
+    session_type = 0;
+  }
+  if (paid_session.checked){
+    session_type = 1;
+  }
+  let start_datetime = start_date.value + "T" + start_time.value + ":00.000Z";
+  console.log(start_datetime);
+
+  firebase.auth().onAuthStateChanged(function (user){
+    if (user){
+      user.getIdToken(true).then(function (idToken){
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+          if(this.readyState == 4 && this.status == 200){
+            let isTutor = this.responseText;
+            console.log(isTutor);
+            req = new XMLHttpRequest();
+            req.onreadystatechange = function(){
+              if(this.readyState == 4 && this.status == 200){
+                let own_username=JSON.parse(this.responseText)[0].username;
+                console.log(own_username);
+                req.onreadystatechange = function(){
+                  if(this.readyState == 4 && this.status == 200){
+                    console.log(this.responseText);
+                    response_div.innerHTML = '<p> Sesiunea ta a fost programată. Intră pe pagina de Programări pentru a urmări toate programările tale.</p>'
+                  }
+                };
+                const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/write";
+                req.open("POST", ENDPOINT, true);
+                req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                var json = {};
+                if (isTutor == 0){
+                  json = {token:idToken, status_id:0,start_timestamp:start_datetime,subject_id:subject.value,level_id:level.value,session_type:session_type,student_id:own_username,tutor_id:other_username};
+                }
+                if (isTutor == 1){
+                  json = {token:idToken, status_id:1,start_timestamp:start_datetime,subject_id:subject.value,level_id:level.value,session_type:session_type,student_id:other_username,tutor_id:own_username};
+                }
+                req.send(JSON.stringify(json));
+              }
+            };
+            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/username/uid?token=" + idToken;
+            req.open("GET",ENDPOINT,true);
+            req.send();
+          }
+        };
+        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutor/type?token=" + idToken;
+        req.open("GET",ENDPOINT,true);
+        req.send();
+      }).catch(function (error){
+        console.log("Error in retrieving user token: " + error.message);
+      });
+    } else {
+      console.log("No user Signed In");
+    }
+  });
+}
