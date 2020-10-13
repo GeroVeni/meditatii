@@ -11,8 +11,8 @@ let tutorTemp =
   '</div>' +
   '<div class="column-3 w-col w-col-3">' +
   '<div class="text-block-7 list">{price}/ORĂ<br>‍</div>' +
-  '<div class="text-block-8 list"><br><span class="text-span-7">{hours_taught}</span> <span class="text-span-8">de ore predate</span><br></div><img src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
-  '<div class="text-block-18 list">{reviews} review-uri</div><a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
+  '<div style="display:none" class="text-block-8 list"><br><span class="text-span-7">{hours_taught}</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
+  '<div style="display:none" class="text-block-18 list">{reviews} review-uri</div><a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
   '</div>' +
   '</div>' +
 '</div>';

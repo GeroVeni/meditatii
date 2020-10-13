@@ -21,7 +21,15 @@ function fillMessagesList(data) {
       message_link: "mesagerie.html?u=" + convo.other.username,
       sender_name: convo.other.surname + ' ' + convo.other.name,
       last_message: convo.last_msg_content,
-      date: convo.last_msg_date.substr(10)
+      date: new Date(convo.last_msg_date).toLocaleDateString(
+        'ro-RO',
+        {
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric'
+        }
+        )
     };
     messagesList.appendChild(makeItem(messageTemp, messageTempData));
   });
