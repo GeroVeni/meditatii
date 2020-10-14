@@ -205,6 +205,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     refreshMessageList();
   } else {
     // No user is signed in.
+    location.href = '/';
   }
 });
 
