@@ -93,7 +93,7 @@ function fillLevelsList(sub_code) {
   });
 }
 
-function sendTutorSubjectsRequest(username) {
+async function sendTutorSubjectsRequest(username) {
   let req = new XMLHttpRequest();
   req.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
@@ -102,9 +102,31 @@ function sendTutorSubjectsRequest(username) {
       fillLevelsList();
     }
   };
-  const ENDPOINT = API_ENDPOINT + "/tutors/" + username + "/subjects?showLevels=1";
-  req.open("GET", ENDPOINT, true);
-  req.send();
+
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      user.getIdToken(true).then(async function (idToken) {
+        let query = "?token=" + idToken;
+        let isTutorReq = await fetch(API_ENDPOINT + "/tutor/type" + query);
+        let isTutor = await (isTutorReq).json();
+        console.log("Is tutor: " + JSON.stringify(isTutor));
+        if (!isTutor) {
+          const ENDPOINT = API_ENDPOINT + "/tutors/" + username + "/subjects?showLevels=1";
+          req.open("GET", ENDPOINT, true);
+          req.send();
+          return;
+        }
+
+        // TODO: Update naming convention of userdata
+        let userdata = await (await fetch(API_ENDPOINT + "/username/uid" + query)).json();
+        console.log("Username: " + JSON.stringify(userdata));
+        const ENDPOINT = API_ENDPOINT + "/tutors/" + userdata[0].username + "/subjects?showLevels=1";
+        req.open("GET", ENDPOINT, true);
+        req.send();
+        return;
+      });
+    }
+  });
 }
 
 function refreshMessageList() {
