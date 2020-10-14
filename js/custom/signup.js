@@ -46,7 +46,7 @@ function checkForm() {
   if (password_field.value != confirm_password_field.value) {
     // Passwords no matching
     error_message.style.display = "";
-    error_message.innerHTML = "Error: Passwords not matching";
+    error_message.innerHTML = "Parola nu se potrivește.";
     return false;
   }
   return true;
@@ -62,7 +62,11 @@ function submit_form() {
     var errorMessage = error.message;
     console.log(errorCode + " " + errorMessage);
     error_message.style.display = "";
-    error_message.innerHTML = errorMessage;
+    if (errorCode == "auth/email-already-in-use") {
+      error_message.innerHTML = "Există un cont cu această adresă de mail.";
+    } else {
+      error_message.innerHTML = errorMessage;
+    }
   });
   return true;
 }
