@@ -239,7 +239,8 @@ function sendBooking(){
                 req.onreadystatechange = function(){
                   if(this.readyState == 4 && this.status == 200){
                     console.log(this.responseText);
-                    response_div.innerHTML = '<p> Sesiunea ta a fost programată. Intră pe pagina de Programări pentru a urmări toate programările tale.</p>'
+                    location.href = "programari.html";
+                    response_div.innerHTML = '<p> Sesiunea ta a fost programată. Intră pe pagina de Programări pentru a urmări toate programările tale.</p>';
                   }
                 };
                 const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/write";
