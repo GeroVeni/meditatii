@@ -24,7 +24,6 @@ firebase.auth().onAuthStateChanged(function(user) {
           }
         };
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/register";
-        let date = date_of_birth_field.value;
         let data = {
           token: token,
           name: name_field.value,
