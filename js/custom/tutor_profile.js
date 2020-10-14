@@ -41,7 +41,7 @@ function fillTutorProfile(data) {
   var reviewsList = document.getElementById("tutor-reviews-list");
 
   // Fill the fields
-  fullNameText.innerHTML = data.name + " " + data.surname;
+  fullNameText.innerHTML = data.surname + " " + data.name;
   var education = JSON.parse(data.education);
   educationText.innerHTML = education.place;
   descriptionText.innerHTML = data.description;
@@ -130,7 +130,7 @@ function sendTutorReviewsRequest(username) {
       let reviews = JSON.parse(this.responseText);
       reviews.forEach(review => {
         let tempData = {
-          reviewer: review.name + " " + review.surname,
+          reviewer: review.surname + " " + review.name,
           comment: review.comment,
           rating_image: getRatingImagePath(9),
           date: review.date.substr(0, 10)

@@ -35,7 +35,7 @@ function searchUser(username) {
       // Else fill in the user's name
       else {
         other_user_full_name.innerHTML =
-          users[0].name + " " + users[0].surname;
+          users[0].surname + " " + users[0].name;
         sendTutorSubjectsRequest(username);
       }
       // TODO: Refactor the flow of this page

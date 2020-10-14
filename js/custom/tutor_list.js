@@ -39,7 +39,7 @@ let levelList = [];
 
 function makeListItem(itemData) {
   let map = {};
-  map.full_name = itemData.name + " " + itemData.surname;
+  map.full_name = itemData.surname + " " + itemData.name;
   map.description = itemData.description;
   map.photo_link = itemData.photo_link;
   map.hours_taught = "0";
