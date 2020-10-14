@@ -1,13 +1,13 @@
 let registered = false;
 
-var login_form = document.getElementById("email-form");
-var name_field = login_form["name"];
-var surname_field = login_form["Surname"];
-var email_field = login_form["email"];
-var password_field = login_form["Password"];
-var confirm_password_field = login_form["Confirm-password"];
-var date_of_birth_field = login_form["Date-of-birth"];
-var over_16_check = login_form["checkbox"];
+let login_form = document.getElementById("email-form");
+let error_message = document.getElementById("error-message");
+let name_field = login_form["name"];
+let surname_field = login_form["Surname"];
+let email_field = login_form["email"];
+let password_field = login_form["Password"];
+let confirm_password_field = login_form["Confirm-password"];
+let over_16_check = login_form["checkbox"];
 
 firebase.auth().onAuthStateChanged(function(user) {
   var HOME_PAGE = "/";
@@ -45,6 +45,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 function checkForm() {
   if (password_field.value != confirm_password_field.value) {
     // Passwords no matching
+    error_message.style.display = "";
+    error_message.innerHTML = "Error: Passwords not matching";
     return false;
   }
   return true;
@@ -59,6 +61,8 @@ function submit_form() {
     var errorCode = error.code;
     var errorMessage = error.message;
     console.log(errorCode + " " + errorMessage);
+    error_message.style.display = "";
+    error_message.innerHTML = errorMessage;
   });
   return true;
 }
