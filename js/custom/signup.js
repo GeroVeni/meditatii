@@ -1,7 +1,10 @@
-let registered = false;
+const HOME_PAGE = '/';
 
-let login_form = document.getElementById("email-form");
+let registered = 0;
+
 let error_message = document.getElementById("error-message");
+let signup_google = document.getElementById("signup-google");
+let login_form = document.getElementById("email-form");
 let name_field = login_form["name"];
 let surname_field = login_form["Surname"];
 let email_field = login_form["email"];
@@ -9,31 +12,65 @@ let password_field = login_form["Password"];
 let confirm_password_field = login_form["Confirm-password"];
 let over_16_check = login_form["checkbox"];
 
+signup_google.onclick = () => {
+  let provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithRedirect(provider);
+};
+
+function createDBUser(user) {
+  user.getIdToken(true).then(function (token) {
+    // create new user
+    let req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log("redirecting...");
+        window.location.href = HOME_PAGE;
+      }
+    };
+    const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/register";
+    let data = {
+      token: token,
+      name: name_field.value,
+      surname: surname_field.value
+    };
+    req.open("POST", ENDPOINT, true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify(data));
+  });
+}
+
+firebase.auth().getRedirectResult()
+  .then(function(result) {
+    if (result.credential) {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = result.credential.accessToken;
+      // TODO: Custom stuff
+    }
+    // The signed-in user info.
+    var user = result.user;
+    // console.log("Creating DB user");
+    // console.log(user);
+    // createDBUser(user);
+  })
+  .catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    console.log(errorCode + ": " + errorMessage);
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // TODO: Custom stuff
+  });
+
 firebase.auth().onAuthStateChanged(function(user) {
-  var HOME_PAGE = "/";
   if (user) {
     // User signed in
     if (registered) {
-      // get user id token
-      user.getIdToken(true).then(function (token) {
-        // create new user
-        let req = new XMLHttpRequest();
-        req.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            window.location.href = HOME_PAGE;
-          }
-        };
-        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/register";
-        let data = {
-          token: token,
-          name: name_field.value,
-          surname: surname_field.value
-        };
-        req.open("POST", ENDPOINT, true);
-        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        req.send(JSON.stringify(data));
-      });
+      createDBUser(user);
     } else {
+      console.log("redirecting...");
       window.location.href = HOME_PAGE;
     }
   } else {
@@ -53,10 +90,14 @@ function checkForm() {
 }
 
 function submit_form() {
-  registered = true;
   if (!checkForm()) return false;
+  registered = 1;
   
-  firebase.auth().createUserWithEmailAndPassword(email_field.value, password_field.value).catch(function(error) {
+  firebase.auth().createUserWithEmailAndPassword(email_field.value, password_field.value)
+  .then(userCredentials => {
+    console.log(userCredentials.user);
+  })
+  .catch(function(error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
