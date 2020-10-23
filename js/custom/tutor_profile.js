@@ -42,8 +42,7 @@ function fillTutorProfile(data) {
 
   // Fill the fields
   fullNameText.innerHTML = data.surname + " " + data.name;
-  var education = JSON.parse(data.education);
-  educationText.innerHTML = education.place;
+  educationText.innerHTML = data.education.place;
   descriptionText.innerHTML = data.description;
   profileImg.src = data.photo_link;
   aboutMeText.innerHTML = splitParagraphs(data.about_me);

@@ -45,8 +45,7 @@ function makeListItem(itemData) {
   map.hours_taught = "0";
   map.reviews = "1";
   map.price = itemData.price;
-  let education = JSON.parse(itemData.education);
-  map.education = education.place;
+  map.education = itemData.education.place;
   map.subjects_id = "subjects-" + itemData.username;
   map.subjects = "";
   let req = new XMLHttpRequest();
