@@ -7,7 +7,7 @@ const firebaseConfig = {
   storageBucket: "meditatiiweb.appspot.com",
   messagingSenderId: "461568359305",
   appId: "1:461568359305:web:7b47465052036ca8e5ff58",
-  measurementId: "G-YHQ6PM10SL"
+  measurementId: "G-3XJ0NP7VRK"
 };
 
 // Initialize Firebase
