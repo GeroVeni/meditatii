@@ -8,6 +8,12 @@ let reviewTemp =
   '<div class="text-block-16">{date}</div>' +
 '</div>';
 
+let gradeRowTemp = 
+'<tr>' +
+  '<td>{exam_name}</td>' +
+  '<td>{exam_grade}</td>' +
+'</tr>';
+
 let username = null;
 
 let messageForm     = document.getElementById("message-form");
@@ -35,6 +41,7 @@ function fillTutorProfile(data) {
   var aboutMeText = document.getElementById("tutor-about-me");
   var aboutSessionsText = document.getElementById("tutor-about-sessions");
   var priceText = document.getElementById("tutor-price");
+  var gradesTable = document.getElementById("tutor-grades");
   var sessionHoursField = document.getElementById("tutor-session-hours");
   var ratingStarsImg = document.getElementById("tutor-rating-stars");
   var ratingCountText = document.getElementById("tutor-rating-count");
@@ -48,6 +55,16 @@ function fillTutorProfile(data) {
   aboutMeText.innerHTML = splitParagraphs(data.about_me);
   aboutSessionsText.innerHTML = splitParagraphs(data.about_sessions);
   priceText.innerHTML = data.price + " RON/ORĂ";
+
+  // Fill in grades
+  gradesTable.innerHTML = "<tr><th>Exam</th><th>Grade</th></tr>";
+  for (let key in data.grades) {
+    const tempData = {
+      exam_name: key, 
+      exam_grade: data.grades[key]
+    };
+    gradesTable.appendChild(makeItem(gradeRowTemp, tempData, "TABLE"));
+  }
 
   // Make a request for tutor subjects
   let req = new XMLHttpRequest();

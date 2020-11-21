@@ -58,7 +58,7 @@ function billing(){
                     req.send(JSON.stringify(json));
                 }
             };
-            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/order_number/?token="+idToken+"&booking_id="+booking_id;
+            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/order_number?token="+idToken+"&booking_id="+booking_id;
             req.open("GET", ENDPOINT, true);
             req.send();
             });

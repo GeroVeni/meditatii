@@ -17,6 +17,7 @@ function fillMessagesList(data) {
   messagesList.innerHTML = "";
   
   data.forEach(convo => {
+    console.log(convo.last_msg_date);
     let messageTempData = {
       message_link: "mesagerie.html?u=" + convo.other.username,
       sender_name: convo.other.surname + ' ' + convo.other.name,
@@ -27,9 +28,8 @@ function fillMessagesList(data) {
           month: 'short',
           day: 'numeric',
           hour: 'numeric',
-          minute: 'numeric'
-        }
-        )
+          minute: 'numeric',
+        })
     };
     messagesList.appendChild(makeItem(messageTemp, messageTempData));
   });

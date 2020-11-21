@@ -290,7 +290,7 @@ var r = new XMLHttpRequest(); r.addEventListener("load", function() { var num_re
               document.getElementById("authorized_users").innerHTML = data[0].tutor_name + "," + data[0].student_name;
           }
         };
-        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read/?token=" + idToken + "&booking_id=" + booking_id;
+        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read?token=" + idToken + "&booking_id=" + booking_id;
         req.open("GET", ENDPOINT, true);
         req.send();
       }).catch(function (error) {

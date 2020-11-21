@@ -118,7 +118,7 @@ async function sendTutorSubjectsRequest(username) {
         }
 
         // TODO: Update naming convention of userdata
-        let userdata = await (await fetch(API_ENDPOINT + "/username/uid" + query)).json();
+        let userdata = await (await fetch(API_ENDPOINT + "/users/me" + query)).json();
         console.log("Username: " + JSON.stringify(userdata));
         const ENDPOINT = API_ENDPOINT + "/tutors/" + userdata[0].username + "/subjects?showLevels=1";
         req.open("GET", ENDPOINT, true);
@@ -243,8 +243,10 @@ function sendBooking(){
   if (paid_session.checked){
     session_type = 1;
   }
-  let start_datetime = start_date.value + "T" + start_time.value + ":00.000Z";
-  console.log(start_datetime);
+  // TODO: Convert to UTC ?
+  let start_datetime = new Date(start_date.value + "T" + start_time.value);
+  let start_datetime_string = start_datetime.toISOString();
+  console.log(start_datetime_string);
 
   firebase.auth().onAuthStateChanged(function (user){
     if (user){
@@ -271,15 +273,15 @@ function sendBooking(){
                 req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 var json = {};
                 if (isTutor == 0){
-                  json = {token:idToken, status_id:0,start_timestamp:start_datetime,subject_id:subject.value,level_id:level.value,session_type:session_type,student_id:own_username,tutor_id:other_username};
+                  json = {token:idToken, status_id:0,start_timestamp:start_datetime_string,subject_id:subject.value,level_id:level.value,session_type:session_type,student_id:own_username,tutor_id:other_username};
                 }
                 if (isTutor == 1){
-                  json = {token:idToken, status_id:1,start_timestamp:start_datetime,subject_id:subject.value,level_id:level.value,session_type:session_type,student_id:other_username,tutor_id:own_username};
+                  json = {token:idToken, status_id:1,start_timestamp:start_datetime_string,subject_id:subject.value,level_id:level.value,session_type:session_type,student_id:other_username,tutor_id:own_username};
                 }
                 req.send(JSON.stringify(json));
               }
             };
-            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/username/uid?token=" + idToken;
+            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/users/me?token=" + idToken;
             req.open("GET",ENDPOINT,true);
             req.send();
           }

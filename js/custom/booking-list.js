@@ -44,7 +44,7 @@ let bookingTemp_lessonPaid =
 '<div class="div-block-7">' +
   '<div class="columns-4 w-row">' +
   '<div class="w-col w-col-4">' +
-  '<h5>{session_dayOfWeek}, {session_day} {session_month}, {session_hour}:{session_minute}</h5>' +
+  '<h5>{session_datetime}</h5>' +
   '<div class="text-block-23">{session_type}</div>' +
   '</div>' +
   '<div class="w-col w-col-2">' +
@@ -183,7 +183,7 @@ function buttonsInit(){
                 window.location.replace("https://meditatiipenet.ro/lectie.html");
               }
             };
-            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read/?token=" + idToken + "&booking_id=" + booking_id;
+            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read?token=" + idToken + "&booking_id=" + booking_id;
             req.open("GET", ENDPOINT, true);
             req.send();
           }).catch(function(error){
@@ -197,9 +197,6 @@ function buttonsInit(){
   }
 }
 
-
-
-
 function makeListItem(itemData) {
   let map = {};
   let weekday = new Array(7);
@@ -211,6 +208,17 @@ function makeListItem(itemData) {
   weekday[5] = "Vineri";
   weekday[6] = "Sâmbătă";
   let start_date = new Date(itemData.start_timestamp);
+  map.session_datetime = start_date.toLocaleDateString(
+    'ro-RO',
+    {
+      weekday: 'long',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      timeZone: 'Europe/Bucharest',
+      timeZoneName: 'short'
+    });
   map.booking_id = itemData.booking_id;
   map.session_dayOfWeek = weekday[start_date.getDay()];
   map.session_day = start_date.getDate();
@@ -273,7 +281,7 @@ function sendBookingsRequest() {
             fillBookingList(bookingList, this.responseText, buttonsInit);
           }
         };
-        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read/?token=" + idToken;
+        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/read?token=" + idToken;
         req.open("GET", ENDPOINT, true);
         req.send();
       }).catch(function (error) {
