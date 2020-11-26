@@ -44,7 +44,7 @@ let bookingTemp_lessonPaid =
 '<div class="div-block-7">' +
   '<div class="columns-4 w-row">' +
   '<div class="w-col w-col-4">' +
-  '<h5>{session_datetime}</h5>' +
+  '<h5>{session_dayOfWeek}, {session_day} {session_month}, {session_hour}:{session_minute}</h5>' +
   '<div class="text-block-23">{session_type}</div>' +
   '</div>' +
   '<div class="w-col w-col-2">' +
@@ -212,12 +212,12 @@ function makeListItem(itemData) {
     'ro-RO',
     {
       weekday: 'long',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
       timeZone: 'Europe/Bucharest',
-      timeZoneName: 'short'
+      timeZoneName: 'long'
     });
   map.booking_id = itemData.booking_id;
   map.session_dayOfWeek = weekday[start_date.getDay()];

@@ -42,6 +42,7 @@ function fillTutorProfile(data) {
   var aboutSessionsText = document.getElementById("tutor-about-sessions");
   var priceText = document.getElementById("tutor-price");
   var gradesTable = document.getElementById("tutor-grades");
+  var subjectsTable = document.getElementById("tutor-subjects");
   var sessionHoursField = document.getElementById("tutor-session-hours");
   var ratingStarsImg = document.getElementById("tutor-rating-stars");
   var ratingCountText = document.getElementById("tutor-rating-count");
@@ -57,7 +58,7 @@ function fillTutorProfile(data) {
   priceText.innerHTML = data.price + " RON/ORĂ";
 
   // Fill in grades
-  gradesTable.innerHTML = "<tr><th>Exam</th><th>Grade</th></tr>";
+  gradesTable.innerHTML = "<tr><th>Examene</th><th>Note</th></tr>";
   for (let key in data.grades) {
     const tempData = {
       exam_name: key, 

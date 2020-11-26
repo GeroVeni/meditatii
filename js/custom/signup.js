@@ -1,9 +1,8 @@
 const HOME_PAGE = '/';
 
-let registered = 0;
-
 let error_message = document.getElementById("error-message");
 let signup_google = document.getElementById("signup-google");
+let signup_facebook = document.getElementById("signup-facebook");
 let login_form = document.getElementById("email-form");
 let name_field = login_form["name"];
 let surname_field = login_form["Surname"];
@@ -14,8 +13,15 @@ let over_16_check = login_form["checkbox"];
 
 signup_google.onclick = () => {
   let provider = new firebase.auth.GoogleAuthProvider();
+  provider.addScope('email');
   firebase.auth().signInWithRedirect(provider);
 };
+
+signup_facebook.onclick = () => {
+  let provider = new firebase.auth.FacebookAuthProvider();
+  provider.addScope('email');
+  firebase.auth().signInWithRedirect(provider);
+}
 
 function createDBUser(user) {
   user.getIdToken(true).then(function (token) {
@@ -48,9 +54,6 @@ firebase.auth().getRedirectResult()
     }
     // The signed-in user info.
     var user = result.user;
-    // console.log("Creating DB user");
-    // console.log(user);
-    // createDBUser(user);
   })
   .catch(function(error) {
     // Handle Errors here.
@@ -67,12 +70,7 @@ firebase.auth().getRedirectResult()
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User signed in
-    if (registered) {
-      createDBUser(user);
-    } else {
-      console.log("redirecting...");
-      window.location.href = HOME_PAGE;
-    }
+    createDBUser(user);
   } else {
     // User signed out
     console.log("User logged out");
@@ -91,7 +89,6 @@ function checkForm() {
 
 function submit_form() {
   if (!checkForm()) return false;
-  registered = 1;
   
   firebase.auth().createUserWithEmailAndPassword(email_field.value, password_field.value)
   .then(userCredentials => {

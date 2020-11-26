@@ -1,3 +1,6 @@
+let ratingStars = document.getElementById('tutor-rating-stars');
+let ratingComment = document.getElementById('feedback');
+
 function getRatingImagePath(rating) {
   if (rating == 10) return 'images/5stars.png';
   if (rating == 9)  return 'images/4stars and a half.png';
@@ -11,8 +14,8 @@ function getRatingImagePath(rating) {
 }
 
 function initialiseRatingStars(el) {
-    el.src = getRatingImagePath(9);
-    el['data-rating'] = 9;
+    if (!('data-rating' in el)) {el['data-rating'] = 10;}
+    el.src = getRatingImagePath(el['data-rating']);
     el.onmousemove = (evt) => {
         let x = evt.offsetX;
         let w = evt.target.offsetWidth;
@@ -33,4 +36,10 @@ function initialiseRatingStars(el) {
 let els = document.getElementsByClassName('rating-stars');
 for (let i = 0; i < els.length; i++) {
     initialiseRatingStars(els[i]);
+}
+
+function submitFeedback() {
+  let rating = ratingStars['data-rating'];
+  let comment = ratingComment.value;
+  console.log('Value: ' + rating + ' ' + comment);
 }

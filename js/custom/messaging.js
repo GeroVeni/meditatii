@@ -243,8 +243,8 @@ function sendBooking(){
   if (paid_session.checked){
     session_type = 1;
   }
-  // TODO: Convert to UTC ?
-  let start_datetime = new Date(start_date.value + "T" + start_time.value);
+  // TODO: UTC +2
+  let start_datetime = new Date(start_date.value + "T" + start_time.value + "+02:00");
   let start_datetime_string = start_datetime.toISOString();
   console.log(start_datetime_string);
 
