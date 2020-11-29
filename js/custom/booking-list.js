@@ -199,42 +199,26 @@ function buttonsInit(){
 
 function makeListItem(itemData) {
   let map = {};
-  let weekday = new Array(7);
-  weekday[0] = "Duminică";
-  weekday[1] = "Luni";
-  weekday[2] = "Marți";
-  weekday[3] = "Miercuri";
-  weekday[4] = "Joi";
-  weekday[5] = "Vineri";
-  weekday[6] = "Sâmbătă";
+  const weekday = [
+    "Duminică", "Luni", "Marți", "Miercuri",
+    "Joi", "Vineri", "Sâmbătă"
+  ];
   let start_date = new Date(itemData.start_timestamp);
-  map.session_datetime = start_date.toLocaleDateString(
-    'ro-RO',
-    {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      timeZone: 'Europe/Bucharest',
-      timeZoneName: 'long'
-    });
+  // Add 2 hours from UTC time to get Romania time
+  // TODO: Adjust for summer time zone
+  start_date.setHours(start_date.getHours() + 2);
+  // Add 10 mins to display original starting time
+  start_date.setMinutes(start_date.getMinutes() + 10);
+  // Fill in template values
   map.booking_id = itemData.booking_id;
   map.session_dayOfWeek = weekday[start_date.getDay()];
   map.session_day = start_date.getDate();
-  let months = new Array(12);
-  months[0]="Ianuarie";
-  months[1]="Februarie";
-  months[2]="Martie";
-  months[3]="Aprilie";
-  months[4]="Mai";
-  months[5]="Iunie";
-  months[6]="Iulie";
-  months[7]="August";
-  months[8]="Septembrie";
-  months[9]="Octombrie";
-  months[10]="Noiembrie";
-  months[11]="Decembrie";
+  const months = [
+    "Ianuarie", "Februarie", "Martie",
+    "Aprilie", "Mai", "Iunie", "Iulie",
+    "August", "Septembrie", "Octombrie",
+    "Noiembrie", "Decembrie"
+  ];
   map.session_month = months[start_date.getMonth()];
   map.session_hour = start_date.getHours();
   map.session_minute = start_date.getMinutes();
