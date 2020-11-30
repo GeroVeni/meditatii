@@ -206,7 +206,7 @@ function makeListItem(itemData) {
   let start_date = new Date(itemData.start_timestamp);
   // Add 2 hours from UTC time to get Romania time
   // TODO: Adjust for summer time zone
-  start_date.setHours(start_date.getHours() + 2);
+  start_date.setHours(start_date.getUTCHours() + 2);
   // Add 10 mins to display original starting time
   start_date.setMinutes(start_date.getMinutes() + 10);
   // Fill in template values
@@ -221,7 +221,9 @@ function makeListItem(itemData) {
   ];
   map.session_month = months[start_date.getMonth()];
   map.session_hour = start_date.getHours();
+  if (map.session_hour < 10) map.session_hour = '0' + map.session_hour;
   map.session_minute = start_date.getMinutes();
+  if (map.session_minute < 10) map.session_minute = '0' + map.session_minute;
   let types = new Array(2);
   types[0]="Întâlnire Gratuită (15 minute)";
   types[1]="Meditație Plătită (O oră)";
