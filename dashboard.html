@@ -3,99 +3,7 @@
 <title>MeditatiiPeNet - Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-
-<style>
-  .w3-theme-l5 {
-    color: #000 !important;
-    background-color: #ffeaf6 !important
-  }
-
-  .w3-theme-l4 {
-    color: #000 !important;
-    background-color: #ffb9e2 !important
-  }
-
-  .w3-theme-l3 {
-    color: #000 !important;
-    background-color: #ff72c4 !important
-  }
-
-  .w3-theme-l2 {
-    color: #fff !important;
-    background-color: #ff2ca7 !important
-  }
-
-  .w3-theme-l1 {
-    color: #fff !important;
-    background-color: #e40085 !important
-  }
-
-  .w3-theme-d1 {
-    color: #fff !important;
-    background-color: #8e0053 !important
-  }
-
-  .w3-theme-d2 {
-    color: #fff !important;
-    background-color: #7e004a !important
-  }
-
-  .w3-theme-d3 {
-    color: #fff !important;
-    background-color: #6f0041 !important
-  }
-
-  .w3-theme-d4 {
-    color: #fff !important;
-    background-color: #5f0037 !important
-  }
-
-  .w3-theme-d5 {
-    color: #fff !important;
-    background-color: #4f002e !important
-  }
-
-  .w3-theme-light {
-    color: #000 !important;
-    background-color: #ffeaf6 !important
-  }
-
-  .w3-theme-dark {
-    color: #fff !important;
-    background-color: #4f002e !important
-  }
-
-  .w3-theme-action {
-    color: #fff !important;
-    background-color: #4f002e !important
-  }
-
-  .w3-theme {
-    color: #fff !important;
-    background-color: #9e005d !important
-  }
-
-  .w3-text-theme {
-    color: #9e005d !important
-  }
-
-  .w3-border-theme {
-    border-color: #9e005d !important
-  }
-
-  .w3-hover-theme:hover {
-    color: #fff !important;
-    background-color: #9e005d !important
-  }
-
-  .w3-hover-text-theme:hover {
-    color: #9e005d !important
-  }
-
-  .w3-hover-border-theme:hover {
-    border-color: #9e005d !important
-  }
-</style>
+<link rel="stylesheet" href="css/main.css">
 
 <style>
   .nav-item {
@@ -139,21 +47,57 @@
     <div class="w3-col s3" style="padding-right: 16px">
       <nav class="w3-bar-block w3-border w3-round" style="height:100%; margin-bottom: 16px">
         <span class="w3-bar-item w3-border-bottom" style="font-weight: bold">General settings</span>
-        <button class="w3-bar-item w3-button w3-border-bottom" onclick="openCity(event, 'London')">Personal</button>
-        <button class="w3-bar-item w3-button" onclick="openCity(event, 'Paris')">Billing</button>
+        <button id="personal-tab" class="w3-bar-item w3-button w3-border-bottom tab-link" onclick="openTab(event, 'personal')">Personal</button>
+        <button id="billing-tab" class="w3-bar-item w3-button tab-link" onclick="openTab(event, 'billing')">Billing</button>
       </nav>
       <nav class="w3-bar-block w3-border w3-round" style="height:100%; margin-bottom: 16px">
         <span class="w3-bar-item w3-border-bottom" style="font-weight: bold">Tutor settings</span>
-        <button class="w3-bar-item w3-button" onclick="openCity(event, 'Tokyo')">Tutor</button>
+        <button id="tutor-tab" class="w3-bar-item w3-button tab-link" onclick="openTab(event, 'tutor')">Tutor</button>
       </nav>
     </div>
     <div class="w3-col s9">
-      <form action="javascript:void(0)" id="user-settings-form" onsubmit="onUpdateUserSettingsSubmit()">
-        <h2 style="margin-top: 0;">Personal settings</h2>
-        <label for="name">Name: </label><input name="name">
-        <label for="surname">Surname: </label><input name="surname">
-        <button type="submit">Submit</button>
-      </form>
+      <div id="personal" class="settings-tab" style="display: none;">
+        <form action="javascript:void(0)" id="user-settings-form" onsubmit="onUpdateUserSettingsSubmit()">
+          <h2 style="margin-top: 0;">Personal settings</h2>
+          <label for="name">Name</label>
+          <input class="w3-input" name="name" type="text">
+          <p>
+          <label for="surname">Surname</label>
+          <input class="w3-input" name="surname" type="text">
+          <p>
+          <button type="submit" class="w3-button w3-blue">Submit</button>
+        </form>
+      </div>
+      <div id="billing" class="settings-tab" style="display: none;">
+        <h1>Billing</h1>
+      </div>
+      <div id="tutor" class="settings-tab" style="display: none;">
+        <form action="javascript:void(0)" id="tutor-settings-form" onsubmit="onUpdateTutorSettingsSubmit()">
+          <h2 style="margin-top: 0;">Tutor settings</h2>
+          <label for="description">Description</label>
+          <textarea class="w3-input" name="description"></textarea>
+          <p>
+          <label for="about-me">About me</label>
+          <textarea class="w3-input" name="about-me"></textarea>
+          <p>
+          <label for="about-sessions">About sessions</label>
+          <textarea class="w3-input" name="about-sessions"></textarea>
+          <p>
+          <label for="max-hours">Max hours</label>
+          <input class="w3-input" name="max-hours" type="number">
+          <p>
+          <label for="grades">Grades</label>
+          <textarea class="w3-input" name="grades"></textarea>
+          <p>
+          <label for="price">Price</label>
+          <input class="w3-input" name="price" type="number">
+          <p>
+          <label for="education">Education</label>
+          <textarea class="w3-input" name="education"></textarea>
+          <p>
+          <button type="submit" class="w3-button w3-blue">Submit</button>
+        </form>
+      </div>
     </div>
   </div>
 
