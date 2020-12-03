@@ -93,12 +93,12 @@ function openTab(evt, tabName, defaultTarget, not_redirect = false) {
   }
   tablinks = document.getElementsByClassName('tab-link');
   for (i = 0; i < x.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(' w3-red', ''); 
+    tablinks[i].className = tablinks[i].className.replace(' w3-theme', ''); 
   }
   document.getElementById(tabName).style.display = 'block';
   let target = defaultTarget;
   if (evt) target = evt.currentTarget;
-  target.className += ' w3-red';
+  target.className += ' w3-theme';
   var url = window.location.href.split('?')[0];
   if (!not_redirect) location.replace(url + '?tab=' + tabName);
 }
