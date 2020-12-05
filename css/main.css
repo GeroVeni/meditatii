@@ -88,3 +88,9 @@
 .w3-hover-border-theme:hover {
   border-color: #9e005d !important
 }
+
+.med-bar-item {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+}
