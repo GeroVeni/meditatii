@@ -190,7 +190,7 @@ function sendMessage() {
         recipient: other_username,
         message_type: "text",
         message: content,
-        email: 1
+        email: 0
       };
       const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
       req.open("POST", ENDPOINT, true);

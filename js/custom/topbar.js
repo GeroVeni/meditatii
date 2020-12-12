@@ -19,6 +19,7 @@ function logout() {
   firebase.auth().signOut().then(function() {
     // Sign-out successful.
     console.log("Signout success");
+    location.href = '/';
   }).catch(function(error) {
     // An error happened.
     var errorCode = error.code;

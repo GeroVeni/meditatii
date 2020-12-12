@@ -14,6 +14,11 @@ let gradeRowTemp =
   '<td>{exam_grade}</td>' +
 '</tr>';
 
+let tutorSubjectTemp = 
+'<tr>' +
+  '<td>{subject_name} - {level_name}</td>' +
+'</tr>';
+
 let username = null;
 
 let messageForm     = document.getElementById("message-form");
@@ -71,18 +76,23 @@ function fillTutorProfile(data) {
   let req = new XMLHttpRequest();
   req.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-      // Fill subject list
+      // Fill subject dropdown list and subjects list
       let res = JSON.parse(this.responseText);
+
       let opt0 = '<option value="">Selectează materia și nivelul</option>';
-      messageSubject.innerHTML = opt0;
       let opt = '<option value="{value}">{subject_name} - {level_name}</option>';
+
+      messageSubject.innerHTML = opt0;
+      subjectsTable.innerHTML = "";
+
       res.forEach(value => {
-        let tempData = {
+        const tempData = {
           value: "" + value.subject_code + "," + value.level_code, 
           subject_name: value.subject_name, 
           level_name: value.level_name
         };
         messageSubject.appendChild(makeItem(opt, tempData)); 
+        subjectsTable.appendChild(makeItem(tutorSubjectTemp, tempData, "TABLE"));
       });
     }
   };

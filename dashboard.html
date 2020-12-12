@@ -1,93 +1,117 @@
 <!DOCTYPE html>
 <html>
-  <title>MeditatiiPeNet - Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<title>MeditatiiPeNet - Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
-  <style>
+<!-- Load fonts -->
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+<script type="text/javascript">WebFont.load({  google: {    families: ["Open Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic","Oswald:200,300,400,500,600,700"]  }});</script>  
 
-  .w3-theme-l5 {color:#000 !important; background-color:#ffeaf6 !important}
-  .w3-theme-l4 {color:#000 !important; background-color:#ffb9e2 !important}
-  .w3-theme-l3 {color:#000 !important; background-color:#ff72c4 !important}
-  .w3-theme-l2 {color:#fff !important; background-color:#ff2ca7 !important}
-  .w3-theme-l1 {color:#fff !important; background-color:#e40085 !important}
-  .w3-theme-d1 {color:#fff !important; background-color:#8e0053 !important}
-  .w3-theme-d2 {color:#fff !important; background-color:#7e004a !important}
-  .w3-theme-d3 {color:#fff !important; background-color:#6f0041 !important}
-  .w3-theme-d4 {color:#fff !important; background-color:#5f0037 !important}
-  .w3-theme-d5 {color:#fff !important; background-color:#4f002e !important}
+<link rel="stylesheet" href="css/main.css">
 
-  .w3-theme-light {color:#000 !important; background-color:#ffeaf6 !important}
-  .w3-theme-dark {color:#fff !important; background-color:#4f002e !important}
-  .w3-theme-action {color:#fff !important; background-color:#4f002e !important}
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-54BGKRT" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
-  .w3-theme {color:#fff !important; background-color:#9e005d !important}
-  .w3-text-theme {color:#9e005d !important}
-  .w3-border-theme {border-color:#9e005d !important}
+  <!-- Navigation header -->
+  <div class="w3-bar w3-black">
+    <a href="index.html" class="w3-bar-item w3-button w3-hover-none"><img src="images/siteeeeeee.png" width="100"
+        height="57"></a>
+    <a href="despre-noi.html" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item">Despre noi</a>
+    <a href="tutori.html" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item">Gasește-ți tutorele</a>
+    <a href="cumfunctioneaza.html" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item">Cum funcționează?</a>
+    <a href="devino-mentor.html" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item">Devino tutore</a>
+    <a href="contact.html" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item">Contact</a>
+    <div id="login-bar" style="display:none">
+      <a href="inregistrare.html" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item w3-right">Înregistrare</a>
+      <a href="autentificare.html" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item w3-right">Autentificare</a>
+    </div>
+    <div id="logout-bar" style="display:none">
+      <a href="#" onclick="logout()" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item w3-right">Log out</a>
+      <a href="programari.html" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item w3-right">Programări</a>
+      <a href="lista-mesaje.html" class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24 med-bar-item w3-right">Mesaje</a>
+    </div>
+  </div>
 
-  .w3-hover-theme:hover {color:#fff !important; background-color:#9e005d !important}
-  .w3-hover-text-theme:hover {color:#9e005d !important}
-  .w3-hover-border-theme:hover {border-color:#9e005d !important}
-
-  </style>
-
-  <style>
-    .nav-item {
-      padding-top: 50px;
-    }
-  </style>
-
-  <body>
-
-    <!-- Navigation header -->
-    <div class="w3-bar w3-black">
-      <a href="index.html"              class="w3-bar-item w3-button w3-hover-none"><img src="images/siteeeeeee.png" width="100" height="57"></a>
-      <a href="index.html"              class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24">Home</a>
-      <a href="tutori.html"             class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24">Gasește-ți mentor</a>
-      <a href="devino-mentor.html"      class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24">Devino mentor</a>
-      <a href="preturi.html"            class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24">Prețuri</a>
-      <a href="contact.html"            class="w3-bar-item w3-button w3-hover-none w3-hover-text-theme w3-padding-24">Contact</a>
-      <div id="login-bar" style="display:none">
-        <a href="inregistrare.html"     class="w3-bar-item w3-button w3-hover-none w3-text-theme w3-hover-text-white w3-padding-24 w3-right">Înregistrare</a>
-        <a href="autentificare.html"    class="w3-bar-item w3-button w3-hover-none w3-text-theme w3-hover-text-white w3-padding-24 w3-right">Autentificare</a>
+  <!-- Main content -->
+  <div id="content" class="w3-container w3-row" style="max-width: 940px; margin: auto; padding-top: 16px">
+    <!-- Tab selection sidebar -->
+    <div class="w3-col s3" style="padding-right: 16px">
+      <nav class="w3-bar-block w3-border w3-round" style="height:100%; margin-bottom: 16px">
+        <span class="w3-bar-item w3-border-bottom" style="font-weight: bold">General settings</span>
+        <button id="personal-tab" class="w3-bar-item w3-button w3-border-bottom tab-link" onclick="openTab(event, 'personal')">Personal</button>
+        <button id="billing-tab" class="w3-bar-item w3-button tab-link" onclick="openTab(event, 'billing')">Billing</button>
+      </nav>
+      <nav class="w3-bar-block w3-border w3-round" style="height:100%; margin-bottom: 16px">
+        <span class="w3-bar-item w3-border-bottom" style="font-weight: bold">Tutor settings</span>
+        <button id="tutor-tab" class="w3-bar-item w3-button tab-link" onclick="openTab(event, 'tutor')">Tutor</button>
+      </nav>
+    </div>
+    <!-- Tab contents -->
+    <div class="w3-col s9">
+      <div id="personal" class="settings-tab" style="display: none;">
+        <form action="javascript:void(0)" id="user-settings-form" onsubmit="onUpdateUserSettingsSubmit()">
+          <h2 style="margin-top: 0;">Personal settings</h2>
+          <label for="name">Name</label>
+          <input class="w3-input" name="name" type="text">
+          <p>
+          <label for="surname">Surname</label>
+          <input class="w3-input" name="surname" type="text">
+          <p>
+          <button type="submit" class="w3-button w3-green">Submit</button>
+        </form>
       </div>
-      <div id="logout-bar" style="display:none">
-        <a href="#" onclick="logout()"  class="w3-bar-item w3-button w3-hover-none w3-text-theme w3-hover-text-white w3-padding-24 w3-right">Log out</a>
-        <a href="dashboard.html"        class="w3-bar-item w3-button w3-hover-none w3-text-theme w3-hover-text-white w3-padding-24 w3-right">Dashboard</a>
+      <div id="billing" class="settings-tab" style="display: none;">
+        <h2 style="margin-top: 0;">Billing</h2>
+        <p style="font-style: italic; color: grey">Coming soon!</p>
+      </div>
+      <div id="tutor" class="settings-tab" style="display: none;">
+        <form action="javascript:void(0)" id="tutor-settings-form" onsubmit="onUpdateTutorSettingsSubmit()">
+          <h2 style="margin-top: 0;">Tutor settings</h2>
+          <label for="description">Description</label>
+          <textarea class="w3-input" name="description"></textarea>
+          <p>
+          <label for="about-me">About me</label>
+          <textarea class="w3-input" name="about-me"></textarea>
+          <p>
+          <label for="about-sessions">About sessions</label>
+          <textarea class="w3-input" name="about-sessions"></textarea>
+          <p>
+          <label for="max-hours">Max hours</label>
+          <input class="w3-input" name="max-hours" type="number">
+          <p>
+          <label for="grades">Grades</label>
+          <textarea class="w3-input" name="grades"></textarea>
+          <p>
+          <label for="price">Price</label>
+          <input class="w3-input" name="price" type="number">
+          <p>
+          <label for="education">Education</label>
+          <textarea class="w3-input" name="education"></textarea>
+          <p>
+          <button type="submit" class="w3-button w3-green">Submit</button>
+        </form>
       </div>
     </div>
+  </div>
 
-    <!-- Main content -->
-    <div id="content" class="w3-container w3-row" style="max-width: 940px; margin: auto; padding-top: 16px">
-      <div class="w3-col s3" style="padding-right: 16px">
-        <nav class="w3-bar-block w3-border w3-round" style="height:100%; margin-bottom: 16px">
-          <span class="w3-bar-item w3-border-bottom" style="font-weight: bold">General settings</span>
-          <button class="w3-bar-item w3-button w3-border-bottom" onclick="openCity(event, 'London')">Personal</button>
-          <button class="w3-bar-item w3-button" onclick="openCity(event, 'Paris')">Billing</button>
-        </nav>
-        <nav class="w3-bar-block w3-border w3-round" style="height:100%; margin-bottom: 16px">
-          <span class="w3-bar-item w3-border-bottom" style="font-weight: bold">Tutor settings</span>
-          <button class="w3-bar-item w3-button" onclick="openCity(event, 'Tokyo')">Tutor</button>
-        </nav>
-      </div>
-      <div class="w3-col s9">
-        <h2 style="margin-top: 0;">Personal settings</h2>
-        <label for="name">Name: </label><input name="name">
-        <label for="surname">Surname: </label><input name="surname">
-      </div>
-    </div>
+  <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-app.js"></script>
 
-    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-app.js"></script>
-
-    <!-- Add Firebase products that you want to use -->
-    <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-auth.js"></script>
+  <!-- Add Firebase products that you want to use -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-analytics.js"></script>
 
-    <!-- Custom initialisation script for firebase -->
-    <script src="js/custom/firebase-init.js"></script>
-    <script src="js/custom/topbar.js"></script>
-    <script src="js/custom/lists.js"></script>
+  <!-- Custom initialisation script for firebase -->
+  <script src="js/custom/constants.js"></script>
+  <script src="js/custom/firebase-init.js"></script>
+  <script src="js/custom/topbar.js"></script>
+  <script src="js/custom/lists.js"></script>
+  <script src="js/custom/dashboard.js"></script>
 
-  </body>
+</body>
+
 </html>

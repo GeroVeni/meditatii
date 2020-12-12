@@ -34,7 +34,7 @@ searchBar.oninput = function () {
   }
 }
 
-function submit() {
+function submitSubjectForm() {
   let filtered = filterSubjects(searchBar.value);
   let arg = '';
   if (searchBar.value == '' || filtered.length == 0) {
@@ -43,6 +43,7 @@ function submit() {
     arg = '?materie=' + filtered[0].subject_code;
   }
   window.location.href = "/tutori.html" + arg;
+  return false;
 }
 
 function searchSubject(code) {
