@@ -69,31 +69,39 @@
         <p style="font-style: italic; color: grey">Coming soon!</p>
       </div>
       <div id="tutor" class="settings-tab" style="display: none;">
-        <form action="javascript:void(0)" id="tutor-settings-form" onsubmit="onUpdateTutorSettingsSubmit()">
-          <h2 style="margin-top: 0;">Tutor settings</h2>
-          <label for="description">Description</label>
-          <textarea class="w3-input" name="description"></textarea>
-          <p>
-          <label for="about-me">About me</label>
-          <textarea class="w3-input" name="about-me"></textarea>
-          <p>
-          <label for="about-sessions">About sessions</label>
-          <textarea class="w3-input" name="about-sessions"></textarea>
-          <p>
-          <label for="max-hours">Max hours</label>
-          <input class="w3-input" name="max-hours" type="number">
-          <p>
-          <label for="grades">Grades</label>
-          <textarea class="w3-input" name="grades"></textarea>
-          <p>
-          <label for="price">Price</label>
-          <input class="w3-input" name="price" type="number">
-          <p>
-          <label for="education">Education</label>
-          <textarea class="w3-input" name="education"></textarea>
-          <p>
-          <button type="submit" class="w3-button w3-green">Submit</button>
-        </form>
+        <div id="tutor-logged-in" style="display: none;">
+          <form action="javascript:void(0)" id="tutor-settings-form" onsubmit="onUpdateTutorSettingsSubmit()">
+            <h2 style="margin-top: 0;">Tutor settings</h2>
+            <label for="description">Description</label>
+            <textarea class="w3-input" name="description"></textarea>
+            <p>
+            <label for="about-me">About me</label>
+            <textarea class="w3-input" name="about-me"></textarea>
+            <p>
+            <label for="about-sessions">About sessions</label>
+            <textarea class="w3-input" name="about-sessions"></textarea>
+            <p>
+            <label for="max-hours">Max hours</label>
+            <input class="w3-input" name="max-hours" type="number">
+            <p>
+            <label for="grades">Grades</label>
+            <textarea class="w3-input" name="grades"></textarea>
+            <p>
+            <label for="price">Price</label>
+            <input class="w3-input" name="price" type="number">
+            <p>
+            <label for="education">Education</label>
+            <textarea class="w3-input" name="education"></textarea>
+            <p>
+            <button type="submit" class="w3-button w3-green">Submit</button>
+          </form>
+        </div>
+        <div id="tutor-logged-out" style="display: none;">
+          <div class="w3-center">
+            <h3>You are currently not a tutor.</h3>
+            <a class="w3-button w3-theme" href="/devino-mentor.html">Become a tutor</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

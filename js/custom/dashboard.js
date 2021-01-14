@@ -2,6 +2,9 @@ const userSettingsForm = document.getElementById('user-settings-form');
 const nameField = userSettingsForm['name'];
 const surnameField = userSettingsForm['surname'];
 
+const tutorLoggedInTab = document.getElementById('tutor-logged-in');
+const tutorLoggedOutTab = document.getElementById('tutor-logged-out');
+
 const tutorSettingsForm = document.getElementById('tutor-settings-form');
 const descriptionField = tutorSettingsForm['description'];
 const aboutMeField = tutorSettingsForm['about-me'];
@@ -21,6 +24,8 @@ firebase.auth().onAuthStateChanged(function (user) {
       .catch(err => { console.error(err); });
   } else {
     // User signed out
+    const HOME_PAGE = '/';
+    window.location.href = HOME_PAGE;
   }
 });
 
@@ -38,7 +43,7 @@ function updateTutorFields(content) {
   maxHoursField.value = content.max_hours;
   gradesField.value = JSON.stringify(content.grades);
   priceField.value = content.price;
-  educationField.value = JSON.stringify(content.education);
+  educationField.value = content.education.place;
 }
 
 // Load function for user settings
@@ -49,38 +54,79 @@ async function loadUserSettings(idToken) {
   let user = result[0];
   updateFields(user);
   if (user.roles.includes('tutor')) {
-    // TODO: Disable tutor
+    tutorLoggedInTab.style.display = "";
     // Load tutor settings
     let username = user.username;
     response = await fetch(API_ENDPOINT + '/tutors/' + username);
     let tutor = await response.json();
     updateTutorFields(tutor);
+  } else {
+    tutorLoggedOutTab.style.display = "";
   }
   
 }
 
 // Update function for user settings
 async function updateUserSettings(idToken) {
+  const requestData = {
+    token: idToken,
+    name: nameField.value,
+    surname: surnameField.value
+  }
+  console.log('update user data');
+  console.log(requestData);
   let response = await fetch(API_ENDPOINT + '/users/me', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
     },
-    body: JSON.stringify({
-      token: idToken,
-      name: nameField.value,
-      surname: surnameField.value
-    })
+    body: JSON.stringify(requestData)
   });
   let result = await response.json();
   updateFields(result[0]);
 }
 
-// Update button clicked
+// Update function for tutor settings
+async function updateTutorSettings(idToken) {
+  const requestData = {
+    token: idToken,
+    description: descriptionField.value,
+    about_me: aboutMeField.value,
+    about_sessions: aboutSessionsField.value,
+    max_hours: maxHoursField.value,
+    grades: JSON.parse(gradesField.value),
+    price: priceField.value,
+    education: {
+      place: educationField.value
+    }
+  };
+  console.log('update tutor data');
+  console.log(requestData);
+  let response = await fetch(API_ENDPOINT + '/tutors/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8'
+    },
+    body: JSON.stringify(requestData)
+  });
+  let result = await response.json();
+  //updateTutorFields(result);
+}
+
+// User info update button clicked
 function onUpdateUserSettingsSubmit () {
   firebase.auth().currentUser.getIdToken(/* forceRefresh */ true)
     .then(idToken => updateUserSettings(idToken))
     .then(() => { console.log('user data updated'); })
+    .catch(err => { console.error(err); });
+  return false;
+}
+
+// Tutor info update button clicked
+function onUpdateTutorSettingsSubmit () {
+  firebase.auth().currentUser.getIdToken(/* forceRefresh */ true)
+    .then(idToken => updateTutorSettings(idToken))
+    .then(() => { console.log('tutor data updated'); })
     .catch(err => { console.error(err); });
   return false;
 }
