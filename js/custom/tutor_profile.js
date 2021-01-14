@@ -145,13 +145,18 @@ function sendMessage() {
   } else {
     // Add cookie and redirect to login page
     setCookie("tutor-message", JSON.stringify({'tutor': username, 'content': messageBox.value, 'subject': messageSubject.value}));
-    signup_dialog.style.display = "block";
+    signup_dialog.style.display = 'block';
+    signup_dialog.style.opacity = '100';
   }
+}
+
+function closePopup() {
+  signup_dialog.style.display = '';
 }
 
 function sendTutorReviewsRequest(username) {
   var req = new XMLHttpRequest();
-  reviewList.innerHTML = "";
+  reviewList.innerHTML = '';
   req.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       let reviews = JSON.parse(this.responseText);

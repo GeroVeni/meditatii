@@ -11,16 +11,31 @@ let password_field = login_form["Password"];
 let confirm_password_field = login_form["Confirm-password"];
 let over_16_check = login_form["checkbox"];
 
+// Method specifies the way the user selected to sign up
+// Possible values: 'none', 'form', 'google', 'facebook'
+// None means user is already logged in so do not register.
+let loginMethod = 'none';
+
 signup_google.onclick = () => {
+  loginMethod = 'google';
   let provider = new firebase.auth.GoogleAuthProvider();
   provider.addScope('email');
   firebase.auth().signInWithRedirect(provider);
 };
 
 signup_facebook.onclick = () => {
+  loginMethod = 'facebook';
   let provider = new firebase.auth.FacebookAuthProvider();
   provider.addScope('email');
   firebase.auth().signInWithRedirect(provider);
+}
+
+function splitName(name) {
+  let splitName = name.split(' ');
+  if (splitName.length == 1) {
+    return [name, ''];
+  }
+  return [splitName.slice(0, splitName.length - 1).join(' '), splitName[splitName.length - 1]];
 }
 
 function createDBUser(user) {
@@ -30,15 +45,25 @@ function createDBUser(user) {
     req.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log("redirecting...");
-        window.location.href = HOME_PAGE;
+        //window.location.href = HOME_PAGE;
       }
     };
     const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/register";
     let data = {
       token: token,
-      name: name_field.value,
-      surname: surname_field.value
+      name: '',
+      surname: ''
     };
+    if (loginMethod == 'form') {
+      data.name = name_field.value;
+      data.surname = surname_field.value;
+    } else {
+      let nameSurname = splitName(user.displayName);
+      data.name = nameSurname[0];
+      data.surname = nameSurname[1];
+    }
+    console.log(`Attempting to add user: ${JSON.stringify(data)}`);
+    console.log(`Login method: ${loginMethod}`);
     req.open("POST", ENDPOINT, true);
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.send(JSON.stringify(data));
@@ -54,6 +79,8 @@ firebase.auth().getRedirectResult()
     }
     // The signed-in user info.
     var user = result.user;
+    loginMethod = 'third-party';
+    console.log('finished getRedirectResult');
   })
   .catch(function(error) {
     // Handle Errors here.
@@ -70,7 +97,12 @@ firebase.auth().getRedirectResult()
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User signed in
-    createDBUser(user);
+    console.log('User logged in');
+    if (loginMethod == 'none') {
+      //window.location.href = HOME_PAGE;
+    } else {
+      createDBUser(user);
+    }
   } else {
     // User signed out
     console.log("User logged out");
@@ -88,11 +120,14 @@ function checkForm() {
 }
 
 function submit_form() {
+  error_message.style.display = "none";
   if (!checkForm()) return false;
   
+  loginMethod = 'form';
   firebase.auth().createUserWithEmailAndPassword(email_field.value, password_field.value)
   .then(userCredentials => {
     console.log(userCredentials.user);
+    loginMethod = 'form';
   })
   .catch(function(error) {
     // Handle Errors here.

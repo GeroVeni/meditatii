@@ -1,5 +1,22 @@
 responseMessage = document.getElementById("response");
 
+let signup_google = document.getElementById("signup-google");
+let signup_facebook = document.getElementById("signup-facebook");
+
+signup_google.onclick = () => {
+  loginMethod = 'google';
+  let provider = new firebase.auth.GoogleAuthProvider();
+  provider.addScope('email');
+  firebase.auth().signInWithRedirect(provider);
+};
+
+signup_facebook.onclick = () => {
+  loginMethod = 'facebook';
+  let provider = new firebase.auth.FacebookAuthProvider();
+  provider.addScope('email');
+  firebase.auth().signInWithRedirect(provider);
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User signed in

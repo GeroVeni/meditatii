@@ -1,21 +1,22 @@
 let tutorList = document.getElementById("tutor-list-container");
-let tutorTemp = 
-'<div id="tutor-list-container" class="container-6 _2 w-container">' +
-  '<div class="w-row">' +
-  '<div class="w-col w-col-3"><img src="{photo_link}" height="303" sizes="(max-width: 767px) 96vw, (max-width: 991px) 167px, 220px" alt="" class="image-5"></div>' +
-  '<div class="w-col w-col-6">' +
-  '<h1 class="heading-4 list">{full_name}<br></h1>' +
-  '<div class="text-block-12 list">{education}</div>' +
-  '<div class="text-block-3 list">{description}</div>' +
-  '<h5 id={subjects_id} class="heading-28">{subjects}</h5>' +
+let tutorTemp =
+'<div class="container-6 w-container">' +
+  '<div class="columns-13 w-row">' +
+    '<div class="column-23 w-col w-col-3 w-col-tiny-tiny-stack"><img src="{photo_link}" height="303" sizes="(max-width: 479px) 96vw, (max-width: 767px) 97vw, (max-width: 991px) 22vw, 220px" alt="" class="image-5"></div>' +
+    '<div class="w-col w-col-6 w-col-tiny-tiny-stack">' +
+      '<h1 class="heading-4 list">{full_name}<br></h1>' +
+      '<div class="text-block-12 list">{education}</div>' +
+      '<div class="text-block-3 list">{description}</div>' +
+      '<h5 id={subjects_id} class="heading-28">{subjects}</h5>' +
+    '</div>' +
+    '<div class="column-3 w-col w-col-3 w-col-tiny-tiny-stack">' +
+      '<div class="text-block-7 list _25">GRATUIT<br><span class="text-span-27">după prima sesiune gratuită prețul este de <br></span><span class="text-span-28">{price}/oră</span></div>' +
+      '<div style="display:none" class="text-block-8 list"><br><span class="text-span-7">50</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
+      '<div style="display:none" class="text-block-18 list">{reviews} review-uri</div>' +
+      '<a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
+    '</div>' +
   '</div>' +
-  '<div class="column-3 w-col w-col-3">' +
-  '<div class="text-block-7 list">{price}/ORĂ<br>‍</div>' +
-  '<div style="display:none" class="text-block-8 list"><br><span class="text-span-7">{hours_taught}</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
-  '<div style="display:none" class="text-block-18 list">{reviews} review-uri</div><a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
-  '</div>' +
-  '</div>' +
-'</div>';
+'</div>'
 
 let filterItemTemp = 
 '<a href="#" onclick="select_subject(\'{subject_code}\')" class="dropdown-link-2 w-dropdown-link">{subject_name}</a>';
