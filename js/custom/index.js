@@ -59,6 +59,12 @@ firebase.auth().onAuthStateChanged(user => {
       let msg = JSON.parse(getCookie('tutor-message'));
       // Get user token
       user.getIdToken(true).then(idToken => {
+        let messageReq = new XMLHttpRequest();
+        messageReq.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            window.location.href = "/mesagerie.html?u=" + msg.tutor;
+          }
+        };
         // Send message
         let sublev = msg.subject.split(',');
         let postData = {
@@ -71,9 +77,9 @@ firebase.auth().onAuthStateChanged(user => {
           level_code: sublev[1]
         };
         const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
-        req.open("POST", ENDPOINT, true);
-        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        req.send(JSON.stringify(postData));
+        messageReq.open("POST", ENDPOINT, true);
+        messageReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        messageReq.send(JSON.stringify(postData));
       });
       setCookie('tutor-message', '');
     }
