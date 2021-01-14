@@ -17,6 +17,49 @@ signup_facebook.onclick = () => {
   firebase.auth().signInWithRedirect(provider);
 }
 
+firebase.auth().getRedirectResult()
+  .then(function(result) {
+    console.log('redirect result');
+    console.log(result);
+
+    if (result.credential) {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = result.credential.accessToken;
+      // TODO: Custom stuff
+    }
+    // The signed-in user info.
+    var user = result.user;
+
+    if (user.email == null) {
+      let newEmail = result.additionalUserInfo.profile.email;
+      if (newEmail == null) {
+        // TODO: Should prompt the user for an email
+        console.log('no email found');
+      } else {
+        user.updateEmail(newEmail).then(function() {
+          // Update successful.
+          console.log('added email');
+        }).catch(function(error) {
+          // An error happened.
+          console.log(error);
+        });
+      }
+    }
+
+    console.log('finished getRedirectResult');
+  })
+  .catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    console.log(errorCode + ": " + errorMessage);
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // TODO: Custom stuff
+  });
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User signed in

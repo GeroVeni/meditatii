@@ -45,7 +45,7 @@ function createDBUser(user) {
     req.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log("redirecting...");
-        //window.location.href = HOME_PAGE;
+        window.location.href = HOME_PAGE;
       }
     };
     const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/register";
@@ -72,6 +72,9 @@ function createDBUser(user) {
 
 firebase.auth().getRedirectResult()
   .then(function(result) {
+    console.log('redirect result');
+    console.log(result);
+
     if (result.credential) {
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = result.credential.accessToken;
@@ -98,8 +101,6 @@ firebase.auth().getRedirectResult()
     }
 
     console.log('finished getRedirectResult');
-    console.log(result);
-    console.log(JSON.stringify(result))
   })
   .catch(function(error) {
     // Handle Errors here.
@@ -118,7 +119,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     // User signed in
     console.log('User logged in');
     if (loginMethod == 'none') {
-      //window.location.href = HOME_PAGE;
+      window.location.href = HOME_PAGE;
     } else {
       createDBUser(user);
     }
