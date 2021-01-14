@@ -80,7 +80,26 @@ firebase.auth().getRedirectResult()
     // The signed-in user info.
     var user = result.user;
     loginMethod = 'third-party';
+
+    if (user.email == null) {
+      let newEmail = result.additionalUserInfo.profile.email;
+      if (newEmail == null) {
+        // TODO: Should prompt the user for an email
+        console.log('no email found');
+      } else {
+        user.updateEmail(newEmail).then(function() {
+          // Update successful.
+          console.log('added email');
+        }).catch(function(error) {
+          // An error happened.
+          console.log(error);
+        });
+      }
+    }
+
     console.log('finished getRedirectResult');
+    console.log(result);
+    console.log(JSON.stringify(result))
   })
   .catch(function(error) {
     // Handle Errors here.
