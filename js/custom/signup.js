@@ -15,9 +15,11 @@ let over_16_check = login_form["checkbox"];
 // Possible values: 'none', 'form', 'google', 'facebook'
 // None means user is already logged in so do not register.
 let loginMethod = 'none';
+let loader = document.getElementById('loader-div');
 
 signup_google.onclick = () => {
   loginMethod = 'google';
+  setCookie('third-party-login', 'google');
   let provider = new firebase.auth.GoogleAuthProvider();
   provider.addScope('email');
   firebase.auth().signInWithRedirect(provider);
@@ -25,9 +27,15 @@ signup_google.onclick = () => {
 
 signup_facebook.onclick = () => {
   loginMethod = 'facebook';
+  setCookie('third-party-login', 'facebook');
   let provider = new firebase.auth.FacebookAuthProvider();
   provider.addScope('email');
   firebase.auth().signInWithRedirect(provider);
+}
+
+if (getCookie('third-party-login') != '') {
+  loader.style.display = '';
+  setCookie('third-party-login', '');
 }
 
 function splitName(name) {
