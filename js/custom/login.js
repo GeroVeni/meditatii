@@ -1,7 +1,13 @@
+const HOME_PAGE = "/";
 responseMessage = document.getElementById("response");
 
 let signup_google = document.getElementById("signup-google");
 let signup_facebook = document.getElementById("signup-facebook");
+
+// Method specifies the way the user selected to sign up
+// Possible values: 'none', 'form', 'google', 'facebook'
+// None means user is already logged in so do not register.
+let loginMethod = 'none';
 let loader = document.getElementById('loader-div');
 
 signup_google.onclick = () => {
@@ -25,10 +31,57 @@ if (getCookie('third-party-login') != '') {
   setCookie('third-party-login', '');
 }
 
+function splitName(name) {
+  let splitName = name.split(' ');
+  if (splitName.length == 1) {
+    return [name, ''];
+  }
+  return [splitName.slice(0, splitName.length - 1).join(' '), splitName[splitName.length - 1]];
+}
+
+function createDBUser(user) {
+  user.getIdToken(true).then(function (token) {
+    // create new user
+    let req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log('response text');
+        console.log(this.responseText);
+        console.log("redirecting...");
+        window.location.href = HOME_PAGE;
+      }
+    };
+    const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/register";
+    let data = {
+      token: token,
+      name: '',
+      surname: ''
+    };
+    if (loginMethod == 'form') {
+      data.name = name_field.value;
+      data.surname = surname_field.value;
+    } else {
+      let nameSurname = splitName(user.displayName);
+      data.name = nameSurname[0];
+      data.surname = nameSurname[1];
+    }
+    console.log(`Attempting to add user: ${JSON.stringify(data)}`);
+    console.log(`Login method: ${loginMethod}`);
+    req.open("POST", ENDPOINT, true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify(data));
+  });
+}
+
 firebase.auth().getRedirectResult()
   .then(function(result) {
     console.log('redirect result');
     console.log(result);
+
+    if (result.user == null) {
+      loader.display.style = 'none';
+      return;
+    }
 
     if (result.credential) {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -37,6 +90,7 @@ firebase.auth().getRedirectResult()
     }
     // The signed-in user info.
     var user = result.user;
+    loginMethod = 'third-party-login';
 
     if (user.email == null) {
       let newEmail = result.additionalUserInfo.profile.email;
@@ -73,14 +127,15 @@ firebase.auth().onAuthStateChanged(function(user) {
     // User signed in
     var displayName = user.displayName;
     var email = user.email;
-    var photoURL = user.photoURL;
-    var uid =  user.uid;
     console.log("User logged in: " +
       displayName + " - " +
-      email + " - " +
-      uid);
-    var HOME_PAGE = "/";
-    window.location.href = HOME_PAGE;
+      email);
+    if (loginMethod == 'none') {
+      console.log('Login method: ' + loginMethod);
+      window.location.href = HOME_PAGE;
+    } else {
+      createDBUser(user);
+    }
   } else {
     // User signed out
     console.log("User logged out");

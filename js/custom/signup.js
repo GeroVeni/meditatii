@@ -83,6 +83,11 @@ firebase.auth().getRedirectResult()
     console.log('redirect result');
     console.log(result);
 
+    if (result.user == null) {
+      loader.display.style = 'none';
+      return;
+    }
+
     if (result.credential) {
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = result.credential.accessToken;
@@ -127,6 +132,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     // User signed in
     console.log('User logged in');
     if (loginMethod == 'none') {
+      console.log('Login method: ' + loginMethod);
       window.location.href = HOME_PAGE;
     } else {
       createDBUser(user);

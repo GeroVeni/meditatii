@@ -102,7 +102,7 @@ async function updateTutorSettings(idToken) {
   };
   console.log('update tutor data');
   console.log(requestData);
-  let response = await fetch(API_ENDPOINT + '/tutors/', {
+  let response = await fetch(API_ENDPOINT + '/tutors', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
@@ -110,7 +110,7 @@ async function updateTutorSettings(idToken) {
     body: JSON.stringify(requestData)
   });
   let result = await response.json();
-  //updateTutorFields(result);
+  updateTutorFields(result);
 }
 
 // User info update button clicked
