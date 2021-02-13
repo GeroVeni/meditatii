@@ -110,3 +110,20 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.w3-modal * {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.w3-modal .w3-button {
+  border-radius: 20px;
+  margin: 8px;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.w3-modal-content {
+  padding: 8px 0px 24px;
+  max-width: 450px;
+}
