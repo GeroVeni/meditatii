@@ -1,5 +1,5 @@
 let reviewList    = document.getElementById("tutor-reviews-list");
-let signup_dialog = document.getElementById("signup-dialog");
+let signup_modal = document.getElementById("signup-modal");
 
 let reviewTemp =
 '<div>' +
@@ -26,6 +26,13 @@ let messageBox      = messageForm["message"];
 let messageSubject  = messageForm["Subject"];
 
 const defaultMessage = "Salut! Vreau să fac meditații online și sunt în căutarea unui mentor. Aș dori o sesiune gratuită pentru a afla mai multe despre tine. Aștept un răspuns cât mai curând!";
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+  if (event.target == signup_modal) {
+    signup_modal.style.display = "none";
+  }
+}
 
 function splitParagraphs(text) {
   let pars = text.split('\n');
@@ -145,13 +152,8 @@ function sendMessage() {
   } else {
     // Add cookie and redirect to login page
     setCookie("tutor-message", JSON.stringify({'tutor': username, 'content': messageBox.value, 'subject': messageSubject.value}));
-    signup_dialog.style.display = 'block';
-    signup_dialog.style.opacity = '100';
+    signup_modal.style.display = 'block';
   }
-}
-
-function closePopup() {
-  signup_dialog.style.display = '';
 }
 
 function sendTutorReviewsRequest(username) {
@@ -177,8 +179,8 @@ function sendTutorReviewsRequest(username) {
 }
 
 function main() {
-  signup_dialog.onclick = () => {
-    signup_dialog.style.display = "none";
+  signup_modal.onclick = () => {
+    signup_modal.style.display = "none";
   };
   let params = new URLSearchParams(location.search);
   username = params.get('username');
