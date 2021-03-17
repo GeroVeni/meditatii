@@ -1,4 +1,5 @@
 let send_message_button = document.getElementById('send-message-button');
+let new_session_modal = document.getElementById('new-session-modal');
 let free_session = document.getElementById("freesession-2");
 let paid_session = document.getElementById("1hmeditation-2");
 let subject = document.getElementById("subject-2");
@@ -21,6 +22,13 @@ let other_user_full_name = document.getElementById('other-user-name');
 
 function scrollToBottom() {
   messages_container.scrollTop = messages_container.scrollHeight;
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+  if (event.target == new_session_modal) {
+    new_session_modal.style.display = "none";
+  }
 }
 
 // Search if a user with this username exists,
@@ -162,6 +170,7 @@ function refreshMessageList() {
 
 // Send a new session message / email
 new_session_button.onclick = function () {
+  new_session_modal.style.display = "block";
 }
 
 // Send message
@@ -190,7 +199,7 @@ function sendMessage() {
         recipient: other_username,
         message_type: "text",
         message: content,
-        email: 0
+        email: 1
       };
       const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
       req.open("POST", ENDPOINT, true);

@@ -13,6 +13,7 @@ function billing(){
     let adress = document.getElementById("adress1").value;
     let optional_adress = document.getElementById("adress2").value;
     let email = document.getElementById("email").value;
+    let promo_code = document.getElementById("promo-code").value;
     firebase.auth().onAuthStateChanged(function(user){
         if(user){
             user.getIdToken(true).then(function(idToken){
@@ -53,6 +54,7 @@ function billing(){
                     "county":county,
                     "city":city,
                     "postal_code":postal_code,
+                    "promo_code":promo_code,
                     "order_number":order_number};
                     console.log(json);
                     req.send(JSON.stringify(json));

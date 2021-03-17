@@ -83,7 +83,7 @@ function getLevels(subject_code) {
 function fillTutorList(data) {
   tutorList.innerHTML = "";
   data.forEach(function (itemData) {
-    //if (itemData.visible == 0) { return; }
+    if (itemData.visible == 0) { return; }
     let item = makeListItem(itemData);
     tutorList.appendChild(item);
   });

@@ -94,7 +94,7 @@ var is_iphone = (agt.indexOf('iphone') != -1);
 var is_mobile = (agt.indexOf('mobile') != -1);
 var is_android = ((agt.indexOf('ventana') != -1) || (agt.indexOf('android') != -1));
 
-if ('3714' == '')
+if ('3832' == '')
 {
     alert("inst_id parameter missing. Please check the url.");
 }
@@ -127,7 +127,7 @@ function start()
 
     // The GroupWorld server to connect to. You can optionally specify the
     // port number and installation id (using the format "server:port:install_id").
-    var base = 'www.groupworld.net:'+groupworld.tunnel_port+':3714';
+    var base = 'www.groupworld.net:'+groupworld.tunnel_port+':3832';
 
     // The object to load and instance name. To create a different "session",
     // just copy the html page and change the instance name (the part after
@@ -276,9 +276,9 @@ groupworld.htmlgen('100%','100%');
 
 
 // Hide playback link if there are no recordings
-var r = new XMLHttpRequest(); r.addEventListener("load", function() { var num_recordings = this.responseText;if (num_recordings == 0) { document.getElementById('playback_link').style.display = 'none'; setTimeout(groupworld.window_resize,250); } }); r.open("GET", "///www.groupworld.net/mp/saved_sessions.cgi?groupworld_id=3714&count=true&dir=recordings/saa"); r.send();
+var r = new XMLHttpRequest(); r.addEventListener("load", function() { var num_recordings = this.responseText;if (num_recordings == 0) { document.getElementById('playback_link').style.display = 'none'; setTimeout(groupworld.window_resize,250); } }); r.open("GET", "///www.groupworld.net/mp/saved_sessions.cgi?groupworld_id=3832&count=true&dir=recordings/saa"); r.send();
 </script>
-<p id="playback_link"><a style="color:#337ab7" target=playback href="//www.groupworld.net/mp/saved_sessions.cgi?groupworld_id=3714&instance=saa&dir=recordings/saa&width=100%&height=100%&js=true&newui=true">Play back previously recorded sessions</a></p>
+<p id="playback_link"><a style="color:#337ab7" target=playback href="//www.groupworld.net/mp/saved_sessions.cgi?groupworld_id=3832&instance=saa&dir=recordings/saa&width=100%&height=100%&js=true&newui=true">Play back previously recorded sessions</a></p>
 </template>
   <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-app.js"></script>

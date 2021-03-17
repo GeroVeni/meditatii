@@ -59,6 +59,96 @@
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-54BGKRT" height="0" width="0"
       style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
+
+  <!-- The Modal -->
+  <div id="new-session-modal" class="w3-modal">
+    <div class="w3-modal-content w3-round-large">
+      <div class="w3-container w3-center">
+        <span onclick="document.getElementById('new-session-modal').style.display='none'"
+        class="w3-button w3-xlarge w3-display-topright">&times;</span>
+
+        <h4 class="w3-text-theme">Programează o sesiune</h4>
+        <form id="wf-form-Programare-Sesiune" name="wf-form-Programare-Sesiune" data-name="Programare Sesiune"
+          class="form-3">
+          <div class="lf-checkbox-flex"><label class="lf-checkbox-radio-wrapper w-radio"><input type="radio"
+                data-name="session-type" id="1hmeditation-2" name="session-type" value="1hmeditation"
+                class="w-form-formradioinput lf-radio-real w-radio-input">
+              <div data-w-id="abb71ba9-db6a-506e-5778-6bc5026b56be" data-animation-type="lottie"
+                data-src="https://uploads-ssl.webflow.com/5f3a3df1ecda61bd724a3372/5f3a3df20fd9df1d97f6cdbf_Radio-Pack1-smooth-v1.json"
+                data-loop="0" data-direction="1" data-autoplay="0" data-is-ix2-target="1" data-renderer="svg"
+                data-default-duration="1.92" data-duration="0" class="lf-radio-icon"></div><span for="1hmeditation-2"
+                class="lf-radio-label w-form-label">Meditație 1h</span>
+            </label><label class="lf-checkbox-radio-wrapper w-radio"><input type="radio" data-name="session-type"
+                id="freesession-2" name="session-type" value="freesession"
+                class="w-form-formradioinput lf-radio-real w-radio-input">
+              <div data-w-id="abb71ba9-db6a-506e-5778-6bc5026b56c3" data-animation-type="lottie"
+                data-src="https://uploads-ssl.webflow.com/5f3a3df1ecda61bd724a3372/5f3a3df20fd9df1d97f6cdbf_Radio-Pack1-smooth-v1.json"
+                data-loop="0" data-direction="1" data-autoplay="0" data-is-ix2-target="1" data-renderer="svg"
+                data-default-duration="1.92" data-duration="0" class="lf-radio-icon"></div><span for="freesession-2"
+                class="lf-radio-label w-form-label">Sesiune Gratuită</span>
+            </label></div>
+          <label class="field-label-8">Selectează materie</label>
+          <select id="subject-2" name="subject" data-name="subject" required="" class="select-field w-select"></select>
+          <label class="field-label-8">Selectează nivelul</label>
+          <select required="" name="level" data-name="level" id="level" class="select-field-2 w-select"></select>
+          <p></p>
+          <!-- Date picker -->
+          <div class="container1">
+            <div class="row">
+              <div class="col-sm-12 ">
+                <div class="form-group">
+                  <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                    <input type="text" id="start_date" class="form-control datetimepicker-input"
+                      data-target="#datetimepicker2" />
+                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <script type="text/javascript">
+                $(function () {
+                  $('#datetimepicker2').datetimepicker({
+                    locale: 'ro',
+                    format: "YYYY-MM-DD"
+                  });
+                });
+              </script>
+            </div>
+          </div>
+          <!-- Time picker -->
+          <div class="container1">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                    <input type="text" id="start_time" class="form-control datetimepicker-input"
+                      data-target="#datetimepicker3" />
+                    <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                      <div class="input-group-text"> <i class="fa fa-clock"></i></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <script type="text/javascript">
+                $(function () {
+                  $('#datetimepicker3').datetimepicker({
+                    locale: 'ro-RO',
+                    format: 'HH:mm'
+                  });
+                });
+              </script>
+            </div>
+          </div>
+          <label for="Other-optional-text" class="field-label-4">Mențiuni</label><textarea name="Other-optional-text"
+            maxlength="5000" id="Other-optional-text" data-name="Other optional text" class="textarea w-input"></textarea>
+        </form>
+        <a id="send-booking-button" href="#" class="button-14 w-button">Programează Sesiunea</a>
+        <div id="response_div"></div>
+      </div>
+    </div>
+  </div>
+
   <div data-collapse="medium" data-animation="over-right" data-duration="400" data-easing="ease-in" data-easing2="ease-out" role="banner" class="navbar-2 w-nav">
     <div class="w3-bar w3-black">
       <a href="index.html" class="w3-bar-item w3-button w3-hover-none"><img src="images/siteeeeeee.png" width="100"
@@ -126,76 +216,100 @@
         background-color: #FFFFFF;
     }
   </style>
+
   <div style="display:none;opacity:0" class="div-block-4">
     <div class="div-block-5">
-      <div data-w-id="8211abd5-5a92-b412-5fa0-938b91d2c283" class="div-block-6"><img src="images/close_1-512.png" width="60" alt="" class="image-15"></div>
+      <div data-w-id="8211abd5-5a92-b412-5fa0-938b91d2c283" class="div-block-6"><img src="images/close_1-512.png"
+          width="60" alt="" class="image-15"></div>
       <div class="container-14 w-container">
         <h1 class="heading-31"><span class="text-span-11">Programează o sesiune</span></h1>
       </div>
       <div class="form-block-3 w-form">
-        <form id="wf-form-Programare-Sesiune" name="wf-form-Programare-Sesiune" data-name="Programare Sesiune" class="form-3">
-          <div class="lf-checkbox-flex"><label class="lf-checkbox-radio-wrapper w-radio"><input type="radio" data-name="session-type" id="1hmeditation-2" name="session-type" value="1hmeditation" class="w-form-formradioinput lf-radio-real w-radio-input"><div data-w-id="abb71ba9-db6a-506e-5778-6bc5026b56be" data-animation-type="lottie" data-src="https://uploads-ssl.webflow.com/5f3a3df1ecda61bd724a3372/5f3a3df20fd9df1d97f6cdbf_Radio-Pack1-smooth-v1.json" data-loop="0" data-direction="1" data-autoplay="0" data-is-ix2-target="1" data-renderer="svg" data-default-duration="1.92" data-duration="0" class="lf-radio-icon"></div><span for="1hmeditation-2" class="lf-radio-label w-form-label">Meditație 1h</span></label><label class="lf-checkbox-radio-wrapper w-radio"><input type="radio" data-name="session-type" id="freesession-2" name="session-type" value="freesession" class="w-form-formradioinput lf-radio-real w-radio-input"><div data-w-id="abb71ba9-db6a-506e-5778-6bc5026b56c3" data-animation-type="lottie" data-src="https://uploads-ssl.webflow.com/5f3a3df1ecda61bd724a3372/5f3a3df20fd9df1d97f6cdbf_Radio-Pack1-smooth-v1.json" data-loop="0" data-direction="1" data-autoplay="0" data-is-ix2-target="1" data-renderer="svg" data-default-duration="1.92" data-duration="0" class="lf-radio-icon"></div><span for="freesession-2" class="lf-radio-label w-form-label">Sesiune Gratuită</span></label></div>
+        <form id="wf-form-Programare-Sesiune" name="wf-form-Programare-Sesiune" data-name="Programare Sesiune"
+          class="form-3">
+          <div class="lf-checkbox-flex"><label class="lf-checkbox-radio-wrapper w-radio"><input type="radio"
+                data-name="session-type" id="1hmeditation-2" name="session-type" value="1hmeditation"
+                class="w-form-formradioinput lf-radio-real w-radio-input">
+              <div data-w-id="abb71ba9-db6a-506e-5778-6bc5026b56be" data-animation-type="lottie"
+                data-src="https://uploads-ssl.webflow.com/5f3a3df1ecda61bd724a3372/5f3a3df20fd9df1d97f6cdbf_Radio-Pack1-smooth-v1.json"
+                data-loop="0" data-direction="1" data-autoplay="0" data-is-ix2-target="1" data-renderer="svg"
+                data-default-duration="1.92" data-duration="0" class="lf-radio-icon"></div><span for="1hmeditation-2"
+                class="lf-radio-label w-form-label">Meditație 1h</span>
+            </label><label class="lf-checkbox-radio-wrapper w-radio"><input type="radio" data-name="session-type"
+                id="freesession-2" name="session-type" value="freesession"
+                class="w-form-formradioinput lf-radio-real w-radio-input">
+              <div data-w-id="abb71ba9-db6a-506e-5778-6bc5026b56c3" data-animation-type="lottie"
+                data-src="https://uploads-ssl.webflow.com/5f3a3df1ecda61bd724a3372/5f3a3df20fd9df1d97f6cdbf_Radio-Pack1-smooth-v1.json"
+                data-loop="0" data-direction="1" data-autoplay="0" data-is-ix2-target="1" data-renderer="svg"
+                data-default-duration="1.92" data-duration="0" class="lf-radio-icon"></div><span for="freesession-2"
+                class="lf-radio-label w-form-label">Sesiune Gratuită</span>
+            </label></div>
           <label class="field-label-8">Selectează materie</label>
           <select id="subject-2" name="subject" data-name="subject" required="" class="select-field w-select"></select>
           <label class="field-label-8">Selectează nivelul</label>
           <select required="" name="level" data-name="level" id="level" class="select-field-2 w-select"></select>
-      <div class="container1">
-        <div class="row">
-            <div class="col-sm-12 ">
+          <div class="container1">
+            <div class="row">
+              <div class="col-sm-12 ">
                 <div class="form-group">
-                    <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-                        <input type="text" id = "start_date" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
-                        <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
+                  <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                    <input type="text" id="start_date" class="form-control datetimepicker-input"
+                      data-target="#datetimepicker2" />
+                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
-                </div>
-            </div>
-            <script type="text/javascript">
-                $(function () {
-                    $('#datetimepicker2').datetimepicker({
-                        locale: 'ro',
-                        format:"YYYY-MM-DD"
-                    });
-                });
-            </script>
-        </div>
-    </div>
-    <div class="container1">
-      <div class="row">
-          <div class="col-sm-12">
-              <div class="form-group">
-                  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-                      <input type="text" id="start_time" class="form-control datetimepicker-input" data-target="#datetimepicker3"/>
-                      <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
-                          <div class="input-group-text"> <i class="fa fa-clock"></i></div>
-                      </div>
                   </div>
+                </div>
               </div>
-          </div>
-          <script type="text/javascript">
-              $(function () {
-                  $('#datetimepicker3').datetimepicker({
-                      locale: 'ro-RO',
-                      format: 'HH:mm'
+              <script type="text/javascript">
+                $(function () {
+                  $('#datetimepicker2').datetimepicker({
+                    locale: 'ro',
+                    format: "YYYY-MM-DD"
                   });
-              });
-          </script>
-      </div>
-  </div>
-          <label for="Other-optional-text" class="field-label-4">Mențiuni</label><textarea name="Other-optional-text" maxlength="5000" id="Other-optional-text" data-name="Other optional text" class="textarea w-input"></textarea>
+                });
+              </script>
+            </div>
+          </div>
+          <div class="container1">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                    <input type="text" id="start_time" class="form-control datetimepicker-input"
+                      data-target="#datetimepicker3" />
+                    <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                      <div class="input-group-text"> <i class="fa fa-clock"></i></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <script type="text/javascript">
+                $(function () {
+                  $('#datetimepicker3').datetimepicker({
+                    locale: 'ro-RO',
+                    format: 'HH:mm'
+                  });
+                });
+              </script>
+            </div>
+          </div>
+          <label for="Other-optional-text" class="field-label-4">Mențiuni</label><textarea name="Other-optional-text"
+            maxlength="5000" id="Other-optional-text" data-name="Other optional text" class="textarea w-input"></textarea>
         </form>
-        <div class="column-12 w-col w-col-12"><a id="send-booking-button" href="#" class="button-14 w-button">Programează Sesiunea</a></div>
+        <div class="column-12 w-col w-col-12"><a id="send-booking-button" href="#" class="button-14 w-button">Programează
+            Sesiunea</a></div>
         <div id="response_div"></div>
       </div>
     </div>
   </div>
+
   <div class="section-17">
     <div class="container-20 w-container">
       <div class="columns-6 w-row">
         <div id="messages-container" class="column-10 w-col w-col-8 w-col-small-small-stack w-col-tiny-tiny-stack"></div>
         <div class="column-9 w-col w-col-4 w-col-small-small-stack w-col-tiny-tiny-stack">
-          <h3 id="other-user-name"></h3><a id="new-session-button" data-w-id="ec93d959-c05b-30f4-6d2f-b5c4fb99c433" href="#" class="button-13 w-button">PROGRAMEAZĂ O SESIUNE</a></div>
+          <h3 id="other-user-name"></h3><a id="new-session-button" href="#" class="button-13 w-button">PROGRAMEAZĂ O SESIUNE</a></div>
       </div>
     </div>
     <div class="container-21 w-container">
