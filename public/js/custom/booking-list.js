@@ -250,8 +250,8 @@ function makeListItem(itemData) {
   return makeItem(bookingTemp_lessonPaid, map);
   else if (status == 4)
   return makeItem(bookingTemp_enterLesson, map);
-  else
-  console.log("Error while retrieving booking status");
+  else if (status > 4)
+  console.log("Session is in the past")
 }
   
 
