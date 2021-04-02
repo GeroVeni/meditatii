@@ -252,8 +252,9 @@ function sendBooking(){
   if (paid_session.checked){
     session_type = 1;
   }
-  // TODO: UTC +2
-  let start_datetime = new Date(start_date.value + "T" + start_time.value + "+02:00");
+  // UTC +3
+  // TODO: Adjust for winter time zone
+  let start_datetime = new Date(start_date.value + "T" + start_time.value + "+03:00");
   let start_datetime_string = start_datetime.toISOString();
   console.log(start_datetime_string);
 
