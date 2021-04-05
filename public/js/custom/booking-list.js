@@ -204,9 +204,9 @@ function makeListItem(itemData) {
     "Joi", "Vineri", "Sâmbătă"
   ];
   let start_date = new Date(itemData.start_timestamp);
-  // Add 2 hours from UTC time to get Romania time
-  // TODO: Adjust for summer time zone
-  start_date.setHours(start_date.getUTCHours() + 2);
+  // Add 3 hours from UTC time to get Romania time
+  // TODO: Adjust for winter time zone
+  start_date.setHours(start_date.getUTCHours() + 3);
   // Add 10 mins to display original starting time
   start_date.setMinutes(start_date.getMinutes() + 10);
   // Fill in template values
