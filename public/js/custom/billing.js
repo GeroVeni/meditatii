@@ -39,7 +39,7 @@ function billing(){
                                 const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/pay";
                                 req.open("POST",ENDPOINT,true);
                                 req.setRequestHeader("Content-type", "application/json");
-                                req.send(JSON.stringify({"orderNumber":order_number,"amount":4500}));
+                                req.send(JSON.stringify({"orderNumber":order_number}));
                             }
                         }
                     };
