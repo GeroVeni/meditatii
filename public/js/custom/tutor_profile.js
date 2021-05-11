@@ -44,7 +44,7 @@ function splitParagraphs(text) {
   return ans;
 }
 
-function fillTutorProfile(data) {
+function fillTutorProfile(data, offers) {
   // Get HTML fields
   var fullNameText = document.getElementById("tutor-full-name");
   var educationText = document.getElementById("tutor-education");
@@ -67,7 +67,19 @@ function fillTutorProfile(data) {
   profileImg.src = data.photo_link;
   aboutMeText.innerHTML = splitParagraphs(data.about_me);
   aboutSessionsText.innerHTML = splitParagraphs(data.about_sessions);
-  priceText.innerHTML = data.price + " RON/ORĂ";
+
+  // Display possible offers
+  let basePrice = data.price;
+  let priceTextValue = basePrice;
+  for (let i = 0; i < offers.length; i++) {
+    let offer = offers[i].offer;
+    if (offer.absolute_discount) {
+      let newPrice = basePrice - offer.absolute_discount;
+      priceTextValue = `<s>${basePrice}</s> <span style="color: red;">${newPrice}</span>`;
+    }
+  }
+
+  priceText.innerHTML = priceTextValue + " RON/ORĂ";
 
   // Fill in grades
   gradesTable.innerHTML = "<tr><th>Examene</th><th>Note</th></tr>";
@@ -110,9 +122,20 @@ function fillTutorProfile(data) {
 
 function sendTutorProfileRequest(username) {
   var req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
+  req.onreadystatechange = async function () {
     if (this.readyState == 4 && this.status == 200) {
-      fillTutorProfile(JSON.parse(this.responseText));
+      const tutorInfo = JSON.parse(this.responseText);
+
+      if (signed_user) {
+        idToken = await signed_user.getIdToken(true)
+        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/users/me/offers";
+        let query = `?token=${idToken}`;
+        let response = await fetch(ENDPOINT + query);
+        let offers = await response.json();
+        fillTutorProfile(tutorInfo, offers);
+      } else {
+        fillTutorProfile(tutorInfo, []);
+      }
     }
   };
   const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + username;
@@ -188,5 +211,16 @@ function main() {
   sendTutorReviewsRequest(username);
 }
 
-// Main
-main();
+let signed_user = null;
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User signed in
+    signed_user = user;
+  } else {
+    // User signed out
+    signed_user = null;
+  }
+
+  main();
+});

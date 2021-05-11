@@ -10,7 +10,7 @@ let tutorTemp =
       '<h5 id={subjects_id} class="heading-28">{subjects}</h5>' +
     '</div>' +
     '<div class="column-3 w-col w-col-3 w-col-tiny-tiny-stack">' +
-      '<div class="text-block-7 list _25">GRATUIT<br><span class="text-span-27">după prima sesiune gratuită prețul este de <br></span><span class="text-span-28">{price}/oră</span></div>' +
+      '<div class="text-block-7 list _25">GRATUIT<br><span class="text-span-27">după prima sesiune gratuită prețul este de <br></span><span class="text-span-28">{price} RON/oră</span></div>' +
       '<div style="display:none" class="text-block-8 list"><br><span class="text-span-7">50</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
       '<div style="display:none" class="text-block-18 list">{reviews} review-uri</div>' +
       '<a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
@@ -38,14 +38,37 @@ let levelDropdownList = document.getElementById("level-dropdown-list");
 let subjectList = [];
 let levelList = [];
 
-function makeListItem(itemData) {
+let signed_user = null;
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User signed in
+    signed_user = user;
+  } else {
+    // User signed out
+    signed_user = null;
+  }
+  // Make filter lists
+  sendSubjectsRequest();
+});
+
+function makeListItem(itemData, offers) {
   let map = {};
   map.full_name = itemData.surname + " " + itemData.name;
   map.description = itemData.description;
   map.photo_link = itemData.photo_link;
   map.hours_taught = "0";
   map.reviews = "1";
-  map.price = itemData.price;
+  // Display possible offers in price field
+  let basePrice = itemData.price;
+  map.price = basePrice;
+  for (let i = 0; i < offers.length; i++) {
+    let offer = offers[i].offer;
+    if (offer.absolute_discount) {
+      let newPrice = basePrice - offer.absolute_discount;
+      map.price = `<s>${basePrice}</s> <span style="color: red;">${newPrice}</span>`;
+    }
+  }
   map.education = itemData.education.place;
   map.subjects_id = "subjects-" + itemData.username;
   map.subjects = "";
@@ -80,11 +103,11 @@ function getLevels(subject_code) {
   return levelList.filter(l => l.level_group == subject.level_group);
 }
 
-function fillTutorList(data) {
+function fillTutorList(data, offers) {
   tutorList.innerHTML = "";
   data.forEach(function (itemData) {
     if (itemData.visible == 0) { return; }
-    let item = makeListItem(itemData);
+    let item = makeListItem(itemData, offers);
     tutorList.appendChild(item);
   });
 }
@@ -93,7 +116,18 @@ function sendTutorListRequest() {
   let req = new XMLHttpRequest();
   req.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-      fillTutorList(JSON.parse(this.responseText));
+      const tutorsInfoList = JSON.parse(this.responseText)
+      if (signed_user) {
+        signed_user.getIdToken(true).then(async function(idToken){
+          const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/users/me/offers";
+          let query = `?token=${idToken}`;
+          let response = await fetch(ENDPOINT + query);
+          let offers = await response.json();
+          fillTutorList(tutorsInfoList, offers);
+        });
+      } else {
+        fillTutorList(tutorsInfoList, []);
+      }
     }
   };
   const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors";
@@ -209,7 +243,4 @@ function sendLevelsRequest() {
   req.open("GET", ENDPOINT, true);
   req.send();
 }
-
-// Make filter lists
-sendSubjectsRequest();
 
