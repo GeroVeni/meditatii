@@ -207,8 +207,6 @@ function makeListItem(itemData) {
   // Add 3 hours from UTC time to get Romania time
   // TODO: Adjust for winter time zone
   start_date.setHours(start_date.getUTCHours() + 3);
-  // Add 10 mins to display original starting time
-  start_date.setMinutes(start_date.getMinutes() + 10);
   // Fill in template values
   map.booking_id = itemData.booking_id;
   map.session_dayOfWeek = weekday[start_date.getDay()];
