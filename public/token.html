@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="css/main.css">
+  <title>Token</title>
+  <meta content="Token" property="og:title">
+  <meta content="Token" property="twitter:title">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+</head>
+
+<body>
+  <form class="w3-container w3-card-4 w3-light-grey" onsubmit="onSubmit()" action="javascript:void(0)">
+    <h2>Firebase Token Generator</h2>
+
+    <p><label>Email</label>
+      <input id="email-field" class="w3-input w3-border" name="email" type="email">
+    </p>
+
+    <p><label>Password</label>
+      <input id="password-field" class="w3-input w3-border" name="password" type="password">
+    </p>
+
+    <div class="w3-center w3-padding">
+      <button class="w3-button w3-white w3-border">Generate</button>
+    </div>
+  </form>
+
+  <div class="w3-center">
+    <p id="token-field" class="w3-text-large" onclick="copyToken()"><i>-- token --</i></p>
+  </div>
+  <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-app.js"></script>
+
+  <!-- Add Firebase products that you want to use -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-analytics.js"></script>
+
+  <!-- Custom initialisation script for firebase -->
+  <script src="js/custom/constants.js"></script>
+  <script src="js/custom/firebase-init.js"></script>
+  <script>
+    const tokenField = document.getElementById("token-field");
+    const email_field = document.getElementById("email-field");
+    const password_field = document.getElementById("password-field");
+
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken(true).then(token => {
+          console.log(token);
+          tokenField.innerHTML = token;
+        });
+      }
+    });
+
+    async function copyToken() {
+      await navigator.clipboard.writeText(tokenField.textContent);
+    }
+
+    function onSubmit() {
+      firebase.auth().createUserWithEmailAndPassword(email_field.value, password_field.value)
+        .then(userCredentials => {
+          console.log(userCredentials.user);
+          userCredentials.user.getIdToken(true).then(token => {
+            console.log(token);
+            tokenField.innerHTML = token;
+          });
+        })
+        .catch(err => {
+          console.error(err);
+        })
+    }
+  </script>
+</body>
+
+</html>

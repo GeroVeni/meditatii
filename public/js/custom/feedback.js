@@ -9,7 +9,7 @@ function submitFeedback() {
   let rating = ratingStars['data-rating'];
   let comment = ratingComment.value;
   firebase.auth().currentUser.getIdToken(true).then(async (token) => {
-    const BASE_URL = "https://gv281.user.srcf.net/meditatii/dev/api";
+    const ENDPOINT = API_ENDPOINT;
     const requestData = {
       token,
       review: {
@@ -20,7 +20,7 @@ function submitFeedback() {
         level_code
       }
     };
-    let response = await fetch(BASE_URL + '/reviews', {
+    let response = await fetch(ENDPOINT + '/reviews', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8'
@@ -33,9 +33,9 @@ function submitFeedback() {
 }
 
 async function displayLastSession(token) {
-  const BASE_URL = "https://gv281.user.srcf.net/meditatii/api";
+  const ENDPOINT = API_ENDPOINT;
   const query = `?token=${token}&other=${tutor_username}&last=1`;
-  let response = await fetch(BASE_URL + '/bookings' + query);
+  let response = await fetch(ENDPOINT + '/bookings' + query);
   let result = await response.json();
 
   if (result.length == 0) {
@@ -43,16 +43,16 @@ async function displayLastSession(token) {
     return;
   }
   const booking = result[0];
-  response = await fetch(BASE_URL + `/tutors/${tutor_username}`);
+  response = await fetch(ENDPOINT + `/tutors/${tutor_username}`);
   const tutor = await response.json();
   if ('code' in tutor) {
     window.href = '/';
     return;
   }
 
-  response = await fetch(BASE_URL + '/subjects');
+  response = await fetch(ENDPOINT + '/subjects');
   const subjectList = await response.json();
-  response = await fetch(BASE_URL + '/levels');
+  response = await fetch(ENDPOINT + '/levels');
   const levelList = await response.json();
 
   const subject = subjectList.find(s => s.subject_code == booking.subject_id);

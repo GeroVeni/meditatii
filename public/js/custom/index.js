@@ -9,14 +9,14 @@ req.onreadystatechange = function () {
     subjectList = JSON.parse(this.responseText);
   }
 };
-const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/subjects";
+const ENDPOINT = API_ENDPOINT + "/subjects";
 req.open("GET", ENDPOINT, true);
 req.send();
 
 function filterSubjects(filter) {
-  return subjectList.filter(subject => 
+  return subjectList.filter(subject =>
     subject.subject_name.toUpperCase().indexOf(filter.toUpperCase()) > -1
-    );
+  );
 }
 
 searchBar.oninput = function () {
@@ -76,7 +76,7 @@ firebase.auth().onAuthStateChanged(user => {
           subject_code: sublev[0],
           level_code: sublev[1]
         };
-        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
+        const ENDPOINT = API_ENDPOINT + "/messages";
         messageReq.open("POST", ENDPOINT, true);
         messageReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         messageReq.send(JSON.stringify(postData));

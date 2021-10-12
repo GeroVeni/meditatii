@@ -6,10 +6,10 @@ let subject = document.getElementById("subject-2");
 let level = document.getElementById("level");
 let start_date = document.getElementById("start_date");
 let start_time = document.getElementById("start_time");
-let send_message_field  = document.getElementById('send-message-field');
-let send_message_form   = document.getElementById('send-message-form');
-let new_session_button  = document.getElementById('new-session-button');
-let messages_container  = document.getElementById('messages-container');
+let send_message_field = document.getElementById('send-message-field');
+let send_message_form = document.getElementById('send-message-form');
+let new_session_button = document.getElementById('new-session-button');
+let messages_container = document.getElementById('messages-container');
 let send_booking_button = document.getElementById("send-booking-button");
 let response_div = document.getElementById("response_div");
 
@@ -50,7 +50,7 @@ function searchUser(username) {
     }
   };
   // TODO: Escape strings
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/users/" + username;
+  const ENDPOINT = API_ENDPOINT + "/users/" + username;
   req.open("GET", ENDPOINT, true);
   req.send();
 }
@@ -58,12 +58,12 @@ function searchUser(username) {
 let tutor_subjects_levels = [];
 
 function arrayUnique(arr) {
-  return arr.filter((v, i, a) => (i == 0 || a[i-1].subject_code != a[i].subject_code));
+  return arr.filter((v, i, a) => (i == 0 || a[i - 1].subject_code != a[i].subject_code));
 }
 
 function getTutorSubjects() {
   return arrayUnique(tutor_subjects_levels.map(sl => {
-    return {subject_code: sl.subject_code, subject_name: sl.subject_name}
+    return { subject_code: sl.subject_code, subject_name: sl.subject_name }
   }));
 }
 
@@ -92,7 +92,7 @@ function fillLevelsList(sub_code) {
   let opt0 = '<option value="">Selectează nivelul</option>';
   let opt = '<option value="{level_code}">{level_name}</option>';
   levelsList.innerHTML = opt0;
-  
+
   // If no subject selected, show no levels
   if (!sub_code) return;
 
@@ -139,7 +139,7 @@ async function sendTutorSubjectsRequest(username) {
 
 function refreshMessageList() {
   let req = new XMLHttpRequest();
-  req.onreadystatechange = function() {
+  req.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       messages_container.innerHTML = "";
       console.log(this.responseText);
@@ -150,7 +150,7 @@ function refreshMessageList() {
         messages.forEach(m => {
           let temp = otherMessageTemp;
           if (m.username == m.sender_id) { temp = ownMessageTemp; }
-          messages_container.appendChild(makeItem(temp, {message: m.content}));
+          messages_container.appendChild(makeItem(temp, { message: m.content }));
         });
         scrollToBottom();
       }
@@ -158,11 +158,11 @@ function refreshMessageList() {
   };
   firebase.auth().currentUser?.getIdToken(true)
     .then(token => {
-      const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
+      const ENDPOINT = API_ENDPOINT + "/messages";
       let query = "?token=" + token + "&other_username=" + other_username;
       req.open("GET", ENDPOINT + query, true);
       req.send();
-    }).catch(function(error) {
+    }).catch(function (error) {
       // Handle error
       console.log("Failed to get user token: " + error.message);
     });
@@ -201,14 +201,14 @@ function sendMessage() {
         message: content,
         email: 1
       };
-      const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/messages";
+      const ENDPOINT = API_ENDPOINT + "/messages";
       req.open("POST", ENDPOINT, true);
       req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
       req.send(JSON.stringify(json));
     });
 }
 
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User is signed in.
     refreshMessageList();
@@ -225,7 +225,7 @@ function sendTutorProfileRequest(username) {
       fillTutorProfile(JSON.parse(this.responseText));
     }
   };
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + username;
+  const ENDPOINT = API_ENDPOINT + "/tutors/" + username;
   req.open("GET", ENDPOINT, true);
   req.send();
 }
@@ -238,7 +238,7 @@ searchUser(other_username);
 //Send Booking
 send_booking_button.onclick = sendBooking;
 
-function sendBooking(){
+function sendBooking() {
   console.log(subject.value);
   console.log(level.value);
   console.log(start_date.value);
@@ -246,10 +246,10 @@ function sendBooking(){
   console.log(free_session.checked);
   console.log(paid_session.checked);
   var session_type = -1;
-  if (free_session.checked){
+  if (free_session.checked) {
     session_type = 0;
   }
-  if (paid_session.checked){
+  if (paid_session.checked) {
     session_type = 1;
   }
   // UTC +3
@@ -258,48 +258,48 @@ function sendBooking(){
   let start_datetime_string = start_datetime.toISOString();
   console.log(start_datetime_string);
 
-  firebase.auth().onAuthStateChanged(function (user){
-    if (user){
-      user.getIdToken(true).then(function (idToken){
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      user.getIdToken(true).then(function (idToken) {
         var req = new XMLHttpRequest();
-        req.onreadystatechange = function() {
-          if(this.readyState == 4 && this.status == 200){
+        req.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
             let isTutor = this.responseText;
             console.log(isTutor);
             req = new XMLHttpRequest();
-            req.onreadystatechange = function(){
-              if(this.readyState == 4 && this.status == 200){
-                let own_username=JSON.parse(this.responseText)[0].username;
+            req.onreadystatechange = function () {
+              if (this.readyState == 4 && this.status == 200) {
+                let own_username = JSON.parse(this.responseText)[0].username;
                 console.log(own_username);
-                req.onreadystatechange = function(){
-                  if(this.readyState == 4 && this.status == 200){
+                req.onreadystatechange = function () {
+                  if (this.readyState == 4 && this.status == 200) {
                     console.log(this.responseText);
                     location.href = "programari.html";
                     response_div.innerHTML = '<p> Sesiunea ta a fost programată. Intră pe pagina de Programări pentru a urmări toate programările tale.</p>';
                   }
                 };
-                const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/bookings/write";
+                const ENDPOINT = API_ENDPOINT + "/bookings/write";
                 req.open("POST", ENDPOINT, true);
                 req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 var json = {};
-                if (isTutor == 0){
-                  json = {token:idToken, status_id:0,start_timestamp:start_datetime_string,subject_id:subject.value,level_id:level.value,session_type:session_type,student_id:own_username,tutor_id:other_username};
+                if (isTutor == 0) {
+                  json = { token: idToken, status_id: 0, start_timestamp: start_datetime_string, subject_id: subject.value, level_id: level.value, session_type: session_type, student_id: own_username, tutor_id: other_username };
                 }
-                if (isTutor == 1){
-                  json = {token:idToken, status_id:1,start_timestamp:start_datetime_string,subject_id:subject.value,level_id:level.value,session_type:session_type,student_id:other_username,tutor_id:own_username};
+                if (isTutor == 1) {
+                  json = { token: idToken, status_id: 1, start_timestamp: start_datetime_string, subject_id: subject.value, level_id: level.value, session_type: session_type, student_id: other_username, tutor_id: own_username };
                 }
                 req.send(JSON.stringify(json));
               }
             };
-            const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/users/me?token=" + idToken;
-            req.open("GET",ENDPOINT,true);
+            const ENDPOINT = API_ENDPOINT + "/users/me?token=" + idToken;
+            req.open("GET", ENDPOINT, true);
             req.send();
           }
         };
-        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutor/type?token=" + idToken;
-        req.open("GET",ENDPOINT,true);
+        const ENDPOINT = API_ENDPOINT + "/tutor/type?token=" + idToken;
+        req.open("GET", ENDPOINT, true);
         req.send();
-      }).catch(function (error){
+      }).catch(function (error) {
         console.log("Error in retrieving user token: " + error.message);
       });
     } else {
