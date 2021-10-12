@@ -56,7 +56,7 @@ function createDBUser(user) {
         window.location.href = HOME_PAGE;
       }
     };
-    const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/register";
+    const ENDPOINT = API_ENDPOINT + "/register";
     let data = {
       token: token,
       name: '',
@@ -79,7 +79,7 @@ function createDBUser(user) {
 }
 
 firebase.auth().getRedirectResult()
-  .then(function(result) {
+  .then(function (result) {
     console.log('redirect result');
     console.log(result);
 
@@ -103,10 +103,10 @@ firebase.auth().getRedirectResult()
         // TODO: Should prompt the user for an email
         console.log('no email found');
       } else {
-        user.updateEmail(newEmail).then(function() {
+        user.updateEmail(newEmail).then(function () {
           // Update successful.
           console.log('added email');
-        }).catch(function(error) {
+        }).catch(function (error) {
           // An error happened.
           console.log(error);
         });
@@ -115,7 +115,7 @@ firebase.auth().getRedirectResult()
 
     console.log('finished getRedirectResult');
   })
-  .catch(function(error) {
+  .catch(function (error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
@@ -127,7 +127,7 @@ firebase.auth().getRedirectResult()
     // TODO: Custom stuff
   });
 
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User signed in
     console.log('User logged in');
@@ -156,24 +156,24 @@ function checkForm() {
 function submit_form() {
   error_message.style.display = "none";
   if (!checkForm()) return false;
-  
+
   loginMethod = 'form';
   firebase.auth().createUserWithEmailAndPassword(email_field.value, password_field.value)
-  .then(userCredentials => {
-    console.log(userCredentials.user);
-    loginMethod = 'form';
-  })
-  .catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log(errorCode + " " + errorMessage);
-    error_message.style.display = "";
-    if (errorCode == "auth/email-already-in-use") {
-      error_message.innerHTML = "Există un cont cu această adresă de mail.";
-    } else {
-      error_message.innerHTML = errorMessage;
-    }
-  });
+    .then(userCredentials => {
+      console.log(userCredentials.user);
+      loginMethod = 'form';
+    })
+    .catch(function (error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode + " " + errorMessage);
+      error_message.style.display = "";
+      if (errorCode == "auth/email-already-in-use") {
+        error_message.innerHTML = "Există un cont cu această adresă de mail.";
+      } else {
+        error_message.innerHTML = errorMessage;
+      }
+    });
   return true;
 }

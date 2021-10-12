@@ -51,7 +51,7 @@ function createDBUser(user) {
         window.location.href = HOME_PAGE;
       }
     };
-    const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/register";
+    const ENDPOINT = API_ENDPOINT + "/register";
     let data = {
       token: token,
       name: '',
@@ -74,7 +74,7 @@ function createDBUser(user) {
 }
 
 firebase.auth().getRedirectResult()
-  .then(function(result) {
+  .then(function (result) {
     console.log('redirect result');
     console.log(result);
 
@@ -98,10 +98,10 @@ firebase.auth().getRedirectResult()
         // TODO: Should prompt the user for an email
         console.log('no email found');
       } else {
-        user.updateEmail(newEmail).then(function() {
+        user.updateEmail(newEmail).then(function () {
           // Update successful.
           console.log('added email');
-        }).catch(function(error) {
+        }).catch(function (error) {
           // An error happened.
           console.log(error);
         });
@@ -110,7 +110,7 @@ firebase.auth().getRedirectResult()
 
     console.log('finished getRedirectResult');
   })
-  .catch(function(error) {
+  .catch(function (error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
@@ -122,7 +122,7 @@ firebase.auth().getRedirectResult()
     // TODO: Custom stuff
   });
 
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User signed in
     var displayName = user.displayName;
@@ -146,11 +146,11 @@ function submit_form() {
   var login_form = document.getElementById("email-form");
   var email_field = login_form["Email"];
   var password_field = login_form["Password"];
-  firebase.auth().signInWithEmailAndPassword(email_field.value, password_field.value).catch(function(error) {
+  firebase.auth().signInWithEmailAndPassword(email_field.value, password_field.value).catch(function (error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
     console.log(errorCode + " " + errorMessage);
-    responseMessage.innerHTML = "<p style='color:red'; text-allign:'center'><strong>Parola introdusă este incorectă sau contul nu există</strong></p>";  
+    responseMessage.innerHTML = "<p style='color:red'; text-allign:'center'><strong>Parola introdusă este incorectă sau contul nu există</strong></p>";
   });
 }

@@ -1,27 +1,27 @@
 let tutorList = document.getElementById("tutor-list-container");
 let tutorTemp =
-'<div class="container-6 w-container">' +
+  '<div class="container-6 w-container">' +
   '<div class="columns-13 w-row">' +
-    '<div class="column-23 w-col w-col-3 w-col-tiny-tiny-stack"><img src="{photo_link}" height="303" sizes="(max-width: 479px) 96vw, (max-width: 767px) 97vw, (max-width: 991px) 22vw, 220px" alt="" class="image-5"></div>' +
-    '<div class="w-col w-col-6 w-col-tiny-tiny-stack">' +
-      '<h1 class="heading-4 list">{full_name}<br></h1>' +
-      '<div class="text-block-12 list">{education}</div>' +
-      '<div class="text-block-3 list">{description}</div>' +
-      '<h5 id={subjects_id} class="heading-28">{subjects}</h5>' +
-    '</div>' +
-    '<div class="column-3 w-col w-col-3 w-col-tiny-tiny-stack">' +
-      '<div class="text-block-7 list _25">GRATUIT<br><span class="text-span-27">după prima sesiune gratuită prețul este de <br></span><span class="text-span-28">{price} RON/oră</span></div>' +
-      '<div style="display:none" class="text-block-8 list"><br><span class="text-span-7">50</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
-      '<div style="display:none" class="text-block-18 list">{reviews} review-uri</div>' +
-      '<a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
-    '</div>' +
+  '<div class="column-23 w-col w-col-3 w-col-tiny-tiny-stack"><img src="{photo_link}" height="303" sizes="(max-width: 479px) 96vw, (max-width: 767px) 97vw, (max-width: 991px) 22vw, 220px" alt="" class="image-5"></div>' +
+  '<div class="w-col w-col-6 w-col-tiny-tiny-stack">' +
+  '<h1 class="heading-4 list">{full_name}<br></h1>' +
+  '<div class="text-block-12 list">{education}</div>' +
+  '<div class="text-block-3 list">{description}</div>' +
+  '<h5 id={subjects_id} class="heading-28">{subjects}</h5>' +
   '</div>' +
-'</div>'
+  '<div class="column-3 w-col w-col-3 w-col-tiny-tiny-stack">' +
+  '<div class="text-block-7 list _25">GRATUIT<br><span class="text-span-27">după prima sesiune gratuită prețul este de <br></span><span class="text-span-28">{price} RON/oră</span></div>' +
+  '<div style="display:none" class="text-block-8 list"><br><span class="text-span-7">50</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
+  '<div style="display:none" class="text-block-18 list">{reviews} review-uri</div>' +
+  '<a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
+  '</div>' +
+  '</div>' +
+  '</div>'
 
-let filterItemTemp = 
-'<a href="#" onclick="select_subject(\'{subject_code}\')" class="dropdown-link-2 w-dropdown-link">{subject_name}</a>';
-let levelFilterItemTemp = 
-'<a href="#" onclick="select_level(\'{level_code}\')" class="dropdown-link-2 w-dropdown-link">{level_name}</a>';
+let filterItemTemp =
+  '<a href="#" onclick="select_subject(\'{subject_code}\')" class="dropdown-link-2 w-dropdown-link">{subject_name}</a>';
+let levelFilterItemTemp =
+  '<a href="#" onclick="select_level(\'{level_code}\')" class="dropdown-link-2 w-dropdown-link">{level_name}</a>';
 
 // Filter options
 let filter_subject = "null";
@@ -40,7 +40,7 @@ let levelList = [];
 
 let signed_user = null;
 
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User signed in
     signed_user = user;
@@ -62,13 +62,13 @@ function makeListItem(itemData, offers) {
   // Display possible offers in price field
   let basePrice = itemData.price;
   map.price = basePrice;
-  for (let i = 0; i < offers.length; i++) {
-    let offer = offers[i].offer;
-    if (offer.absolute_discount) {
-      let newPrice = basePrice - offer.absolute_discount;
-      map.price = `<s>${basePrice}</s> <span style="color: red;">${newPrice}</span>`;
-    }
-  }
+  // for (let i = 0; i < offers.length; i++) {
+  //   let offer = offers[i].offer;
+  //   if (offer.absolute_discount) {
+  //     let newPrice = basePrice - offer.absolute_discount;
+  //     map.price = `<s>${basePrice}</s> <span style="color: red;">${newPrice}</span>`;
+  //   }
+  // }
   map.education = itemData.education.place;
   map.subjects_id = "subjects-" + itemData.username;
   map.subjects = "";
@@ -89,7 +89,7 @@ function makeListItem(itemData, offers) {
       subjectField.innerHTML = txt;
     }
   };
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + itemData.username + "/subjects";
+  const ENDPOINT = API_ENDPOINT + "/tutors/" + itemData.username + "/subjects";
   req.open("GET", ENDPOINT, true);
   req.send();
   map.username = itemData.username;
@@ -118,8 +118,8 @@ function sendTutorListRequest() {
     if (this.readyState == 4 && this.status == 200) {
       const tutorsInfoList = JSON.parse(this.responseText)
       if (signed_user) {
-        signed_user.getIdToken(true).then(async function(idToken){
-          const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/users/me/offers";
+        signed_user.getIdToken(true).then(async function (idToken) {
+          const ENDPOINT = API_ENDPOINT + "/users/me/offers";
           let query = `?token=${idToken}`;
           let response = await fetch(ENDPOINT + query);
           let offers = await response.json();
@@ -130,7 +130,7 @@ function sendTutorListRequest() {
       }
     }
   };
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors";
+  const ENDPOINT = API_ENDPOINT + "/tutors";
   let query = "?subject={subject}&level={level}&price={price}";
   query = query.replace("{subject}", filter_subject);
   query = query.replace("{level}", filter_level);
@@ -161,7 +161,7 @@ function set_level_filter(level) {
   levelDropdownList.style.display = "none";
 }
 
-function set_price_filter(level) {}
+function set_price_filter(level) { }
 
 function select_subject(subject, skipRequest) {
   // If subject is empty, show all subjects
@@ -186,22 +186,22 @@ function select_level(level, skipRequest) {
   if (skipRequest != true) { sendTutorListRequest(); }
 }
 
-function select_price(price, skipRequest) {}
+function select_price(price, skipRequest) { }
 
 function subject_dropdown_toggle() { subjectDropdownList.style.display = ""; }
 function level_dropdown_toggle() { levelDropdownList.style.display = ""; }
 
 function fillSubjectFilter(data) {
-  subjectDropdownList.innerHTML = ''; 
-  subjectDropdownList.appendChild(makeItem(filterItemTemp, {subject_code: -1, subject_name: "Toate materiile"}));
+  subjectDropdownList.innerHTML = '';
+  subjectDropdownList.appendChild(makeItem(filterItemTemp, { subject_code: -1, subject_name: "Toate materiile" }));
   data.forEach(function (itemData) {
     subjectDropdownList.appendChild(makeItem(filterItemTemp, itemData));
   });
 }
 
 function fillLevelFilter(data) {
-  levelDropdownList.innerHTML = ''; 
-  levelDropdownList.appendChild(makeItem(levelFilterItemTemp, {level_code: -1, level_name: "Toate nivelurile"}));
+  levelDropdownList.innerHTML = '';
+  levelDropdownList.appendChild(makeItem(levelFilterItemTemp, { level_code: -1, level_name: "Toate nivelurile" }));
   data.forEach(function (itemData) {
     levelDropdownList.appendChild(makeItem(levelFilterItemTemp, itemData));
   });
@@ -218,7 +218,7 @@ function sendSubjectsRequest() {
       sendLevelsRequest();
     }
   };
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/subjects";
+  const ENDPOINT = API_ENDPOINT + "/subjects";
   req.open("GET", ENDPOINT, true);
   req.send();
 }
@@ -239,7 +239,7 @@ function sendLevelsRequest() {
       sendTutorListRequest();
     }
   };
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/levels";
+  const ENDPOINT = API_ENDPOINT + "/levels";
   req.open("GET", ENDPOINT, true);
   req.send();
 }

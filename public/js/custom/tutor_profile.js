@@ -1,29 +1,29 @@
-let reviewList    = document.getElementById("tutor-reviews-list");
+let reviewList = document.getElementById("tutor-reviews-list");
 let signup_modal = document.getElementById("signup-modal");
 
 let reviewTemp =
-'<div>' +
+  '<div>' +
   '<div class="text-block-15">{reviewer}</div><img src="{rating_image}" width="68" sizes="68px" alt="" class="image-11">' +
   '<div class="text-block-17">{comment}</div>' +
   '<div class="text-block-16">{date}</div>' +
-'</div>';
+  '</div>';
 
-let gradeRowTemp = 
-'<tr>' +
+let gradeRowTemp =
+  '<tr>' +
   '<td>{exam_name}</td>' +
   '<td>{exam_grade}</td>' +
-'</tr>';
+  '</tr>';
 
-let tutorSubjectTemp = 
-'<tr>' +
+let tutorSubjectTemp =
+  '<tr>' +
   '<td>{subject_name} - {level_name}</td>' +
-'</tr>';
+  '</tr>';
 
 let username = null;
 
-let messageForm     = document.getElementById("message-form");
-let messageBox      = messageForm["message"];
-let messageSubject  = messageForm["Subject"];
+let messageForm = document.getElementById("message-form");
+let messageBox = messageForm["message"];
+let messageSubject = messageForm["Subject"];
 
 const defaultMessage = "Salut! Vreau să fac meditații online și sunt în căutarea unui mentor. Aș dori o sesiune gratuită pentru a afla mai multe despre tine. Aștept un răspuns cât mai curând!";
 
@@ -71,13 +71,13 @@ function fillTutorProfile(data, offers) {
   // Display possible offers
   let basePrice = data.price;
   let priceTextValue = basePrice;
-  for (let i = 0; i < offers.length; i++) {
-    let offer = offers[i].offer;
-    if (offer.absolute_discount) {
-      let newPrice = basePrice - offer.absolute_discount;
-      priceTextValue = `<s>${basePrice}</s> <span style="color: red;">${newPrice}</span>`;
-    }
-  }
+  // for (let i = 0; i < offers.length; i++) {
+  //   let offer = offers[i].offer;
+  //   if (offer.absolute_discount) {
+  //     let newPrice = basePrice - offer.absolute_discount;
+  //     priceTextValue = `<s>${basePrice}</s> <span style="color: red;">${newPrice}</span>`;
+  //   }
+  // }
 
   priceText.innerHTML = priceTextValue + " RON/ORĂ";
 
@@ -85,7 +85,7 @@ function fillTutorProfile(data, offers) {
   gradesTable.innerHTML = "<tr><th>Examene</th><th>Note</th></tr>";
   for (let key in data.grades) {
     const tempData = {
-      exam_name: key, 
+      exam_name: key,
       exam_grade: data.grades[key]
     };
     gradesTable.appendChild(makeItem(gradeRowTemp, tempData, "TABLE"));
@@ -106,16 +106,16 @@ function fillTutorProfile(data, offers) {
 
       res.forEach(value => {
         const tempData = {
-          value: "" + value.subject_code + "," + value.level_code, 
-          subject_name: value.subject_name, 
+          value: "" + value.subject_code + "," + value.level_code,
+          subject_name: value.subject_name,
           level_name: value.level_name
         };
-        messageSubject.appendChild(makeItem(opt, tempData)); 
+        messageSubject.appendChild(makeItem(opt, tempData));
         subjectsTable.appendChild(makeItem(tutorSubjectTemp, tempData, "TABLE"));
       });
     }
   };
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + data.username + "/subjects?showLevels=1";
+  const ENDPOINT = API_ENDPOINT + "/tutors/" + data.username + "/subjects?showLevels=1";
   req.open("GET", ENDPOINT, true);
   req.send();
 }
@@ -128,7 +128,7 @@ function sendTutorProfileRequest(username) {
 
       if (signed_user) {
         idToken = await signed_user.getIdToken(true)
-        const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/users/me/offers";
+        const ENDPOINT = API_ENDPOINT + "/users/me/offers";
         let query = `?token=${idToken}`;
         let response = await fetch(ENDPOINT + query);
         let offers = await response.json();
@@ -138,7 +138,7 @@ function sendTutorProfileRequest(username) {
       }
     }
   };
-  const ENDPOINT = "https://gv281.user.srcf.net/meditatii/api/tutors/" + username;
+  const ENDPOINT = API_ENDPOINT + "/tutors/" + username;
   req.open("GET", ENDPOINT, true);
   req.send();
 }
@@ -152,7 +152,7 @@ function sendMessage() {
     let req = new XMLHttpRequest();
     req.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        window.location.href = "/mesagerie.html?u="+username;
+        window.location.href = "/mesagerie.html?u=" + username;
       }
     };
     user.getIdToken(true)
@@ -174,7 +174,7 @@ function sendMessage() {
       });
   } else {
     // Add cookie and redirect to login page
-    setCookie("tutor-message", JSON.stringify({'tutor': username, 'content': messageBox.value, 'subject': messageSubject.value}));
+    setCookie("tutor-message", JSON.stringify({ 'tutor': username, 'content': messageBox.value, 'subject': messageSubject.value }));
     signup_modal.style.display = 'block';
   }
 }
@@ -213,7 +213,7 @@ function main() {
 
 let signed_user = null;
 
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User signed in
     signed_user = user;
