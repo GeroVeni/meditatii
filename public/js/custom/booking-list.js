@@ -119,21 +119,17 @@ let bookingTemp_acceptRefuse =
   '</div>' +
   '</div>';
 
-function updateBooking(booking_id, requested_status) {
+function updateBooking(booking_id, verb) {
+  if (verb != 'accept' && verb != 'reject') return
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       user.getIdToken(true).then(function (idToken) {
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
+        const ENDPOINT = API_ENDPOINT + `/bookings/${booking_id}/${verb}`;
+        postData(ENDPOINT, idToken)
+          .then(() => {
             console.log("Update Successfull");
             location.reload();
-          }
-        };
-        const ENDPOINT = API_ENDPOINT + "/bookings/update";
-        req.open("POST", ENDPOINT, true);
-        req.setRequestHeader("Content-type", "application/json");
-        req.send(JSON.stringify({ "token": idToken, "requested_status": requested_status, "booking_id": booking_id }));
+          })
       }).catch(function (error) {
         console.log("Error in retrieving user token: " + error.message);
       });
@@ -143,7 +139,13 @@ function updateBooking(booking_id, requested_status) {
   });
 }
 
+function acceptBooking(booking_id) {
+  return updateBooking(booking_id, 'accept')
+}
 
+function rejectBooking(booking_id) {
+  return updateBooking(booking_id, 'reject')
+}
 
 function buttonsInit() {
   var acceptButtons = document.getElementsByClassName("accept");
@@ -152,17 +154,17 @@ function buttonsInit() {
   var payButtons = document.getElementsByClassName("pay");
   for (var i = 0; i < acceptButtons.length; i++) {
     acceptButtons.item(i).onclick = function () {
-      updateBooking(this.name, 2);
+      acceptBooking(this.name)
     }
   };
   for (var i = 0; i < payButtons.length; i++) {
     payButtons.item(i).onclick = function () {
-      window.location.replace("https://meditatiipenet.ro/informatiifacturare.html?b=" + this.name);
+      window.location.href = '/informatiifacturare.html?b=' + this.name
     }
   };
   for (var i = 0; i < refuseButtons.length; i++) {
     refuseButtons.item(i).onclick = function () {
-      updateBooking(this.name, 6);
+      rejectBooking(this.name)
     }
   };
   for (var i = 0; i < enterLesson.length; i++) {
@@ -171,24 +173,23 @@ function buttonsInit() {
       sessionStorage.setItem("booking_id", booking_id);
       firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
-          user.getIdToken(true).then(function (idToken) {
-            var req = new XMLHttpRequest();
-            req.onreadystatechange = function () {
-              if (this.readyState == 4 && this.status == 200) {
-                var data = JSON.parse(this.responseText);
-                sessionStorage.setItem('end_timestamp', data[0].end_timestamp);
-                sessionStorage.setItem("start_timestamp", data[0].start_timestamp);
-                sessionStorage.setItem("authorised_users", data[0].student_name + "," + data[0].tutor_name);
-                sessionStorage.setItem("username", data[0].student_name);
-                window.location.replace("https://meditatiipenet.ro/lectie.html");
-              }
-            };
-            const ENDPOINT = API_ENDPOINT + "/bookings/read?token=" + idToken + "&booking_id=" + booking_id;
-            req.open("GET", ENDPOINT, true);
-            req.send();
-          }).catch(function (error) {
-            console.log("Error in retrieving user token: " + error.message);
-          });
+          user.getIdToken(true)
+            .then(idToken => {
+              const ENDPOINT = API_ENDPOINT + `/bookings/${booking_id}`;
+              getData(ENDPOINT, idToken)
+                .then(async data => {
+                  const tutor = getData(API_ENDPOINT + `/users/${data.tutor_username}`)
+                  const student = getData(API_ENDPOINT + `/users/${data.student_username}`)
+                  sessionStorage.setItem('end_timestamp', data.end_timestamp);
+                  sessionStorage.setItem("start_timestamp", data.start_timestamp);
+                  sessionStorage.setItem("authorised_users", student.name + "," + tutor.name);
+                  sessionStorage.setItem("username", student.name);
+                  window.location.href = "https://meditatiipenet.ro/lectie.html"
+                })
+            })
+            .catch(err => {
+              console.log("Error in retrieving user token: " + err.message);
+            });
         } else {
           //No user signed in
         }
@@ -197,12 +198,14 @@ function buttonsInit() {
   }
 }
 
-function makeListItem(itemData) {
+function makeListItem(username, itemData) {
   let map = {};
   const weekday = [
     "Duminică", "Luni", "Marți", "Miercuri",
     "Joi", "Vineri", "Sâmbătă"
   ];
+  console.log(username)
+  console.log(itemData)
   let start_date = new Date(itemData.start_timestamp);
   // Add 3 hours from UTC time to get Romania time
   // TODO: Adjust for winter time zone
@@ -226,23 +229,23 @@ function makeListItem(itemData) {
   types[0] = "Întâlnire Gratuită (15 minute)";
   types[1] = "Meditație Plătită (O oră)";
   map.session_type = types[itemData.session_type];
-  if (itemData.username == itemData.student_id)
-    map.session_nameOther = itemData.tutor_name;
-  else if (itemData.username == itemData.tutor_id)
-    map.session_nameOther = itemData.student_name;
-  map.session_subject = itemData.subject_name;
-  map.session_level = itemData.level_name;
+  if (username == itemData.student_username)
+    map.session_nameOther = itemData.tutor_username;
+  else if (username == itemData.tutor_username)
+    map.session_nameOther = itemData.student_username;
+  map.session_subject = itemData.subject.subject.subject_name;
+  map.session_level = itemData.subject.level.level_name;
   let status = itemData.status_id;
-  let student_id = itemData.student_id;
-  let tutor_id = itemData.tutor_id;
-  let username = itemData.username;
-  if ((status == 0 && username == student_id) || (status == 1 && username == tutor_id))
+  let student_username = itemData.student_username;
+  let tutor_username = itemData.tutor_username;
+  console.log(map)
+  if ((status == 0 && username == student_username) || (status == 1 && username == tutor_username))
     return makeItem(bookingTemp_awaitingConfirmation, map);
-  else if ((status == 0 && username == tutor_id) || (status == 1 && username == student_id))
+  else if ((status == 0 && username == tutor_username) || (status == 1 && username == student_username))
     return makeItem(bookingTemp_acceptRefuse, map);
-  else if (status == 2 && username == tutor_id)
+  else if (status == 2 && username == tutor_username)
     return makeItem(bookingTemp_awaitingPayment, map);
-  else if (status == 2 && username == student_id)
+  else if (status == 2 && username == student_username)
     return makeItem(bookingTemp_lessonToPay, map);
   else if (status == 3)
     return makeItem(bookingTemp_lessonPaid, map);
@@ -252,37 +255,33 @@ function makeListItem(itemData) {
     console.log("Session is in the past")
 }
 
-
-
 function sendBookingsRequest() {
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-      user.getIdToken(/* forceRefresh */ true).then(function (idToken) {
-        // send token to backend
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            fillBookingList(bookingList, this.responseText, buttonsInit);
-          }
-        };
-        const ENDPOINT = API_ENDPOINT + "/bookings/read?token=" + idToken;
-        req.open("GET", ENDPOINT, true);
-        req.send();
-      }).catch(function (error) {
-        // Handle error
-        console.log("Error in retrieving user token: " + error.message);
-      });
+      user.getIdToken(/* forceRefresh */ true)
+        .then(async idToken => {
+          const ENDPOINT = API_ENDPOINT + "/bookings"
+          const me = await getData(API_ENDPOINT + "/users/me", idToken)
+          getData(ENDPOINT, idToken)
+            .then(response => {
+              console.log(response)
+              fillBookingList(bookingList, me.username, response, buttonsInit);
+            })
+        })
+        .catch(err => {
+          // Handle error
+          console.log("Error in retrieving user token: " + err.message);
+        });
     } else {
       // No user is signed in.
     }
   });
-  var user = firebase.auth().currentUser;
 }
 
-function fillBookingList(HTMLelem, data, callback) {
+function fillBookingList(HTMLelem, username, data, callback) {
   HTMLelem.innerHTML = "";
-  JSON.parse(data).forEach(function (itemData) {
-    let item = makeListItem(itemData);
+  data.forEach(function (itemData) {
+    let item = makeListItem(username, itemData);
     if (item) {
       HTMLelem.appendChild(item);
     }
@@ -290,30 +289,4 @@ function fillBookingList(HTMLelem, data, callback) {
   callback();
 }
 
-
-function updateAllBookings() {
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      user.getIdToken(/* forceRefresh */ true).then(function (idToken) {
-        // send token to backend
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            sendBookingsRequest();
-          }
-        };
-        const ENDPOINT = API_ENDPOINT + "/bookings/general_update";
-        req.open("POST", ENDPOINT, true);
-        req.setRequestHeader("Content-type", "application/json");
-        req.send(JSON.stringify({ "token": idToken }));
-      }).catch(function (error) {
-        // Handle error
-        console.log("Error in retrieving user token: " + error.message);
-      });
-    } else {
-      // No user is signed in.
-    }
-  });
-}
-
-updateAllBookings();
+sendBookingsRequest();

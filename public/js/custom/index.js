@@ -3,15 +3,11 @@ let searchList = document.getElementById("search-list");
 let subjectList = null;
 let searchItemTemp = '<a class="w3-button" onclick="searchSubject({subject_code})" style="display: block; margin: 0px 5px;">{subject_name}</a>';
 
-let req = new XMLHttpRequest();
-req.onreadystatechange = function () {
-  if (this.readyState == 4 && this.status == 200) {
-    subjectList = JSON.parse(this.responseText);
-  }
-};
 const ENDPOINT = API_ENDPOINT + "/subjects";
-req.open("GET", ENDPOINT, true);
-req.send();
+getData(ENDPOINT)
+  .then(response => {
+    subjectList = response.subjects
+  })
 
 function filterSubjects(filter) {
   return subjectList.filter(subject =>
@@ -52,23 +48,15 @@ function searchSubject(code) {
 
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
-    // User logged in, check if he has to send a
-    // tutor message
+    // User logged in, check if he has to send a tutor message
     if (getCookie('tutor-message') != "") {
       // Parse cookie
       let msg = JSON.parse(getCookie('tutor-message'));
       // Get user token
       user.getIdToken(true).then(idToken => {
-        let messageReq = new XMLHttpRequest();
-        messageReq.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            window.location.href = "/mesagerie.html?u=" + msg.tutor;
-          }
-        };
         // Send message
         let sublev = msg.subject.split(',');
-        let postData = {
-          token: idToken,
+        let data = {
           recipient: msg.tutor,
           message_type: "text",
           message: msg.content,
@@ -77,9 +65,10 @@ firebase.auth().onAuthStateChanged(user => {
           level_code: sublev[1]
         };
         const ENDPOINT = API_ENDPOINT + "/messages";
-        messageReq.open("POST", ENDPOINT, true);
-        messageReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        messageReq.send(JSON.stringify(postData));
+        postData(ENDPOINT, idToken, data)
+          .then(() => {
+            window.location.href = "/mesagerie.html?u=" + msg.tutor;
+          })
       });
       setCookie('tutor-message', '');
     }

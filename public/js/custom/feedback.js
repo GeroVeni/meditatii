@@ -32,17 +32,17 @@ function submitFeedback() {
   })
 }
 
-async function displayLastSession(token) {
+async function displayLastSession(idToken) {
   const ENDPOINT = API_ENDPOINT;
-  const query = `?token=${token}&other=${tutor_username}&last=1`;
-  let response = await fetch(ENDPOINT + '/bookings' + query);
-  let result = await response.json();
+  let response = await getData(ENDPOINT + '/bookings', idToken);
+  let bookings = await response.json();
+  bookings = bookings.filter(bk => bk.tutor_username == tutor_username)
 
-  if (result.length == 0) {
+  if (bookings.length == 0) {
     console.log("No bookings found");
     return;
   }
-  const booking = result[0];
+  const booking = bookings[0];
   response = await fetch(ENDPOINT + `/tutors/${tutor_username}`);
   const tutor = await response.json();
   if ('code' in tutor) {
