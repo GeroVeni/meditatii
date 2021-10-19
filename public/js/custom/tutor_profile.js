@@ -91,56 +91,37 @@ function fillTutorProfile(data, offers) {
     gradesTable.appendChild(makeItem(gradeRowTemp, tempData, "TABLE"));
   }
 
-  // Make a request for tutor subjects
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      // Fill subject dropdown list and subjects list
-      let res = JSON.parse(this.responseText);
+  // Fill subject dropdown list and subjects list
+  let opt0 = '<option value="">Selectează materia și nivelul</option>';
+  let opt = '<option value="{value}">{subject_name} - {level_name}</option>';
 
-      let opt0 = '<option value="">Selectează materia și nivelul</option>';
-      let opt = '<option value="{value}">{subject_name} - {level_name}</option>';
+  messageSubject.innerHTML = opt0;
+  subjectsTable.innerHTML = "";
 
-      messageSubject.innerHTML = opt0;
-      subjectsTable.innerHTML = "";
-
-      res.forEach(value => {
-        const tempData = {
-          value: "" + value.subject_code + "," + value.level_code,
-          subject_name: value.subject_name,
-          level_name: value.level_name
-        };
-        messageSubject.appendChild(makeItem(opt, tempData));
-        subjectsTable.appendChild(makeItem(tutorSubjectTemp, tempData, "TABLE"));
-      });
-    }
-  };
-  const ENDPOINT = API_ENDPOINT + "/tutors/" + data.username + "/subjects?showLevels=1";
-  req.open("GET", ENDPOINT, true);
-  req.send();
+  data.subjects.forEach(value => {
+    const tempData = {
+      value: "" + value.subject.subject_code + "," + value.level.level_code,
+      subject_name: value.subject.subject_name,
+      level_name: value.level.level_name
+    };
+    messageSubject.appendChild(makeItem(opt, tempData));
+    subjectsTable.appendChild(makeItem(tutorSubjectTemp, tempData, "TABLE"));
+  });
 }
 
 function sendTutorProfileRequest(username) {
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = async function () {
-    if (this.readyState == 4 && this.status == 200) {
-      const tutorInfo = JSON.parse(this.responseText);
-
+  const ENDPOINT = API_ENDPOINT + "/tutors/" + username;
+  getData(ENDPOINT)
+    .then(async tutorInfo => {
       if (signed_user) {
         idToken = await signed_user.getIdToken(true)
-        const ENDPOINT = API_ENDPOINT + "/users/me/offers";
-        let query = `?token=${idToken}`;
-        let response = await fetch(ENDPOINT + query);
-        let offers = await response.json();
-        fillTutorProfile(tutorInfo, offers);
+        // const ENDPOINT = API_ENDPOINT + "/users/me/offers";
+        // let offers = await getData(ENDPOINT, idToken);
+        fillTutorProfile(tutorInfo, []);
       } else {
         fillTutorProfile(tutorInfo, []);
       }
-    }
-  };
-  const ENDPOINT = API_ENDPOINT + "/tutors/" + username;
-  req.open("GET", ENDPOINT, true);
-  req.send();
+    })
 }
 
 function sendMessage() {
@@ -148,18 +129,10 @@ function sendMessage() {
   let user = firebase.auth().currentUser;
   if (user) {
     // User already logged in; send request
-
-    let req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        window.location.href = "/mesagerie.html?u=" + username;
-      }
-    };
     user.getIdToken(true)
       .then(token => {
         let sublev = messageSubject.value.split(',');
-        let postData = {
-          token: token,
+        let data = {
           recipient: username,
           message_type: "text",
           message: messageBox.value,
@@ -168,9 +141,10 @@ function sendMessage() {
           level_code: sublev[1]
         };
         const ENDPOINT = API_ENDPOINT + "/messages";
-        req.open("POST", ENDPOINT, true);
-        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        req.send(JSON.stringify(postData));
+        postData(ENDPOINT, token, data)
+          .then(() => {
+            window.location.href = "/mesagerie.html?u=" + username;
+          })
       });
   } else {
     // Add cookie and redirect to login page
@@ -180,25 +154,21 @@ function sendMessage() {
 }
 
 function sendTutorReviewsRequest(username) {
-  var req = new XMLHttpRequest();
   reviewList.innerHTML = '';
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      let reviews = JSON.parse(this.responseText);
-      reviews.forEach(review => {
+  const ENDPOINT = API_ENDPOINT + "/reviews?tutor_username=" + username;
+  getData(ENDPOINT)
+    .then(async reviews => {
+      for (const review of reviews) {
+        const x = await getData(API_ENDPOINT + `/users/${review.student_username}`)
         let tempData = {
-          reviewer: review.surname + " " + review.name,
+          reviewer: `${x.name} ${x.surname}`,
           comment: review.comment,
-          rating_image: getRatingImagePath(9),
+          rating_image: getRatingImagePath(review.rating),
           date: review.date.substr(0, 10)
         };
         reviewList.appendChild(makeItem(reviewTemp, tempData));
-      });
-    }
-  };
-  const ENDPOINT = API_ENDPOINT + "/reviews?tutor_username=" + username;
-  req.open("GET", ENDPOINT, true);
-  req.send();
+      }
+    })
 }
 
 function main() {
