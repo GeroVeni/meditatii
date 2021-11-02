@@ -7,6 +7,7 @@ let login_form = document.getElementById("email-form");
 let name_field = login_form["name"];
 let surname_field = login_form["Surname"];
 let email_field = login_form["email"];
+let phone_field = login_form["phone"];
 let password_field = login_form["Password"];
 let confirm_password_field = login_form["Confirm-password"];
 let over_16_check = login_form["checkbox"];
@@ -46,20 +47,33 @@ function splitName(name) {
   return [splitName.slice(0, splitName.length - 1).join(' '), splitName[splitName.length - 1]];
 }
 
+function convertPhoneNumberToE164(num) {
+  if (num.startsWith('+40')) return num
+  return '+40' + num
+}
+
 function createDBUser(user) {
   user.getIdToken(true)
-    .then(function (token) {
+    .then(async idToken => {
+      const me = await getData(API_ENDPOINT + '/users/me', idToken)
+      if (me) {
+        console.log('User already exists')
+        return
+      }
       let data = {
         name: '',
-        surname: ''
+        surname: '',
+        phone: ''
       };
       if (loginMethod == 'form') {
-        data.name = name_field.value;
-        data.surname = surname_field.value;
+        data.name = name_field.value
+        data.surname = surname_field.value
+        data.phone = convertPhoneNumberToE164(phone_field.value)
       } else {
-        let nameSurname = splitName(user.displayName);
-        data.name = nameSurname[0];
-        data.surname = nameSurname[1];
+        let nameSurname = splitName(user.displayName)
+        data.name = nameSurname[0]
+        data.surname = nameSurname[1]
+        data.phone = user.phoneNumber
       }
       console.log(`Attempting to add user: ${JSON.stringify(data)}`);
       console.log(`Login method: ${loginMethod}`);

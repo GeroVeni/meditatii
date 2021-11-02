@@ -1,4 +1,5 @@
-const API_ENDPOINT = "https://gv281.user.srcf.net/meditatii/dev/api";
+const API_ENDPOINT = "https://gv281.user.srcf.net/meditatii/api";
+// const API_ENDPOINT = "https://gv281.user.srcf.net/meditatii/dev/api";
 // const API_ENDPOINT = "http://localhost:9090/api";
 
 async function postData(url = '', idToken = '', data = {}, method = 'POST') {

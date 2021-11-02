@@ -95,6 +95,29 @@
   font-size: 14px;
 }
 
+.med-main-page-social-links-container {
+  margin: 0;
+  position: absolute;
+  top: 15%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  border: 5px solid white;
+  border-radius: 0 5px 5px 0;
+  float: left;
+  background-color: white
+}
+
+.med-main-page-social-link-button {
+  display: block;
+  margin: 8px 0;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 .loader {
   border: 8px solid #f3f3f3; /* Light grey */
   border-top: 8px solid #9e005d; /* Blue */
