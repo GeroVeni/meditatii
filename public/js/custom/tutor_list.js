@@ -11,7 +11,7 @@ let tutorTemp =
   '</div>' +
   '<div class="column-3 w-col w-col-3 w-col-tiny-tiny-stack">' +
   '<div class="text-block-7 list _25">GRATUIT<br><span class="text-span-27">după prima sesiune gratuită prețul este de <br></span><span class="text-span-28">{price} RON/oră</span></div>' +
-  '<div style="display:none" class="text-block-8 list"><br><span class="text-span-7">50</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
+  '<div class="text-block-8 list {hours_taught_hide_class}"><br><span class="text-span-7">{hours_taught}</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
   '<div style="display:none" class="text-block-18 list">{reviews} review-uri</div>' +
   '<a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
   '</div>' +
@@ -57,7 +57,9 @@ function makeListItem(itemData, offers) {
   map.full_name = itemData.surname + " " + itemData.name;
   map.description = itemData.description;
   map.photo_link = itemData.photo_link;
-  map.hours_taught = "0";
+  map.hours_taught = itemData.completed_sessions;
+  map.hours_taught_hide_class = ''
+  if (itemData.completed_sessions == 0) map.hours_taught_hide_class = 'w3-hide'
   map.reviews = "1";
   // Display possible offers in price field
   let basePrice = itemData.price;

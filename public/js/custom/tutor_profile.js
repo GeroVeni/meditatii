@@ -44,22 +44,23 @@ function splitParagraphs(text) {
   return ans;
 }
 
-function fillTutorProfile(data, offers) {
-  // Get HTML fields
-  var fullNameText = document.getElementById("tutor-full-name");
-  var educationText = document.getElementById("tutor-education");
-  var descriptionText = document.getElementById("tutor-description");
-  var profileImg = document.getElementById("tutor-photo");
-  var aboutMeText = document.getElementById("tutor-about-me");
-  var aboutSessionsText = document.getElementById("tutor-about-sessions");
-  var priceText = document.getElementById("tutor-price");
-  var gradesTable = document.getElementById("tutor-grades");
-  var subjectsTable = document.getElementById("tutor-subjects");
-  var sessionHoursField = document.getElementById("tutor-session-hours");
-  var ratingStarsImg = document.getElementById("tutor-rating-stars");
-  var ratingCountText = document.getElementById("tutor-rating-count");
-  var reviewsList = document.getElementById("tutor-reviews-list");
+// Get HTML fields
+var fullNameText = document.getElementById("tutor-full-name");
+var educationText = document.getElementById("tutor-education");
+var descriptionText = document.getElementById("tutor-description");
+var profileImg = document.getElementById("tutor-photo");
+var aboutMeText = document.getElementById("tutor-about-me");
+var aboutSessionsText = document.getElementById("tutor-about-sessions");
+var priceText = document.getElementById("tutor-price");
+var gradesTable = document.getElementById("tutor-grades");
+var subjectsTable = document.getElementById("tutor-subjects");
+var sessionHoursField = document.getElementById("tutor-session-hours");
+var sessionHoursValueField = document.getElementById("tutor-session-hours-value");
+var ratingStarsImg = document.getElementById("tutor-rating-stars");
+var ratingCountText = document.getElementById("tutor-rating-count");
+var reviewsList = document.getElementById("tutor-reviews-list");
 
+function fillTutorProfile(data, offers) {
   // Fill the fields
   fullNameText.innerHTML = data.surname + " " + data.name;
   educationText.innerHTML = data.education.place;
@@ -67,6 +68,13 @@ function fillTutorProfile(data, offers) {
   profileImg.src = data.photo_link;
   aboutMeText.innerHTML = splitParagraphs(data.about_me);
   aboutSessionsText.innerHTML = splitParagraphs(data.about_sessions);
+
+  if (data.completed_sessions && data.completed_sessions > 0) {
+    sessionHoursField.style.display = ''
+    sessionHoursValueField.innerHTML = data.completed_sessions
+  } else {
+    sessionHoursField.style.display = 'none'
+  }
 
   // Display possible offers
   let basePrice = data.price;
