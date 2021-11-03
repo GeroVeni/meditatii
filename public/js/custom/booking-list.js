@@ -30,7 +30,7 @@ let bookingTemp_lessonToPay =
   '<div class="text-block-24">{session_nameOther}</div>' +
   '</div>' +
   '<div class="w-col w-col-3">' +
-  '<div class="text-block-25">{session_subject} - {session_subject}</div>' +
+  '<div class="text-block-25">{session_subject} - {session_level}</div>' +
   '</div>' +
   '<div class="w-col w-col-1">' +
   '<div class="text-block-26 _2">În așteptarea plății</div>' +
@@ -51,7 +51,7 @@ let bookingTemp_lessonPaid =
   '<div class="text-block-24">{session_nameOther}</div>' +
   '</div>' +
   '<div class="w-col w-col-3">' +
-  '<div class="text-block-25">{session_subject} - {session_subject}</div>' +
+  '<div class="text-block-25">{session_subject} - {session_level}</div>' +
   '</div>' +
   '<div class="w-col w-col-1"></div>' +
   '<div class="w-col w-col-2">' +
@@ -198,7 +198,11 @@ function buttonsInit() {
   }
 }
 
-function makeListItem(username, itemData) {
+function getFullName(profile) {
+  return `${profile.name} ${profile.surname}`
+}
+
+async function makeListItem(username, itemData) {
   let map = {};
   const weekday = [
     "Duminică", "Luni", "Marți", "Miercuri",
@@ -207,9 +211,9 @@ function makeListItem(username, itemData) {
   console.log(username)
   console.log(itemData)
   let start_date = new Date(itemData.start_timestamp);
-  // Add 3 hours from UTC time to get Romania time
-  // TODO: Adjust for winter time zone
-  start_date.setHours(start_date.getUTCHours() + 3);
+  // Add 2 hours from UTC time to get Romania time
+  // TODO: Adjust for winter/summer time zone
+  start_date.setHours(start_date.getUTCHours() + 2);
   // Fill in template values
   map.booking_id = itemData.booking_id;
   map.session_dayOfWeek = weekday[start_date.getDay()];
@@ -229,10 +233,13 @@ function makeListItem(username, itemData) {
   types[0] = "Întâlnire Gratuită (15 minute)";
   types[1] = "Meditație Plătită (O oră)";
   map.session_type = types[itemData.session_type];
+
+  const tutorProfile = await getData(API_ENDPOINT + `/users/${itemData.tutor_username}`)
+  const studentProfile = await getData(API_ENDPOINT + `/users/${itemData.student_username}`)
   if (username == itemData.student_username)
-    map.session_nameOther = itemData.tutor_username;
+    map.session_nameOther = getFullName(tutorProfile);
   else if (username == itemData.tutor_username)
-    map.session_nameOther = itemData.student_username;
+    map.session_nameOther = getFullName(studentProfile);
   map.session_subject = itemData.subject.subject.subject_name;
   map.session_level = itemData.subject.level.level_name;
   let status = itemData.status_id;
@@ -265,7 +272,7 @@ function sendBookingsRequest() {
           getData(ENDPOINT, idToken)
             .then(response => {
               console.log(response)
-              fillBookingList(bookingList, me.username, response, buttonsInit);
+              return fillBookingList(bookingList, me.username, response, buttonsInit);
             })
         })
         .catch(err => {
@@ -278,14 +285,14 @@ function sendBookingsRequest() {
   });
 }
 
-function fillBookingList(HTMLelem, username, data, callback) {
+async function fillBookingList(HTMLelem, username, data, callback) {
   HTMLelem.innerHTML = "";
-  data.forEach(function (itemData) {
-    let item = makeListItem(username, itemData);
+  for (const itemData of data) {
+    let item = await makeListItem(username, itemData);
     if (item) {
       HTMLelem.appendChild(item);
     }
-  });
+  }
   callback();
 }
 
