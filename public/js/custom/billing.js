@@ -22,6 +22,15 @@ firebase.auth().onAuthStateChanged(user => {
   user.getIdToken(true).then(async idToken => {
     let billingResponse = await getData(API_ENDPOINT + `/bookings/${booking_id}/order`, idToken)
     if (!billingResponse) billingResponse = await getData(API_ENDPOINT + "/users/me/billing", idToken)
+    if (!billingResponse) billingResponse = {
+      fullName: "",
+      country: "",
+      county: "",
+      city: "",
+      postal_code: "",
+      address_req: "",
+      address_optional: ""
+    }
     full_name_elem.value = billingResponse.fullName
     country_elem.value = billingResponse.country
     county_elem.value = billingResponse.county
@@ -78,7 +87,7 @@ function billing() {
               postData(ENDPOINT, idToken)
                 .then(data => {
                   console.log(data);
-                  // window.location.href = data.formUrl
+                  window.location.href = data.formUrl
                 })
             }
           })

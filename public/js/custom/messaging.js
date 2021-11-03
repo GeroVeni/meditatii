@@ -140,7 +140,7 @@ function refreshMessageList() {
           } else {
             messages.forEach(m => {
               let temp = otherMessageTemp;
-              if (m.username == m.sender_id) { temp = ownMessageTemp; }
+              if (other_username != m.sender_username) { temp = ownMessageTemp; }
               messages_container.appendChild(makeItem(temp, { message: m.content }));
             });
             scrollToBottom();
@@ -226,9 +226,9 @@ function sendBooking() {
   if (paid_session.checked) {
     sessionType = 1;
   }
-  // UTC +3
-  // TODO: Adjust for winter time zone
-  let start_datetime = new Date(start_date.value + "T" + start_time.value + "+03:00");
+  // UTC +2
+  // TODO: Adjust for winter/summer time zone
+  let start_datetime = new Date(start_date.value + "T" + start_time.value + "+02:00");
   let start_datetime_string = start_datetime.toISOString();
   console.log(start_datetime_string);
 
