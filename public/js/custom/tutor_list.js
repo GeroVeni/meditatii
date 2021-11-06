@@ -11,7 +11,7 @@ let tutorTemp =
   '</div>' +
   '<div class="column-3 w-col w-col-3 w-col-tiny-tiny-stack">' +
   '<div class="text-block-7 list _25">GRATUIT<br><span class="text-span-27">după prima sesiune gratuită prețul este de <br></span><span class="text-span-28">{price} RON/oră</span></div>' +
-  '<div style="display:none" class="text-block-8 list"><br><span class="text-span-7">50</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
+  '<div class="text-block-8 list {hours_taught_hide_class}"><br><span class="text-span-7">{hours_taught}</span> <span class="text-span-8">de ore predate</span><br></div><img style="display:none" src="images/5-star-rating.png" width="114" sizes="114px" alt="" class="image-13 list">' +
   '<div style="display:none" class="text-block-18 list">{reviews} review-uri</div>' +
   '<a href="profilul-mentorului.html?username={username}" class="button-6 w-button">Vezi profilul! </a>' +
   '</div>' +
@@ -24,9 +24,9 @@ let levelFilterItemTemp =
   '<a href="#" onclick="select_level(\'{level_code}\')" class="dropdown-link-2 w-dropdown-link">{level_name}</a>';
 
 // Filter options
-let filter_subject = "null";
-let filter_level = "null";
-let filter_price = "null";
+let filter_subject = "";
+let filter_level = "";
+let filter_price = "";
 
 // Search dropdowns
 let selectedSubjectText = document.getElementById("subject-selected-text");
@@ -57,7 +57,9 @@ function makeListItem(itemData, offers) {
   map.full_name = itemData.surname + " " + itemData.name;
   map.description = itemData.description;
   map.photo_link = itemData.photo_link;
-  map.hours_taught = "0";
+  map.hours_taught = itemData.completed_sessions;
+  map.hours_taught_hide_class = ''
+  if (itemData.completed_sessions == 0) map.hours_taught_hide_class = 'w3-hide'
   map.reviews = "1";
   // Display possible offers in price field
   let basePrice = itemData.price;
@@ -71,28 +73,21 @@ function makeListItem(itemData, offers) {
   // }
   map.education = itemData.education.place;
   map.subjects_id = "subjects-" + itemData.username;
-  map.subjects = "";
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      let res = JSON.parse(this.responseText);
-      let slice = false;
-      let txt = '';
-      let username = '';
-      res.forEach(value => {
-        if (slice) { txt += ' / '; }
-        else { slice = true; }
-        txt += value.subject_name;
-        username = value.tutor_username;
-      });
-      let subjectField = document.getElementById("subjects-" + username);
-      subjectField.innerHTML = txt;
-    }
-  };
-  const ENDPOINT = API_ENDPOINT + "/tutors/" + itemData.username + "/subjects";
-  req.open("GET", ENDPOINT, true);
-  req.send();
   map.username = itemData.username;
+  let slice = false;
+  let subjectsText = '';
+
+  // Find tutor subjects from list of subjects and levels
+  subjects = []
+  itemData.subjects.forEach(value => {
+    const nextSubject = value.subject.subject_name
+    if (subjects.includes(nextSubject)) return
+    subjects.push(nextSubject)
+    if (slice) { subjectsText += ' / '; }
+    else { slice = true; }
+    subjectsText += value.subject.subject_name;
+  });
+  map.subjects = subjectsText
 
   return makeItem(tutorTemp, map);
 }
@@ -113,30 +108,21 @@ function fillTutorList(data, offers) {
 }
 
 function sendTutorListRequest() {
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      const tutorsInfoList = JSON.parse(this.responseText)
+  const ENDPOINT = API_ENDPOINT + "/tutors";
+  let query = `?subject=${filter_subject || ""}&level=${filter_level || ""}&price=${filter_price || ""}`;
+  getData(ENDPOINT + query)
+    .then(tutorsInfoList => {
       if (signed_user) {
-        signed_user.getIdToken(true).then(async function (idToken) {
-          const ENDPOINT = API_ENDPOINT + "/users/me/offers";
-          let query = `?token=${idToken}`;
-          let response = await fetch(ENDPOINT + query);
-          let offers = await response.json();
-          fillTutorList(tutorsInfoList, offers);
-        });
+        signed_user.getIdToken(true)
+          .then(async function (idToken) {
+            // const ENDPOINT = API_ENDPOINT + "/users/me/offers";
+            // let offers = await getData(ENDPOINT, idToken);
+            fillTutorList(tutorsInfoList, []);
+          });
       } else {
         fillTutorList(tutorsInfoList, []);
       }
-    }
-  };
-  const ENDPOINT = API_ENDPOINT + "/tutors";
-  let query = "?subject={subject}&level={level}&price={price}";
-  query = query.replace("{subject}", filter_subject);
-  query = query.replace("{level}", filter_level);
-  query = query.replace("{price}", filter_price);
-  req.open("GET", ENDPOINT + query, true);
-  req.send();
+    })
 }
 
 function set_subject_filter(subject) {
@@ -208,27 +194,13 @@ function fillLevelFilter(data) {
 }
 
 function sendSubjectsRequest() {
-  // Retrieve subjects
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      subjectList = JSON.parse(this.responseText);
-      fillSubjectFilter(subjectList);
-
-      sendLevelsRequest();
-    }
-  };
-  const ENDPOINT = API_ENDPOINT + "/subjects";
-  req.open("GET", ENDPOINT, true);
-  req.send();
-}
-
-function sendLevelsRequest() {
   // Retrieve levels
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      levelList = JSON.parse(this.responseText);
+  const ENDPOINT = API_ENDPOINT + "/subjects";
+  getData(ENDPOINT)
+    .then(subjects => {
+      subjectList = subjects.subjects;
+      levelList = subjects.levels;
+      fillSubjectFilter(subjectList);
 
       // Get search parameters from URL
       let params = new URLSearchParams(location.search);
@@ -237,10 +209,5 @@ function sendLevelsRequest() {
       select_price(params.get("pret"), /*skipRequest=*/true);
 
       sendTutorListRequest();
-    }
-  };
-  const ENDPOINT = API_ENDPOINT + "/levels";
-  req.open("GET", ENDPOINT, true);
-  req.send();
+    })
 }
-

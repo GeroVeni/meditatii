@@ -1,28 +1,30 @@
 let messagesList = document.getElementById('messages-list');
 
-let messageTemp = 
-'<a href="{message_link}" class="div-block-7 w-inline-block">' + 
-  '<div class="columns-3 w-row">' + 
-    '<div class="w-col w-col-10">' + 
-      '<h5 class="heading-43">{sender_name}</h5>' +
-      '<div class="text-block-23 _2">{last_message}</div>' +
-    '</div>' +
-    '<div class="column-6 w-col w-col-2">' +
-      '<div class="text-block-24 _2">{date}</div>' +
-    '</div>' +
+let messageTemp =
+  '<a href="{message_link}" class="div-block-7 w-inline-block">' +
+  '<div class="columns-3 w-row">' +
+  '<div class="w-col w-col-10">' +
+  '<h5 class="heading-43">{sender_name}</h5>' +
+  '<div class="text-block-23 _2">{last_message}</div>' +
   '</div>' +
-'</a>';
+  '<div class="column-6 w-col w-col-2">' +
+  '<div class="text-block-24 _2">{date}</div>' +
+  '</div>' +
+  '</div>' +
+  '</a>';
 
-function fillMessagesList(data) {
+async function fillMessagesList(username, data) {
   messagesList.innerHTML = "";
-  
-  data.forEach(convo => {
-    console.log(convo.last_msg_date);
+
+  for (const convo of data) {
+    console.log(convo.last_message.sent_date);
+    const otherUsername = convo.participants.find(p => p != username)
+    const otherUser = await getData(API_ENDPOINT + `/users/${otherUsername}`)
     let messageTempData = {
-      message_link: "mesagerie.html?u=" + convo.other.username,
-      sender_name: convo.other.surname + ' ' + convo.other.name,
-      last_message: convo.last_msg_content,
-      date: new Date(convo.last_msg_date).toLocaleDateString(
+      message_link: "mesagerie.html?u=" + otherUsername,
+      sender_name: `${otherUser.name} ${otherUser.surname}`,
+      last_message: convo.last_message.content,
+      date: new Date(convo.last_message.sent_date).toLocaleDateString(
         'ro-RO',
         {
           month: 'short',
@@ -32,24 +34,17 @@ function fillMessagesList(data) {
         })
     };
     messagesList.appendChild(makeItem(messageTemp, messageTempData));
-  });
+  }
 }
 
 function sendMessagesRequest(user) {
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      let data = JSON.parse(this.responseText);
-      fillMessagesList(data);
-    }
-  };
-  const ENDPOINT = API_ENDPOINT + "/messages";
   user.getIdToken(true)
-  .then(idToken => {
-    let query = "?token=" + idToken;
-    req.open("GET", ENDPOINT + query, true);
-    req.send();
-  });
+    .then(async idToken => {
+      const me = await getData(API_ENDPOINT + "/users/me", idToken)
+      const convoList = await getData(API_ENDPOINT + "/convos", idToken)
+      fillMessagesList(me.username, convoList)
+    })
+    .catch(err => { console.log(err) });
 }
 
 firebase.auth().onAuthStateChanged(user => {

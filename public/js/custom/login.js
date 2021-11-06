@@ -40,37 +40,37 @@ function splitName(name) {
 }
 
 function createDBUser(user) {
-  user.getIdToken(true).then(function (token) {
-    // create new user
-    let req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        console.log('response text');
-        console.log(this.responseText);
-        console.log("redirecting...");
-        window.location.href = HOME_PAGE;
+  user.getIdToken(true)
+    .then(async idToken => {
+      const me = await getData(API_ENDPOINT + '/users/me', idToken)
+      if (me) {
+        console.log('User already exists')
+        return
       }
-    };
-    const ENDPOINT = API_ENDPOINT + "/register";
-    let data = {
-      token: token,
-      name: '',
-      surname: ''
-    };
-    if (loginMethod == 'form') {
-      data.name = name_field.value;
-      data.surname = surname_field.value;
-    } else {
-      let nameSurname = splitName(user.displayName);
-      data.name = nameSurname[0];
-      data.surname = nameSurname[1];
-    }
-    console.log(`Attempting to add user: ${JSON.stringify(data)}`);
-    console.log(`Login method: ${loginMethod}`);
-    req.open("POST", ENDPOINT, true);
-    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    req.send(JSON.stringify(data));
-  });
+      let data = {
+        name: '',
+        surname: ''
+      };
+      if (loginMethod == 'form') {
+        data.name = name_field.value;
+        data.surname = surname_field.value;
+      } else {
+        let nameSurname = splitName(user.displayName);
+        data.name = nameSurname[0];
+        data.surname = nameSurname[1];
+      }
+      console.log(`Attempting to add user: ${JSON.stringify(data)}`);
+      console.log(`Login method: ${loginMethod}`);
+      const ENDPOINT = API_ENDPOINT + "/users";
+      return postData(ENDPOINT, idToken, data)
+    })
+    .then(response => {
+      console.log('response text');
+      console.log(response);
+      console.log("redirecting...");
+      window.location.href = HOME_PAGE;
+    })
+    .catch(err => console.log(err));
 }
 
 firebase.auth().getRedirectResult()

@@ -34,41 +34,39 @@ window.onclick = function (event) {
 // Search if a user with this username exists,
 // and if not redirect to messages list
 function searchUser(username) {
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      let users = JSON.parse(this.responseText);
+  // TODO: Escape strings
+  const ENDPOINT = API_ENDPOINT + "/users/" + username;
+  getData(ENDPOINT)
+    .then(user => {
       // If no tutor is found, redirect to main page
-      if (users.length == 0) { location.href = messages_list_page; }
+      if (!user) { location.href = messages_list_page; }
       // Else fill in the user's name
       else {
         other_user_full_name.innerHTML =
-          users[0].surname + " " + users[0].name;
+          user.surname + " " + user.name;
         sendTutorSubjectsRequest(username);
       }
       // TODO: Refactor the flow of this page
-    }
-  };
-  // TODO: Escape strings
-  const ENDPOINT = API_ENDPOINT + "/users/" + username;
-  req.open("GET", ENDPOINT, true);
-  req.send();
+    })
 }
 
 let tutor_subjects_levels = [];
 
-function arrayUnique(arr) {
-  return arr.filter((v, i, a) => (i == 0 || a[i - 1].subject_code != a[i].subject_code));
-}
-
 function getTutorSubjects() {
-  return arrayUnique(tutor_subjects_levels.map(sl => {
-    return { subject_code: sl.subject_code, subject_name: sl.subject_name }
-  }));
+  subjectCodes = []
+  subjects = []
+  for (const sl of tutor_subjects_levels) {
+    if (subjectCodes.includes(sl.subject.subject_code)) continue
+    subjectCodes.push(sl.subject.subject_code)
+    subjects.push(sl.subject)
+  }
+  return subjects
 }
 
 function getTutorLevels(sub_code) {
-  return tutor_subjects_levels.filter(v => v.subject_code == sub_code);
+  return tutor_subjects_levels
+    .filter(sl => sl.subject.subject_code == sub_code)
+    .map(sl => sl.level)
 }
 
 function fillSubjectsList() {
@@ -102,67 +100,55 @@ function fillLevelsList(sub_code) {
 }
 
 async function sendTutorSubjectsRequest(username) {
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      tutor_subjects_levels = JSON.parse(this.responseText);
-      fillSubjectsList();
-      fillLevelsList();
-    }
-  };
-
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-      user.getIdToken(true).then(async function (idToken) {
-        let query = "?token=" + idToken;
-        let isTutorReq = await fetch(API_ENDPOINT + "/tutor/type" + query);
-        let isTutor = await (isTutorReq).json();
-        console.log("Is tutor: " + JSON.stringify(isTutor));
-        if (!isTutor) {
-          const ENDPOINT = API_ENDPOINT + "/tutors/" + username + "/subjects?showLevels=1";
-          req.open("GET", ENDPOINT, true);
-          req.send();
-          return;
-        }
+      user.getIdToken(true)
+        .then(async idToken => {
+          let userProfile = await getData(API_ENDPOINT + "/users/me", idToken)
+          let isTutor = userProfile.roles.includes("tutor");
+          console.log("Is tutor: " + JSON.stringify(isTutor));
+          let tutorUsername = username
+          if (isTutor) {
+            console.log("Username: " + JSON.stringify(userProfile.username));
+            tutorUsername = userProfile.username
+          }
 
-        // TODO: Update naming convention of userdata
-        let userdata = await (await fetch(API_ENDPOINT + "/users/me" + query)).json();
-        console.log("Username: " + JSON.stringify(userdata));
-        const ENDPOINT = API_ENDPOINT + "/tutors/" + userdata[0].username + "/subjects?showLevels=1";
-        req.open("GET", ENDPOINT, true);
-        req.send();
-        return;
-      });
+          const ENDPOINT = API_ENDPOINT + `/tutors/${tutorUsername}`;
+          getData(ENDPOINT)
+            .then(response => {
+              tutor_subjects_levels = response.subjects
+              fillSubjectsList();
+              fillLevelsList();
+            })
+        })
+        .catch(err => console.log(err))
     }
   });
 }
 
 function refreshMessageList() {
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      messages_container.innerHTML = "";
-      console.log(this.responseText);
-      let messages = JSON.parse(this.responseText);
-      if ('err' in messages) {
-        console.log(messages.err);
-      } else {
-        messages.forEach(m => {
-          let temp = otherMessageTemp;
-          if (m.username == m.sender_id) { temp = ownMessageTemp; }
-          messages_container.appendChild(makeItem(temp, { message: m.content }));
-        });
-        scrollToBottom();
-      }
-    }
-  };
   firebase.auth().currentUser?.getIdToken(true)
-    .then(token => {
+    .then(idToken => {
       const ENDPOINT = API_ENDPOINT + "/messages";
-      let query = "?token=" + token + "&other_username=" + other_username;
-      req.open("GET", ENDPOINT + query, true);
-      req.send();
-    }).catch(function (error) {
+      let query = `?recipient=${other_username}`;
+      getData(ENDPOINT + query, idToken)
+        .then(messages => {
+          messages_container.innerHTML = "";
+          console.log(messages);
+          if ('err' in messages) {
+            console.log(messages.err);
+          } else {
+            messages.forEach(m => {
+              let temp = otherMessageTemp;
+              if (other_username != m.sender_username) { temp = ownMessageTemp; }
+              messages_container.appendChild(makeItem(temp, { message: m.content }));
+            });
+            scrollToBottom();
+          }
+        })
+        .catch(err => console.log(err))
+    })
+    .catch(function (error) {
       // Handle error
       console.log("Failed to get user token: " + error.message);
     });
@@ -182,29 +168,22 @@ function sendMessage() {
   let content = send_message_field.value;
   if (content == '') return;
 
-  // Make XMLHttpRequest to post new message
-  let req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      console.log(this.responseText);
-      send_message_field.value = '';
-      refreshMessageList();
-    }
-  };
   // Get user token
   firebase.auth().currentUser?.getIdToken(true)
-    .then(token => {
+    .then(idToken => {
       let json = {
-        token: token,
         recipient: other_username,
         message_type: "text",
         message: content,
         email: 1
       };
       const ENDPOINT = API_ENDPOINT + "/messages";
-      req.open("POST", ENDPOINT, true);
-      req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-      req.send(JSON.stringify(json));
+      postData(ENDPOINT, idToken, json)
+        .then(response => {
+          console.log(response);
+          send_message_field.value = '';
+          refreshMessageList();
+        })
     });
 }
 
@@ -219,15 +198,10 @@ firebase.auth().onAuthStateChanged(function (user) {
 });
 
 function sendTutorProfileRequest(username) {
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      fillTutorProfile(JSON.parse(this.responseText));
-    }
-  };
   const ENDPOINT = API_ENDPOINT + "/tutors/" + username;
-  req.open("GET", ENDPOINT, true);
-  req.send();
+  getData(ENDPOINT).then(response => {
+    fillTutorProfile(response);
+  })
 }
 
 let params = new URLSearchParams(location.search);
@@ -245,62 +219,44 @@ function sendBooking() {
   console.log(start_time.value);
   console.log(free_session.checked);
   console.log(paid_session.checked);
-  var session_type = -1;
+  var sessionType = -1;
   if (free_session.checked) {
-    session_type = 0;
+    sessionType = 0;
   }
   if (paid_session.checked) {
-    session_type = 1;
+    sessionType = 1;
   }
-  // UTC +3
-  // TODO: Adjust for winter time zone
-  let start_datetime = new Date(start_date.value + "T" + start_time.value + "+03:00");
+  // UTC +2
+  // TODO: Adjust for winter/summer time zone
+  let start_datetime = new Date(start_date.value + "T" + start_time.value + "+02:00");
   let start_datetime_string = start_datetime.toISOString();
   console.log(start_datetime_string);
 
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-      user.getIdToken(true).then(function (idToken) {
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            let isTutor = this.responseText;
-            console.log(isTutor);
-            req = new XMLHttpRequest();
-            req.onreadystatechange = function () {
-              if (this.readyState == 4 && this.status == 200) {
-                let own_username = JSON.parse(this.responseText)[0].username;
-                console.log(own_username);
-                req.onreadystatechange = function () {
-                  if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
-                    location.href = "programari.html";
-                    response_div.innerHTML = '<p> Sesiunea ta a fost programată. Intră pe pagina de Programări pentru a urmări toate programările tale.</p>';
-                  }
-                };
-                const ENDPOINT = API_ENDPOINT + "/bookings/write";
-                req.open("POST", ENDPOINT, true);
-                req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                var json = {};
-                if (isTutor == 0) {
-                  json = { token: idToken, status_id: 0, start_timestamp: start_datetime_string, subject_id: subject.value, level_id: level.value, session_type: session_type, student_id: own_username, tutor_id: other_username };
-                }
-                if (isTutor == 1) {
-                  json = { token: idToken, status_id: 1, start_timestamp: start_datetime_string, subject_id: subject.value, level_id: level.value, session_type: session_type, student_id: other_username, tutor_id: own_username };
-                }
-                req.send(JSON.stringify(json));
-              }
-            };
-            const ENDPOINT = API_ENDPOINT + "/users/me?token=" + idToken;
-            req.open("GET", ENDPOINT, true);
-            req.send();
+      user.getIdToken(true).then(idToken => {
+        const ENDPOINT = API_ENDPOINT + "/users/me"
+        getData(ENDPOINT, idToken).then(userProfile => {
+          const isTutor = userProfile.roles.includes("tutor")
+          const ownUsername = userProfile.username;
+          console.log(isTutor);
+          console.log(ownUsername);
+          const ENDPOINT = API_ENDPOINT + "/bookings";
+          var json = {};
+          if (isTutor == 0) {
+            json = { startTimestamp: start_datetime_string, subjectID: subject.value, levelID: level.value, sessionType, studentID: ownUsername, tutorID: other_username };
           }
-        };
-        const ENDPOINT = API_ENDPOINT + "/tutor/type?token=" + idToken;
-        req.open("GET", ENDPOINT, true);
-        req.send();
-      }).catch(function (error) {
-        console.log("Error in retrieving user token: " + error.message);
+          if (isTutor == 1) {
+            json = { startTimestamp: start_datetime_string, subjectID: subject.value, levelID: level.value, sessionType, studentID: other_username, tutorID: ownUsername };
+          }
+          postData(ENDPOINT, idToken, json).then(response => {
+            console.log(response);
+            location.href = "programari.html";
+            response_div.innerHTML = '<p> Sesiunea ta a fost programată. Intră pe pagina de Programări pentru a urmări toate programările tale.</p>';
+          })
+        })
+      }).catch(err => {
+        console.log("Error in retrieving user token: " + err.message);
       });
     } else {
       console.log("No user Signed In");
