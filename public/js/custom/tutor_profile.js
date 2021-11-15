@@ -56,6 +56,7 @@ var gradesTable = document.getElementById("tutor-grades");
 var subjectsTable = document.getElementById("tutor-subjects");
 var sessionHoursField = document.getElementById("tutor-session-hours");
 var sessionHoursValueField = document.getElementById("tutor-session-hours-value");
+var sessionHoursNounField = document.getElementById("tutor-session-hours-noun");
 var ratingStarsImg = document.getElementById("tutor-rating-stars");
 var ratingCountText = document.getElementById("tutor-rating-count");
 var reviewsList = document.getElementById("tutor-reviews-list");
@@ -72,6 +73,12 @@ function fillTutorProfile(data, offers) {
   if (data.completed_sessions && data.completed_sessions > 0) {
     sessionHoursField.style.display = ''
     sessionHoursValueField.innerHTML = data.completed_sessions
+    if (data.completed_sessions % 100 > 20) {
+      sessionHoursNounField.innerHTML = " de ore predate"
+    }
+    if (data.completed_sessions == 1) {
+      sessionHoursNounField.innerHTML = " oră predată"
+    }
   } else {
     sessionHoursField.style.display = 'none'
   }
