@@ -55,34 +55,40 @@ function convertPhoneNumberToE164(num) {
 function createDBUser(user) {
   user.getIdToken(true)
     .then(async idToken => {
-      const me = await getData(API_ENDPOINT + '/users/me', idToken)
-      if (me) {
-        console.log('User already exists')
-        return
-      }
+      try {
+        const me = await getData(API_ENDPOINT + '/users/me', idToken)
+        if (me) {
+          console.log('User already exists')
+          return
+        }
+      } catch (err) { console.error(err) }
       let data = {
         name: '',
         surname: '',
-        phone: ''
+        phoneNumber: ''
       };
+      const referrer = getCookie("referrer")
+      if (referrer) {
+        data.referrer = referrer
+      }
       if (loginMethod == 'form') {
         data.name = name_field.value
         data.surname = surname_field.value
-        data.phone = convertPhoneNumberToE164(phone_field.value)
+        data.phoneNumber = convertPhoneNumberToE164(phone_field.value)
       } else {
         let nameSurname = splitName(user.displayName)
         data.name = nameSurname[0]
         data.surname = nameSurname[1]
-        data.phone = user.phoneNumber
+        data.phoneNumber = user.phoneNumber
       }
       console.log(`Attempting to add user: ${JSON.stringify(data)}`);
       console.log(`Login method: ${loginMethod}`);
       const ENDPOINT = API_ENDPOINT + "/users";
-      return postData(ENDPOINT, token, data)
+      return postData(ENDPOINT, idToken, data)
     })
     .then(() => {
       console.log("redirecting...");
-      window.location.href = HOME_PAGE;
+      // window.location.href = HOME_PAGE;
     })
     .catch(err => console.log(err));
 }
@@ -142,7 +148,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     console.log('User logged in');
     if (loginMethod == 'none') {
       console.log('Login method: ' + loginMethod);
-      window.location.href = HOME_PAGE;
+      // window.location.href = HOME_PAGE;
     } else {
       createDBUser(user);
     }

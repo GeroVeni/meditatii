@@ -42,15 +42,22 @@ function splitName(name) {
 function createDBUser(user) {
   user.getIdToken(true)
     .then(async idToken => {
-      const me = await getData(API_ENDPOINT + '/users/me', idToken)
-      if (me) {
-        console.log('User already exists')
-        return
-      }
+      try {
+        const me = await getData(API_ENDPOINT + '/users/me', idToken)
+        if (me) {
+          console.log('User already exists')
+          return
+        }
+      } catch (err) { console.error(err) }
       let data = {
         name: '',
-        surname: ''
+        surname: '',
+        phoneNumber: ''
       };
+      const referrer = getCookie("referrer")
+      if (referrer) {
+        data.referrer = referrer
+      }
       if (loginMethod == 'form') {
         data.name = name_field.value;
         data.surname = surname_field.value;
@@ -58,6 +65,7 @@ function createDBUser(user) {
         let nameSurname = splitName(user.displayName);
         data.name = nameSurname[0];
         data.surname = nameSurname[1];
+        data.phoneNumber = user.phoneNumber
       }
       console.log(`Attempting to add user: ${JSON.stringify(data)}`);
       console.log(`Login method: ${loginMethod}`);

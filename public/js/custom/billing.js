@@ -86,8 +86,10 @@ function billing() {
               const ENDPOINT = API_ENDPOINT + `/bookings/${booking_id}/pay`;
               postData(ENDPOINT, idToken)
                 .then(data => {
-                  console.log(data);
-                  window.location.href = data.formUrl
+                  console.log(data)
+                  if (data.formUrl) {
+                    window.location.href = data.formUrl
+                  }
                 })
             }
           })

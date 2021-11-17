@@ -75,3 +75,9 @@ firebase.auth().onAuthStateChanged(user => {
   }
 });
 
+// Get search parameters from URL
+const params = new URLSearchParams(location.search);
+const referrer = params.get("referrer")
+if (referrer) {
+  setCookie("referrer", referrer)
+}
