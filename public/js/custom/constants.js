@@ -32,5 +32,8 @@ async function getData(url = '', idToken = '') {
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
   });
+  if (response.status > 399) {
+    throw new Error(`Error in request response with code ${response.status}: ${JSON.stringify(response.json())}`)
+  }
   return response.json(); // parses JSON response into native JavaScript objects
 }

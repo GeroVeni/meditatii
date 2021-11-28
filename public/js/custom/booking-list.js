@@ -178,8 +178,8 @@ function buttonsInit() {
               const ENDPOINT = API_ENDPOINT + `/bookings/${booking_id}`;
               getData(ENDPOINT, idToken)
                 .then(async data => {
-                  const tutor = getData(API_ENDPOINT + `/users/${data.tutor_username}`)
-                  const student = getData(API_ENDPOINT + `/users/${data.student_username}`)
+                  const tutor = await getData(API_ENDPOINT + `/users/${data.tutor_username}`)
+                  const student = await getData(API_ENDPOINT + `/users/${data.student_username}`)
                   sessionStorage.setItem('end_timestamp', data.end_timestamp);
                   sessionStorage.setItem("start_timestamp", data.start_timestamp);
                   sessionStorage.setItem("authorised_users", student.name + "," + tutor.name);

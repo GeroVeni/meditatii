@@ -88,7 +88,7 @@ function createDBUser(user) {
     })
     .then(() => {
       console.log("redirecting...");
-      // window.location.href = HOME_PAGE;
+      window.location.href = HOME_PAGE;
     })
     .catch(err => console.log(err));
 }
@@ -148,7 +148,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     console.log('User logged in');
     if (loginMethod == 'none') {
       console.log('Login method: ' + loginMethod);
-      // window.location.href = HOME_PAGE;
+      window.location.href = HOME_PAGE;
     } else {
       createDBUser(user);
     }
