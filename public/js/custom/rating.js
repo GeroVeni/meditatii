@@ -1,6 +1,3 @@
-let ratingStars = document.getElementById('tutor-rating-stars');
-let ratingComment = document.getElementById('feedback');
-
 function getRatingImagePath(rating) {
   if (rating == 10) return 'images/5stars.png';
   if (rating == 9) return 'images/4stars and a half.png';

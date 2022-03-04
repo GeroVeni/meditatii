@@ -1,5 +1,6 @@
 
 let bookingList = document.getElementById("booking-container");
+let pastBookingList = document.getElementById("past-booking-container");
 
 let bookingTemp_enterLesson =
   '<div class="div-block-7">' +
@@ -101,6 +102,23 @@ let bookingTemp_awaitingPayment =
   '</div>' +
   '</div>';
 
+let bookingTemp_pastSession =
+  '<div class="div-block-7">' +
+  '<div class="columns-3 w-row">' +
+  '<div class="w-col w-col-4 w-col-tiny-tiny-stack">' +
+  '<h5>{session_dayOfWeek}, {session_day} {session_month}, {session_hour}:{session_minute}</h5>' +
+  '<div class="text-block-23">{session_type}</div>' +
+  '</div>' +
+  '<div class="column-6 w-col w-col-2 w-col-tiny-tiny-stack">' +
+  '<div class="text-block-24">{session_nameOther}</div>' +
+  '</div>' +
+  '<div class="w-col w-col-3 w-col-tiny-tiny-stack">' +
+  '<div class="text-block-25">{session_subject} - {session_level}</div>' +
+  '</div>' +
+  '<div class="w-col w-col-3 w-col-tiny-tiny-stack"><a href="#" name="{booking_id}" class="feedback button-5 w-button">Submit feedback</a></div>' +
+  '</div>' +
+  '</div>';
+
 let bookingTemp_acceptRefuse =
   '<div class="div-block-7">' +
   '<div class="columns-4 w-row">' +
@@ -148,10 +166,11 @@ function rejectBooking(booking_id) {
 }
 
 function buttonsInit() {
-  var acceptButtons = document.getElementsByClassName("accept");
-  var refuseButtons = document.getElementsByClassName("refuse");
-  var enterLesson = document.getElementsByClassName("enter_lesson");
-  var payButtons = document.getElementsByClassName("pay");
+  let acceptButtons = document.getElementsByClassName("accept");
+  let refuseButtons = document.getElementsByClassName("refuse");
+  let enterLesson = document.getElementsByClassName("enter_lesson");
+  let payButtons = document.getElementsByClassName("pay");
+  let feedbackButtons = document.getElementsByClassName("feedback");
   for (var i = 0; i < acceptButtons.length; i++) {
     acceptButtons.item(i).onclick = function () {
       acceptBooking(this.name)
@@ -162,6 +181,11 @@ function buttonsInit() {
       window.location.href = '/informatiifacturare.html?b=' + this.name
     }
   };
+  for (let i = 0; i < feedbackButtons.length; i++) {
+    feedbackButtons.item(i).onclick = function () {
+      location.href = `feedback.html?b=${this.name}`
+    }
+  }
   for (var i = 0; i < refuseButtons.length; i++) {
     refuseButtons.item(i).onclick = function () {
       rejectBooking(this.name)
@@ -258,8 +282,10 @@ async function makeListItem(username, itemData) {
     return makeItem(bookingTemp_lessonPaid, map);
   else if (status == 4)
     return makeItem(bookingTemp_enterLesson, map);
-  else if (status > 4)
-    console.log("Session is in the past")
+  else if (status == 5)
+    return makeItem(bookingTemp_pastSession, map);
+  else if (status > 5)
+    console.log("Session cancelled")
 }
 
 function sendBookingsRequest() {
@@ -270,9 +296,13 @@ function sendBookingsRequest() {
           const ENDPOINT = API_ENDPOINT + "/bookings"
           const me = await getData(API_ENDPOINT + "/users/me", idToken)
           getData(ENDPOINT, idToken)
-            .then(response => {
-              console.log(response)
-              return fillBookingList(bookingList, me.username, response, buttonsInit);
+            .then(async bookings => {
+              console.log(bookings)
+              const pastBookings = bookings.filter(b => b.status_id > 4)
+              bookings = bookings.filter(b => b.status_id <= 4)
+              await fillBookingList(bookingList, me.username, bookings);
+              await fillBookingList(pastBookingList, me.username, pastBookings);
+              buttonsInit()
             })
         })
         .catch(err => {
@@ -285,15 +315,18 @@ function sendBookingsRequest() {
   });
 }
 
-async function fillBookingList(HTMLelem, username, data, callback) {
+async function fillBookingList(HTMLelem, username, data) {
   HTMLelem.innerHTML = "";
+  if (data.length == 0) {
+    HTMLelem.appendChild(makeItem('<div class="w3-center" style="margin-bottom: 8px;">No sessions found.</div>', {}))
+    return
+  }
   for (const itemData of data) {
     let item = await makeListItem(username, itemData);
     if (item) {
       HTMLelem.appendChild(item);
     }
   }
-  callback();
 }
 
 sendBookingsRequest();

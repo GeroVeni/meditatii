@@ -16,6 +16,11 @@ let messageTemp =
 async function fillMessagesList(username, data) {
   messagesList.innerHTML = "";
 
+  if (data.length == 0) {
+    messagesList.appendChild(makeItem('<div class="w3-center" style="margin: 8px;">No messages found.</div>', {}));
+    return
+  }
+
   for (const convo of data) {
     console.log(convo.last_message.sent_date);
     const otherUsername = convo.participants.find(p => p != username)
